@@ -5,8 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>WebCode Studio</title>
 
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
 <style>
 :root{
@@ -25,12 +24,9 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
   --yellow:#c09553;
 }
 
-*{
-  box-sizing:border-box;
-}
+*{ box-sizing:border-box; }
 
-html,
-body{
+html,body{
   width:100%;
   height:100%;
   margin:0;
@@ -41,15 +37,8 @@ body{
   font-size:13px;
 }
 
-button,
-input,
-select{
-  font:inherit;
-}
-
-button{
-  cursor:pointer;
-}
+button,input,select{ font:inherit; }
+button{ cursor:pointer; }
 
 #app{
   width:100%;
@@ -124,7 +113,7 @@ button{
   overflow:hidden;
   background:var(--sidebar);
   border-right:1px solid var(--line);
-  transition:width .2s ease,opacity .2s ease,transform .2s ease;
+  transition:width .2s ease, opacity .2s ease, transform .2s ease;
 }
 
 #sidebar.closed{
@@ -197,8 +186,8 @@ button{
 }
 
 .tree-row.active{
-  color:#fff;
   background:#37373d;
+  color:#fff;
 }
 
 .tree-row > i{
@@ -627,21 +616,15 @@ button{
   <div id="main">
 
     <nav id="activitybar">
-      <button class="activity-button active"
-              data-view="explorer"
-              title="エクスプローラー">
+      <button class="activity-button active" data-view="explorer" title="エクスプローラー">
         <i class="fa-regular fa-copy"></i>
       </button>
 
-      <button class="activity-button"
-              data-view="debug"
-              title="デバッグ">
+      <button class="activity-button" data-view="debug" title="デバッグ">
         <i class="fa-solid fa-bug"></i>
       </button>
 
-      <button class="activity-button"
-              data-view="settings"
-              title="設定">
+      <button class="activity-button" data-view="settings" title="設定">
         <i class="fa-solid fa-gear"></i>
       </button>
     </nav>
@@ -651,21 +634,15 @@ button{
         <span>エクスプローラー</span>
 
         <span class="sidebar-actions">
-          <button class="icon-button"
-                  id="open-folder-button"
-                  title="フォルダを開く">
+          <button class="icon-button" id="open-folder-button" title="フォルダを開く">
             <i class="fa-solid fa-folder-open"></i>
           </button>
 
-          <button class="icon-button"
-                  id="new-file-button"
-                  title="新しいファイル">
+          <button class="icon-button" id="new-file-button" title="新しいファイル">
             <i class="fa-solid fa-file-circle-plus"></i>
           </button>
 
-          <button class="icon-button"
-                  id="new-folder-button"
-                  title="新しいフォルダ">
+          <button class="icon-button" id="new-folder-button" title="新しいフォルダ">
             <i class="fa-solid fa-folder-plus"></i>
           </button>
         </span>
@@ -693,10 +670,7 @@ button{
       </div>
 
       <section class="panel" id="debug-panel">
-        <h3>
-          <i class="fa-solid fa-bug"></i>
-          デバッグ
-        </h3>
+        <h3><i class="fa-solid fa-bug"></i> デバッグ</h3>
 
         <div class="panel-card">
           <strong>実行対象</strong>
@@ -720,19 +694,12 @@ button{
       </section>
 
       <section class="panel" id="settings-panel">
-        <h3>
-          <i class="fa-solid fa-gear"></i>
-          設定
-        </h3>
+        <h3><i class="fa-solid fa-gear"></i> 設定</h3>
 
         <div class="panel-card">
           <label class="setting-row">
             <span>フォントサイズ</span>
-            <input id="font-size"
-                   type="number"
-                   min="10"
-                   max="32"
-                   value="14">
+            <input id="font-size" type="number" min="10" max="32" value="14">
           </label>
 
           <label class="setting-row">
@@ -751,65 +718,46 @@ button{
     <div class="resizer" id="right-resizer"></div>
 
     <section id="preview-panel">
-
       <div id="preview-header">
         <span class="preview-title">
           <i class="fa-solid fa-display"></i>
           ライブプレビュー
         </span>
 
-        <button class="preview-button active"
-                data-mode="live"
-                title="ライブプレビュー">
+        <button class="preview-button active" data-mode="live" title="LIVE">
           <i class="fa-solid fa-bolt"></i>
           LIVE
         </button>
 
-        <button class="preview-button"
-                data-mode="console"
-                title="コンソール">
+        <button class="preview-button" data-mode="console" title="CONSOLE">
           <i class="fa-solid fa-terminal"></i>
           CONSOLE
         </button>
 
-        <button class="preview-button"
-                data-mode="debug"
-                title="デバッグ">
+        <button class="preview-button" data-mode="debug" title="DEBUG">
           <i class="fa-solid fa-bug"></i>
           DEBUG
         </button>
 
-        <button class="preview-button"
-                data-mode="inspect"
-                title="DOMインスペクター">
+        <button class="preview-button" data-mode="inspect" title="INSPECT">
           <i class="fa-solid fa-crosshairs"></i>
           INSPECT
         </button>
 
-        <button class="preview-button"
-                id="refresh-button"
-                title="再読み込み">
+        <button class="preview-button" id="refresh-button" title="再読み込み">
           <i class="fa-solid fa-rotate"></i>
         </button>
 
-        <button class="preview-button"
-                id="open-preview-button"
-                title="別ウィンドウで開く">
+        <button class="preview-button" id="open-preview-button" title="別ウィンドウで開く">
           <i class="fa-solid fa-arrow-up-right-from-square"></i>
         </button>
 
-        <button class="preview-button"
-                id="run-preview-button"
-                title="実行">
+        <button class="preview-button" id="run-preview-button" title="実行">
           <i class="fa-solid fa-play"></i>
         </button>
       </div>
 
-      <iframe id="preview-frame"
-              title="ライブプレビュー"
-              sandbox="allow-scripts allow-modals">
-      </iframe>
-
+      <iframe id="preview-frame" title="ライブプレビュー" sandbox="allow-scripts allow-modals"></iframe>
       <div id="console"></div>
     </section>
   </div>
@@ -841,13 +789,8 @@ button{
     <input id="modal-input" autocomplete="off">
 
     <div class="modal-buttons">
-      <button class="modal-button" id="modal-cancel">
-        キャンセル
-      </button>
-
-      <button class="modal-button primary" id="modal-ok">
-        作成
-      </button>
+      <button class="modal-button" id="modal-cancel">キャンセル</button>
+      <button class="modal-button primary" id="modal-ok">作成</button>
     </div>
   </div>
 </div>
@@ -860,10 +803,8 @@ button{
 (() => {
   "use strict";
 
-  const $ = selector => document.querySelector(selector);
-  const STORAGE_KEY = "webcode-studio-complete-v1";
+  const STORAGE_KEY = "webcode-studio-full-v1";
   const models = {};
-
   let editor = null;
   let modalCallback = null;
   let previewTimer = null;
@@ -892,11 +833,6 @@ button{
     }
   };
 
-  const VOID_TAGS = [
-    "area","base","br","col","embed","hr","img",
-    "input","link","meta","param","source","track","wbr"
-  ];
-
   const fileIcons = {
     html:"fa-brands fa-html5",
     htm:"fa-brands fa-html5",
@@ -912,20 +848,26 @@ button{
     default:"fa-regular fa-file-code"
   };
 
+  const VOID_TAGS = [
+    "area","base","br","col","embed","hr","img","input","link",
+    "meta","param","source","track","wbr"
+  ];
+
   function uid(){
     return "n" +
       Date.now().toString(36) +
       Math.random().toString(36).slice(2,8);
   }
 
-  function extension(name){
+  function extOf(name){
     return String(name)
       .split(".")
       .pop()
       .toLowerCase();
   }
 
-  function language(name){
+  function langOf(name){
+    const ext = extOf(name);
     return {
       html:"html",
       htm:"html",
@@ -935,19 +877,27 @@ button{
       jsx:"javascript",
       ts:"typescript",
       tsx:"typescript",
-      vue:"html",
       json:"json",
       md:"markdown"
-    }[extension(name)] || "plaintext";
+    }[ext] || "plaintext";
   }
 
   function fileIcon(name){
-    return fileIcons[extension(name)] || fileIcons.default;
+    return fileIcons[extOf(name)] || fileIcons.default;
+  }
+
+  function toast(message){
+    const el = document.getElementById("toast");
+    el.textContent = message;
+    el.classList.add("show");
+
+    setTimeout(() => {
+      el.classList.remove("show");
+    }, 1800);
   }
 
   function getChildren(id){
     const node = state.nodes[id];
-
     if(!node || !Array.isArray(node.children)){
       return [];
     }
@@ -965,23 +915,9 @@ button{
     return runtime.handles[id] || null;
   }
 
-  function showToast(message){
-    const element = $("#toast");
-
-    element.textContent = message;
-    element.classList.add("show");
-
-    setTimeout(() => {
-      element.classList.remove("show");
-    }, 1800);
-  }
-
   function saveState(){
     try{
-      localStorage.setItem(
-        STORAGE_KEY,
-        JSON.stringify(state)
-      );
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     }catch(error){
       console.warn(error);
     }
@@ -989,36 +925,24 @@ button{
 
   function restoreState(){
     try{
-      const saved = JSON.parse(
-        localStorage.getItem(STORAGE_KEY)
-      );
-
+      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
       if(saved && saved.nodes){
         state = saved;
-
-        state.tabs = Array.isArray(state.tabs)
-          ? state.tabs
-          : [];
+        state.tabs = Array.isArray(state.tabs) ? state.tabs : [];
       }
     }catch(error){
-      console.warn("保存データを読み込めませんでした", error);
+      console.warn("保存データが読めませんでした", error);
     }
   }
 
-  function addNode(
-    parentId,
-    name,
-    content = "",
-    type = "file",
-    handle = null
-  ){
+  function addNode(parentId, name, content="", type="file", handle=null){
     const node = {
-      id:uid(),
+      id: uid(),
       type,
       name,
-      parent:parentId,
+      parent: parentId,
       content,
-      lang:language(name)
+      lang: langOf(name)
     };
 
     if(type === "folder"){
@@ -1042,10 +966,10 @@ button{
   }
 
   function renderTree(){
-    const tree = $("#tree");
+    const tree = document.getElementById("tree");
     tree.innerHTML = "";
 
-    function draw(parentId, depth){
+    function walk(parentId, depth){
       getChildren(parentId).forEach(node => {
         const row = document.createElement("div");
 
@@ -1054,8 +978,7 @@ button{
           node.type +
           (node.id === state.active ? " active" : "");
 
-        row.style.paddingLeft =
-          (7 + depth * 16) + "px";
+        row.style.paddingLeft = (7 + depth * 16) + "px";
 
         if(node.type === "folder"){
           row.innerHTML = `
@@ -1067,29 +990,25 @@ button{
             </button>
           `;
 
-          row.querySelector(".tree-name").textContent =
-            node.name;
+          row.querySelector(".tree-name").textContent = node.name;
 
           row.addEventListener("click", event => {
-            if(event.target.closest(".delete-button")){
-              return;
-            }
+            if(event.target.closest(".delete-button")) return;
 
-            node.open = !node.open;
             state.active = node.id;
+            node.open = !node.open;
             renderTree();
           });
 
-          row.querySelector(".delete-button")
-            .addEventListener("click", event => {
-              event.stopPropagation();
-              deleteNode(node.id);
-            });
+          row.querySelector(".delete-button").addEventListener("click", event => {
+            event.stopPropagation();
+            deleteNode(node.id);
+          });
 
           tree.appendChild(row);
 
           if(node.open){
-            draw(node.id, depth + 1);
+            walk(node.id, depth + 1);
           }
 
           return;
@@ -1103,49 +1022,41 @@ button{
           </button>
         `;
 
-        row.querySelector(".tree-name").textContent =
-          node.name;
+        row.querySelector(".tree-name").textContent = node.name;
 
         row.addEventListener("click", event => {
-          if(event.target.closest(".delete-button")){
-            return;
-          }
+          if(event.target.closest(".delete-button")) return;
 
           event.preventDefault();
           event.stopPropagation();
-
           openFile(node.id);
         });
 
-        row.querySelector(".delete-button")
-          .addEventListener("click", event => {
-            event.stopPropagation();
-            deleteNode(node.id);
-          });
+        row.querySelector(".delete-button").addEventListener("click", event => {
+          event.stopPropagation();
+          deleteNode(node.id);
+        });
 
         tree.appendChild(row);
       });
     }
 
-    draw(state.root, 0);
+    walk(state.root, 0);
   }
 
   function renderTabs(){
-    const tabs = $("#tabs");
+    const tabs = document.getElementById("tabs");
     tabs.innerHTML = "";
 
     state.tabs.forEach(id => {
       const node = state.nodes[id];
-
       if(!node || node.type !== "file"){
         return;
       }
 
       const tab = document.createElement("div");
 
-      tab.className =
-        "tab " +
-        (id === state.active ? "active" : "");
+      tab.className = "tab " + (id === state.active ? "active" : "");
 
       tab.innerHTML = `
         <i class="${fileIcon(node.name)}"></i>
@@ -1155,23 +1066,18 @@ button{
         </button>
       `;
 
-      tab.querySelector(".tab-name").textContent =
-        node.name;
+      tab.querySelector(".tab-name").textContent = node.name;
 
       tab.addEventListener("click", event => {
-        if(event.target.closest(".tab-close")){
-          return;
-        }
-
+        if(event.target.closest(".tab-close")) return;
         openFile(id);
       });
 
-      tab.querySelector(".tab-close")
-        .addEventListener("click", event => {
-          event.preventDefault();
-          event.stopPropagation();
-          closeTab(id);
-        });
+      tab.querySelector(".tab-close").addEventListener("click", event => {
+        event.preventDefault();
+        event.stopPropagation();
+        closeTab(id);
+      });
 
       tabs.appendChild(tab);
     });
@@ -1188,11 +1094,7 @@ button{
       return null;
     }
 
-    const model = monaco.editor.createModel(
-      node.content || "",
-      node.lang || "plaintext"
-    );
-
+    const model = monaco.editor.createModel(node.content || "", node.lang || "plaintext");
     models[id] = model;
 
     model.onDidChangeContent(async () => {
@@ -1206,23 +1108,18 @@ button{
       if(handle){
         try{
           const writable = await handle.createWritable();
-
           try{
             await writable.write(node.content);
           }finally{
             await writable.close();
           }
-
-          $("#status-text").textContent =
-            "フォルダへ保存済み";
+          document.getElementById("status-text").textContent = "フォルダへ保存済み";
         }catch(error){
           console.error(error);
-          $("#status-text").textContent =
-            "保存エラー";
+          document.getElementById("status-text").textContent = "保存エラー";
         }
       }else{
-        $("#status-text").textContent =
-          "編集中";
+        document.getElementById("status-text").textContent = "編集中";
       }
     });
 
@@ -1231,7 +1128,6 @@ button{
 
   function openFile(id){
     const node = state.nodes[id];
-
     if(!node || node.type !== "file"){
       return;
     }
@@ -1243,19 +1139,16 @@ button{
     state.active = id;
 
     const model = createModel(id);
-
-    if(!editor || !model){
-      showToast("エディターを読み込めませんでした");
+    if(!model || !editor){
+      toast("エディターを読み込めませんでした");
       return;
     }
 
-    $("#empty-state").style.display = "none";
-
+    document.getElementById("empty-state").style.display = "none";
     editor.setModel(model);
     editor.focus();
 
-    $("#current-file").textContent =
-      node.name;
+    document.getElementById("current-file").textContent = node.name;
 
     renderTabs();
     renderTree();
@@ -1264,22 +1157,17 @@ button{
   }
 
   function closeTab(id){
-    state.tabs = state.tabs.filter(
-      tabId => tabId !== id
-    );
+    state.tabs = state.tabs.filter(tabId => tabId !== id);
 
     if(state.active === id){
-      state.active =
-        state.tabs[state.tabs.length - 1] || null;
+      state.active = state.tabs[state.tabs.length - 1] || null;
 
       if(state.active){
         openFile(state.active);
       }else{
         editor.setModel(null);
-        $("#empty-state").style.display = "flex";
-        $("#current-file").textContent =
-          "ファイル未選択";
-        renderPreview();
+        document.getElementById("empty-state").style.display = "flex";
+        document.getElementById("current-file").textContent = "ファイル未選択";
       }
     }
 
@@ -1290,7 +1178,6 @@ button{
 
   function collectDescendants(id, result = []){
     const node = state.nodes[id];
-
     if(!node){
       return result;
     }
@@ -1298,9 +1185,7 @@ button{
     result.push(id);
 
     if(Array.isArray(node.children)){
-      node.children.forEach(childId => {
-        collectDescendants(childId, result);
-      });
+      node.children.forEach(childId => collectDescendants(childId, result));
     }
 
     return result;
@@ -1308,7 +1193,6 @@ button{
 
   async function deleteNode(id){
     const node = state.nodes[id];
-
     if(!node || id === state.root){
       return;
     }
@@ -1318,19 +1202,14 @@ button{
     }
 
     const parent = state.nodes[node.parent];
-
     try{
       const directory = getDirectoryHandle(node.parent);
-
       if(directory){
-        await directory.removeEntry(
-          node.name,
-          { recursive:node.type === "folder" }
-        );
+        await directory.removeEntry(node.name, { recursive: node.type === "folder" });
       }
     }catch(error){
       console.error(error);
-      showToast("削除できませんでした");
+      toast("削除できませんでした");
       return;
     }
 
@@ -1347,26 +1226,20 @@ button{
     });
 
     if(parent && Array.isArray(parent.children)){
-      parent.children = parent.children.filter(
-        childId => childId !== id
-      );
+      parent.children = parent.children.filter(childId => childId !== id);
     }
 
-    state.tabs = state.tabs.filter(
-      tabId => !ids.includes(tabId)
-    );
+    state.tabs = state.tabs.filter(tabId => !ids.includes(tabId));
 
     if(ids.includes(state.active)){
-      state.active =
-        state.tabs[state.tabs.length - 1] || null;
+      state.active = state.tabs[state.tabs.length - 1] || null;
 
       if(state.active){
         openFile(state.active);
       }else{
         editor.setModel(null);
-        $("#empty-state").style.display = "flex";
-        $("#current-file").textContent =
-          "ファイル未選択";
+        document.getElementById("empty-state").style.display = "flex";
+        document.getElementById("current-file").textContent = "ファイル未選択";
       }
     }
 
@@ -1374,24 +1247,24 @@ button{
     renderTabs();
     renderPreview();
     saveState();
-    showToast("削除しました");
+    toast("削除しました");
   }
 
   function openModal(title, defaultValue, callback){
-    $("#modal-title").textContent = title;
-    $("#modal-input").value = defaultValue;
-    $("#modal").classList.add("show");
-
+    document.getElementById("modal-title").textContent = title;
+    document.getElementById("modal-input").value = defaultValue;
+    document.getElementById("modal").classList.add("show");
     modalCallback = callback;
 
     setTimeout(() => {
-      $("#modal-input").focus();
-      $("#modal-input").select();
+      const input = document.getElementById("modal-input");
+      input.focus();
+      input.select();
     }, 30);
   }
 
   function closeModal(){
-    $("#modal").classList.remove("show");
+    document.getElementById("modal").classList.remove("show");
     modalCallback = null;
   }
 
@@ -1402,14 +1275,12 @@ button{
       return state.root;
     }
 
-    return active.type === "folder"
-      ? active.id
-      : active.parent;
+    return active.type === "folder" ? active.id : active.parent;
   }
 
   async function createFile(name){
-    if(!name || /[\/\\]/.test(name)){
-      showToast("ファイル名が不正です");
+    if(!name || /[\/\\\\]/.test(name)){
+      toast("ファイル名が不正です");
       return;
     }
 
@@ -1421,39 +1292,29 @@ button{
     }
 
     if(getChildren(parentId).some(node => node.name === name)){
-      showToast("同じ名前が存在します");
+      toast("同じ名前が存在します");
       return;
     }
 
-    const directory = getDirectoryHandle(parentId);
     let handle = null;
+    const directory = getDirectoryHandle(parentId);
 
     if(directory){
-      handle = await directory.getFileHandle(
-        name,
-        { create:true }
-      );
+      handle = await directory.getFileHandle(name, { create:true });
     }
 
-    const id = addNode(
-      parentId,
-      name,
-      "",
-      "file",
-      handle
-    );
-
+    const id = addNode(parentId, name, "", "file", handle);
     parent.open = true;
 
     renderTree();
     openFile(id);
     saveState();
-    showToast("ファイルを作成しました");
+    toast("ファイルを作成しました");
   }
 
   async function createFolder(name){
-    if(!name || /[\/\\]/.test(name)){
-      showToast("フォルダ名が不正です");
+    if(!name || /[\/\\\\]/.test(name)){
+      toast("フォルダ名が不正です");
       return;
     }
 
@@ -1465,40 +1326,30 @@ button{
     }
 
     if(getChildren(parentId).some(node => node.name === name)){
-      showToast("同じ名前が存在します");
+      toast("同じ名前が存在します");
       return;
     }
 
-    const directory = getDirectoryHandle(parentId);
     let handle = null;
+    const directory = getDirectoryHandle(parentId);
 
     if(directory){
-      handle = await directory.getDirectoryHandle(
-        name,
-        { create:true }
-      );
+      handle = await directory.getDirectoryHandle(name, { create:true });
     }
 
-    const id = addNode(
-      parentId,
-      name,
-      "",
-      "folder",
-      handle
-    );
-
+    const id = addNode(parentId, name, "", "folder", handle);
     parent.open = true;
     state.nodes[id].open = true;
 
     renderTree();
     saveState();
-    showToast("フォルダを作成しました");
+    toast("フォルダを作成しました");
   }
 
   function getProjectFile(name){
     return Object.values(state.nodes).find(node => {
       return node.type === "file" &&
-        node.name.toLowerCase() === name.toLowerCase();
+             node.name.toLowerCase() === name.toLowerCase();
     });
   }
 
@@ -1520,50 +1371,47 @@ button{
 
     if(!active){
       return {
-        html:contentOf(index),
-        css:contentOf(css),
-        js:contentOf(js)
+        html: contentOf(index),
+        css: contentOf(css),
+        js: contentOf(js)
       };
     }
 
-    const ext = extension(active.name);
+    const ext = extOf(active.name);
 
     if(ext === "html" || ext === "htm"){
       return {
-        html:contentOf(active),
-        css:contentOf(css),
-        js:contentOf(js)
+        html: contentOf(active),
+        css: contentOf(css),
+        js: contentOf(js)
       };
     }
 
     if(ext === "css"){
       return {
-        html:contentOf(index),
-        css:contentOf(active),
-        js:contentOf(js)
+        html: contentOf(index),
+        css: contentOf(active),
+        js: contentOf(js)
       };
     }
 
     if(["js","mjs","jsx","ts","tsx"].includes(ext)){
       return {
-        html:contentOf(index),
-        css:contentOf(css),
-        js:contentOf(active)
+        html: contentOf(index),
+        css: contentOf(css),
+        js: contentOf(active)
       };
     }
 
     return {
-      html:contentOf(index),
-      css:contentOf(css),
-      js:contentOf(js)
+      html: contentOf(index),
+      css: contentOf(css),
+      js: contentOf(js)
     };
   }
 
   function escapeScript(value){
-    return String(value).replace(
-      /<\/script/gi,
-      "<\\/script"
-    );
+    return String(value).replace(/<\/script/gi, "<\\/script");
   }
 
   function buildPreviewDocument(){
@@ -1573,11 +1421,11 @@ button{
 <!doctype html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<title>WebCode Studio</title>
+  <meta charset="UTF-8">
+  <title>WebCode Studio</title>
 </head>
 <body>
-<h1>WebCode Studio</h1>
+  <h1>WebCode Studio</h1>
 </body>
 </html>
 `;
@@ -1594,7 +1442,7 @@ button{
 (() => {
   const send = (type, text, extra = {}) => {
     parent.postMessage({
-      source:"webcode-preview",
+      source: "webcode-preview",
       type,
       text,
       ...extra
@@ -1603,30 +1451,28 @@ button{
 
   const stringify = value => {
     try{
-      return typeof value === "string"
-        ? value
-        : JSON.stringify(value);
+      return typeof value === "string" ? value : JSON.stringify(value);
     }catch(error){
       return String(value);
     }
   };
 
-  const originalLog = console.log;
-  const originalWarn = console.warn;
-  const originalError = console.error;
+  const oldLog = console.log;
+  const oldWarn = console.warn;
+  const oldError = console.error;
 
   console.log = (...args) => {
-    originalLog(...args);
+    oldLog(...args);
     send("console", args.map(stringify).join(" "));
   };
 
   console.warn = (...args) => {
-    originalWarn(...args);
+    oldWarn(...args);
     send("warn", args.map(stringify).join(" "));
   };
 
   console.error = (...args) => {
-    originalError(...args);
+    oldError(...args);
     send("error", args.map(stringify).join(" "));
   };
 
@@ -1636,27 +1482,21 @@ button{
 
   document.addEventListener("click", event => {
     const target = event.target;
-
     send("dom-event", "click", {
-      tag:target.tagName,
-      id:target.id || "",
-      className:typeof target.className === "string"
-        ? target.className
-        : "",
-      html:target.outerHTML || ""
+      tag: target.tagName,
+      id: target.id || "",
+      className: typeof target.className === "string" ? target.className : "",
+      html: target.outerHTML || ""
     });
   }, true);
 
   document.addEventListener("input", event => {
     const target = event.target;
-
     send("dom-event", "input", {
-      tag:target.tagName,
-      id:target.id || "",
-      className:typeof target.className === "string"
-        ? target.className
-        : "",
-      html:target.outerHTML || ""
+      tag: target.tagName,
+      id: target.id || "",
+      className: typeof target.className === "string" ? target.className : "",
+      html: target.outerHTML || ""
     });
   }, true);
 
@@ -1666,9 +1506,7 @@ button{
     }
 
     document.querySelectorAll(".webcode-selected")
-      .forEach(element => {
-        element.classList.remove("webcode-selected");
-      });
+      .forEach(el => el.classList.remove("webcode-selected"));
 
     const target = event.data.selector
       ? document.querySelector(event.data.selector)
@@ -1686,30 +1524,22 @@ try{
   ${escapeScript(source.js)}
 }catch(error){
   parent.postMessage({
-    source:"webcode-preview",
-    type:"error",
-    text:error.message
+    source: "webcode-preview",
+    type: "error",
+    text: error.message
   }, "*");
 }
 <\\/script>
 `;
 
     if(html.includes("</head>")){
-      html = html.replace(
-        "</head>",
-        "<style>" + source.css + "</style></head>"
-      );
+      html = html.replace("</head>", "<style>" + source.css + "</style></head>");
     }else{
-      html =
-        "<style>" + source.css + "</style>" +
-        html;
+      html = "<style>" + source.css + "</style>" + html;
     }
 
     if(html.includes("</body>")){
-      html = html.replace(
-        "</body>",
-        bridge + "</body>"
-      );
+      html = html.replace("</body>", bridge + "</body>");
     }else{
       html += bridge;
     }
@@ -1721,38 +1551,28 @@ try{
     clearTimeout(previewTimer);
 
     previewTimer = setTimeout(() => {
-      $("#preview-frame").srcdoc =
-        buildPreviewDocument();
-
-      $("#status-text").textContent =
-        "プレビューを更新しました";
+      document.getElementById("preview-frame").srcdoc = buildPreviewDocument();
+      document.getElementById("status-text").textContent = "プレビューを更新しました";
     }, 0);
   }
 
-  function appendConsole(message, type = "log"){
-    consoleLines.push({
-      message,
-      type
-    });
+  function appendConsole(message, type="log"){
+    consoleLines.push({ message, type });
 
-    const consoleElement = $("#console");
-    consoleElement.innerHTML = "";
+    const consoleEl = document.getElementById("console");
+    consoleEl.innerHTML = "";
 
     consoleLines.forEach(line => {
       const row = document.createElement("div");
-
-      row.className =
-        "console-line " + line.type;
-
+      row.className = "console-line " + line.type;
       row.textContent = line.message;
-      consoleElement.appendChild(row);
+      consoleEl.appendChild(row);
     });
 
-    $("#debug-output").textContent =
+    document.getElementById("debug-output").textContent =
       consoleLines.map(line => line.message).join("\n");
 
-    consoleElement.scrollTop =
-      consoleElement.scrollHeight;
+    consoleEl.scrollTop = consoleEl.scrollHeight;
   }
 
   function selectorForEvent(data){
@@ -1761,49 +1581,28 @@ try{
     }
 
     if(data.className){
-      const className =
-        data.className.trim()
-          .split(/\s+/)
-          .filter(Boolean)[0];
-
-      if(className){
-        return data.tag.toLowerCase() +
-          "." +
-          CSS.escape(className);
+      const cls = data.className.trim().split(/\s+/).filter(Boolean)[0];
+      if(cls){
+        return data.tag.toLowerCase() + "." + CSS.escape(cls);
       }
     }
 
-    return data.tag
-      ? data.tag.toLowerCase()
-      : "";
+    return data.tag ? data.tag.toLowerCase() : "";
   }
 
   function setMode(mode){
     currentMode = mode;
 
-    document.querySelectorAll("[data-mode]")
-      .forEach(button => {
-        button.classList.toggle(
-          "active",
-          button.dataset.mode === mode
-        );
-      });
+    document.querySelectorAll("[data-mode]").forEach(button => {
+      button.classList.toggle("active", button.dataset.mode === mode);
+    });
 
-    $("#preview-panel").classList.toggle(
-      "console-mode",
-      mode === "console"
-    );
+    document.getElementById("preview-panel").classList.toggle("console-mode", mode === "console");
 
-    $("#debug-panel").classList.toggle(
-      "active",
-      mode === "debug"
-    );
+    document.getElementById("debug-panel").classList.toggle("active", mode === "debug");
 
     if(mode === "inspect"){
-      appendConsole(
-        "DOMインスペクターモードを有効にしました",
-        "event"
-      );
+      appendConsole("DOMインスペクターモードを有効にしました", "event");
     }
 
     if(mode === "live"){
@@ -1812,49 +1611,32 @@ try{
   }
 
   function switchView(view, button){
-    document.querySelectorAll("[data-view]")
-      .forEach(item => {
-        item.classList.remove("active");
-      });
-
+    document.querySelectorAll("[data-view]").forEach(item => item.classList.remove("active"));
     button.classList.add("active");
 
-    $("#debug-panel").classList.remove("active");
-    $("#settings-panel").classList.remove("active");
+    document.getElementById("debug-panel").classList.remove("active");
+    document.getElementById("settings-panel").classList.remove("active");
 
-    /*
-     * ファイルアイコンを押すとエクスプローラーを開閉。
-     * 閉じた場合、エディターが広くなる。
-     */
     if(view === "explorer"){
-      $("#sidebar").classList.toggle("closed");
-
+      document.getElementById("sidebar").classList.toggle("closed");
       setTimeout(() => {
-        if(editor){
-          editor.layout();
-        }
+        if(editor) editor.layout();
       }, 250);
-
       return;
     }
 
-    /*
-     * デバッグ・設定をエディター領域に表示。
-     */
-    $("#sidebar").classList.add("closed");
+    document.getElementById("sidebar").classList.add("closed");
 
     if(view === "debug"){
-      $("#debug-panel").classList.add("active");
+      document.getElementById("debug-panel").classList.add("active");
     }
 
     if(view === "settings"){
-      $("#settings-panel").classList.add("active");
+      document.getElementById("settings-panel").classList.add("active");
     }
 
     setTimeout(() => {
-      if(editor){
-        editor.layout();
-      }
+      if(editor) editor.layout();
     }, 250);
   }
 
@@ -1863,105 +1645,49 @@ try{
       return;
     }
 
-    monaco.languages.registerCompletionItemProvider(
-      "html",
-      {
-        triggerCharacters:["<"," "],
+    monaco.languages.registerCompletionItemProvider("html", {
+      triggerCharacters:[" "],
 
-        provideCompletionItems(model, position){
-          const line =
-            model.getLineContent(position.lineNumber);
+      provideCompletionItems(model, position){
+        const line = model.getLineContent(position.lineNumber);
+        const before = line.slice(0, position.column - 1);
 
-          const before =
-            line.slice(0, position.column - 1);
+        const match = before.match(/<a\\s+([a-zA-Z-]*)$/i);
 
-          const word =
-            model.getWordUntilPosition(position);
-
-          const range = {
-            startLineNumber:position.lineNumber,
-            endLineNumber:position.lineNumber,
-            startColumn:word.startColumn,
-            endColumn:word.endColumn
-          };
-
-          const suggestions = [];
-
-          if(
-            before.endsWith("<") ||
-            /<[\w-]*$/.test(before)
-          ){
-            const tags = [
-              "html","head","body","title","meta","link",
-              "style","script","header","nav","main",
-              "section","article","aside","footer","div",
-              "span","h1","h2","h3","h4","h5","h6",
-              "p","a","img","button","form","label",
-              "input","textarea","select","option","ul",
-              "ol","li","table","thead","tbody","tr",
-              "th","td","br","hr"
-            ];
-
-            tags.forEach(tag => {
-              const voidTag = VOID_TAGS.includes(tag);
-
-              suggestions.push({
-                label:tag,
-                kind:monaco.languages.CompletionItemKind.Keyword,
-                detail:"HTMLタグ",
-                insertText:voidTag
-                  ? tag + ">"
-                  : tag + ">$0</" + tag + ">",
-                insertTextRules:voidTag
-                  ? undefined
-                  : monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-                range
-              });
-            });
-          }
-
-          /*
-           * <a h の場合 href を先頭に追加。
-           */
-          if(/<a\s+h[\w-]*$/i.test(before)){
-            suggestions.unshift({
-              label:"href",
-              kind:monaco.languages.CompletionItemKind.Property,
-              detail:"リンク先",
-              insertText:'href="$1"',
-              insertTextRules:
-                monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-              range
-            });
-          }
-
-          if(/<[\w-]+\s+[\w-]*$/.test(before)){
-            [
-              "id","class","style","title","href","src",
-              "alt","target","rel","type","name","value",
-              "placeholder","role","aria-label","aria-hidden",
-              "data-*","disabled","required","checked","selected"
-            ].forEach(attribute => {
-              suggestions.push({
-                label:attribute,
-                kind:monaco.languages.CompletionItemKind.Property,
-                detail:"HTML属性",
-                insertText:attribute === "data-*"
-                  ? 'data-$1="$2"'
-                  : attribute + '="$1"',
-                insertTextRules:
-                  monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-                range
-              });
-            });
-          }
-
-          return {
-            suggestions
-          };
+        if(!match){
+          return { suggestions: [] };
         }
+
+        const prefix = match[1].toLowerCase();
+
+        if(!"href".startsWith(prefix)){
+          return { suggestions: [] };
+        }
+
+        const word = model.getWordUntilPosition(position);
+
+        const range = {
+          startLineNumber: position.lineNumber,
+          endLineNumber: position.lineNumber,
+          startColumn: word.startColumn,
+          endColumn: word.endColumn
+        };
+
+        return {
+          suggestions: [{
+            label: "href",
+            kind: monaco.languages.CompletionItemKind.Property,
+            detail: "リンク先",
+            documentation: "a要素のリンク先を指定します。",
+            insertText: 'href="$1"',
+            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+            range,
+            filterText: "href",
+            sortText: "000"
+          }]
+        };
       }
-    );
+    });
   }
 
   function setupAutoCloseTag(){
@@ -1975,113 +1701,76 @@ try{
       }
 
       const model = editor.getModel();
-
       if(!model || model.getLanguageId() !== "html"){
         return;
       }
 
       const position = editor.getPosition();
-      const line =
-        model.getLineContent(position.lineNumber);
+      const line = model.getLineContent(position.lineNumber);
+      const before = line.slice(0, position.column - 1);
+      const after = line.slice(position.column - 1);
 
-      const before =
-        line.slice(0, position.column - 1);
-
-      const after =
-        line.slice(position.column - 1);
-
-      const match = before.match(
-        /<([a-zA-Z][a-zA-Z0-9-]*)((?:\s[^<>]*)?)>$/
-      );
-
+      const match = before.match(/<([a-zA-Z][a-zA-Z0-9-]*)((?:\\s[^<>]*)?)>$/);
       if(!match){
         return;
       }
 
       const tag = match[1];
-      const attributes = match[2] || "";
+      const attrs = match[2] || "";
 
-      if(
-        VOID_TAGS.includes(tag.toLowerCase()) ||
-        /\/\s*$/.test(attributes)
-      ){
+      if(VOID_TAGS.includes(tag.toLowerCase()) || /\\/\\s*$/.test(attrs)){
         return;
       }
 
       const closeTag = "</" + tag + ">";
-
-      if(
-        new RegExp("^" + closeTag, "i").test(after)
-      ){
+      if(new RegExp("^" + closeTag, "i").test(after)){
         return;
       }
 
-      editor.executeEdits(
-        "auto-close-tag",
-        [{
-          range:new monaco.Range(
-            position.lineNumber,
-            position.column,
-            position.lineNumber,
-            position.column
-          ),
-          text:closeTag,
-          forceMoveMarkers:true
-        }]
-      );
+      editor.executeEdits("auto-close-tag", [{
+        range: new monaco.Range(position.lineNumber, position.column, position.lineNumber, position.column),
+        text: closeTag,
+        forceMoveMarkers: true
+      }]);
 
       editor.setPosition(position);
     });
   }
 
   function setupResizers(){
-    const main = $("#main");
-    const sidebar = $("#sidebar");
-    const preview = $("#preview-panel");
-    const left = $("#left-resizer");
-    const right = $("#right-resizer");
+    const main = document.getElementById("main");
+    const sidebar = document.getElementById("sidebar");
+    const preview = document.getElementById("preview-panel");
+    const left = document.getElementById("left-resizer");
+    const right = document.getElementById("right-resizer");
 
-    let draggingLeft = false;
-    let draggingRight = false;
+    let leftDragging = false;
+    let rightDragging = false;
 
     left.addEventListener("mousedown", () => {
-      draggingLeft = true;
+      leftDragging = true;
       left.classList.add("dragging");
     });
 
     right.addEventListener("mousedown", () => {
-      draggingRight = true;
+      rightDragging = true;
       right.classList.add("dragging");
     });
 
     window.addEventListener("mousemove", event => {
-      if(!draggingLeft && !draggingRight){
+      if(!leftDragging && !rightDragging){
         return;
       }
 
       const rect = main.getBoundingClientRect();
 
-      if(draggingLeft){
-        const width = Math.max(
-          160,
-          Math.min(
-            380,
-            event.clientX - rect.left - 52
-          )
-        );
-
+      if(leftDragging){
+        const width = Math.max(160, Math.min(380, event.clientX - rect.left - 52));
         sidebar.style.width = width + "px";
       }
 
-      if(draggingRight){
-        const width = Math.max(
-          280,
-          Math.min(
-            rect.width * .65,
-            rect.right - event.clientX
-          )
-        );
-
+      if(rightDragging){
+        const width = Math.max(280, Math.min(rect.width * .65, rect.right - event.clientX));
         preview.style.width = width + "px";
       }
 
@@ -2091,9 +1780,8 @@ try{
     });
 
     window.addEventListener("mouseup", () => {
-      draggingLeft = false;
-      draggingRight = false;
-
+      leftDragging = false;
+      rightDragging = false;
       left.classList.remove("dragging");
       right.classList.remove("dragging");
 
@@ -2105,45 +1793,34 @@ try{
 
   async function openFolder(){
     if(!window.showDirectoryPicker){
-      showToast(
-        "ChromeまたはEdgeのHTTPS/localhostで開いてください"
-      );
+      toast("ChromeまたはEdgeのHTTPS/localhostで開いてください");
       return;
     }
 
     try{
-      const directory =
-        await window.showDirectoryPicker({
-          mode:"readwrite"
-        });
-
-      const permission =
-        await directory.requestPermission({
-          mode:"readwrite"
-        });
+      const directory = await window.showDirectoryPicker({ mode: "readwrite" });
+      const permission = await directory.requestPermission({ mode: "readwrite" });
 
       if(permission !== "granted"){
-        showToast("書き込み権限が必要です");
+        toast("書き込み権限が必要です");
         return;
       }
 
       runtime.rootHandle = directory;
-      runtime.handles = {
-        root:directory
-      };
+      runtime.handles = { root: directory };
 
       state = {
-        root:"root",
-        active:null,
-        tabs:[],
-        nodes:{
-          root:{
-            id:"root",
-            type:"folder",
-            name:directory.name,
-            parent:null,
-            children:[],
-            open:true
+        root: "root",
+        active: null,
+        tabs: [],
+        nodes: {
+          root: {
+            id: "root",
+            type: "folder",
+            name: directory.name,
+            parent: null,
+            children: [],
+            open: true
           }
         }
       };
@@ -2160,27 +1837,13 @@ try{
           }
 
           if(entry.kind === "directory"){
-            const folderId = addNode(
-              parentId,
-              entry.name,
-              "",
-              "folder",
-              entry
-            );
-
+            const folderId = addNode(parentId, entry.name, "", "folder", entry);
             state.nodes[folderId].open = true;
 
             await readDirectory(entry, folderId);
           }else{
             const file = await entry.getFile();
-
-            const fileId = addNode(
-              parentId,
-              entry.name,
-              await file.text(),
-              "file",
-              entry
-            );
+            const fileId = addNode(parentId, entry.name, await file.text(), "file", entry);
 
             if(!state.active){
               state.active = fileId;
@@ -2198,15 +1861,15 @@ try{
         openFile(state.active);
       }else{
         editor.setModel(null);
-        $("#empty-state").style.display = "flex";
+        document.getElementById("empty-state").style.display = "flex";
       }
 
       saveState();
-      showToast("フォルダを開きました");
+      toast("フォルダを開きました");
     }catch(error){
       if(error.name !== "AbortError"){
         console.error(error);
-        showToast("フォルダを開けませんでした");
+        toast("フォルダを開けませんでした");
       }
     }
   }
@@ -2216,10 +1879,7 @@ try{
       return;
     }
 
-    const htmlId = addNode(
-      state.root,
-      "index.html",
-      `<!doctype html>
+    const htmlId = addNode(state.root, "index.html", `<!doctype html>
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
@@ -2230,29 +1890,20 @@ try{
   <p>長いコードはエディターの幅に合わせて折り返されます。</p>
   <button id="hello">クリックしてください</button>
 </body>
-</html>`
-    );
+</html>`);
 
-    addNode(
-      state.root,
-      "style.css",
-      `body {
+    addNode(state.root, "style.css", `body {
   font-family: sans-serif;
   padding: 2rem;
 }
 
 button {
   padding: .7rem 1rem;
-}`
-    );
+}`);
 
-    addNode(
-      state.root,
-      "script.js",
-      `document.querySelector("#hello")?.addEventListener("click", () => {
+    addNode(state.root, "script.js", `document.querySelector("#hello")?.addEventListener("click", () => {
   console.log("ボタンがクリックされました");
-});`
-    );
+});`);
 
     state.nodes.root.open = true;
     openFile(htmlId);
@@ -2260,349 +1911,234 @@ button {
 
   function setupMonaco(){
     if(!window.require){
-      showToast("Monaco Editorを読み込めませんでした");
+      toast("Monaco Editorを読み込めませんでした");
       return;
     }
 
     require.config({
-      paths:{
-        vs:"https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.53.0/min/vs"
+      paths: {
+        vs: "https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.53.0/min/vs"
       }
     });
 
-    require(
-      ["vs/editor/editor.main"],
-      () => {
-        editor = monaco.editor.create(
-          $("#monaco"),
-          {
-            theme:"vs-dark",
-            automaticLayout:true,
+    require(["vs/editor/editor.main"], () => {
+      editor = monaco.editor.create(document.getElementById("monaco"), {
+        theme: "vs-dark",
+        automaticLayout: true,
 
-            /*
-             * Monaco公式の折り返し設定。
-             * wordWrapColumn:0 は表示幅で折り返す設定。
-             */
-            wordWrap:"on",
-            wrappingStrategy:"advanced",
-            wrappingIndent:"same",
-            wordWrapColumn:0,
+        wordWrap: "on",
+        wrappingStrategy: "advanced",
+        wrappingIndent: "same",
+        wordWrapColumn: 0,
 
-            scrollBeyondLastLine:false,
-            minimap:{
-              enabled:false
-            },
-            fontSize:14,
-            lineNumbers:"on",
-            padding:{
-              top:8
-            },
-            quickSuggestions:{
-              other:true,
-              comments:true,
-              strings:true
-            },
-            suggestOnTriggerCharacters:true
+        scrollBeyondLastLine: false,
+        minimap: { enabled: false },
+        fontSize: 14,
+        lineNumbers: "on",
+        padding: { top: 8 },
+
+        suggest: {
+          showWords: false,
+          showSnippets: true,
+          filterGraceful: false,
+          localityBonus: false
+        },
+
+        quickSuggestions: {
+          other: false,
+          comments: false,
+          strings: false
+        },
+
+        suggestOnTriggerCharacters: true
+      });
+
+      setupHtmlCompletion();
+      setupAutoCloseTag();
+      setupResizers();
+
+      const observer = new ResizeObserver(() => {
+        if(editor) editor.layout();
+      });
+
+      observer.observe(document.getElementById("monaco"));
+
+      editor.onDidChangeCursorPosition(event => {
+        document.getElementById("cursor-position").textContent =
+          "Ln " + event.position.lineNumber + ", Col " + event.position.column;
+      });
+
+      restoreState();
+
+      if(!state.nodes[state.root]){
+        state = {
+          root: "root",
+          active: null,
+          tabs: [],
+          nodes: {
+            root: {
+              id: "root",
+              type: "folder",
+              name: "MY-PROJECT",
+              parent: null,
+              children: [],
+              open: true
+            }
           }
-        );
-
-        setupHtmlCompletion();
-        setupAutoCloseTag();
-        setupResizers();
-
-        const observer =
-          new ResizeObserver(() => {
-            if(editor){
-              editor.layout();
-            }
-          });
-
-        observer.observe($("#monaco"));
-
-        editor.onDidChangeCursorPosition(event => {
-          $("#cursor-position").textContent =
-            "Ln " +
-            event.position.lineNumber +
-            ", Col " +
-            event.position.column;
-        });
-
-        restoreState();
-
-        if(!state.nodes[state.root]){
-          state = {
-            root:"root",
-            active:null,
-            tabs:[],
-            nodes:{
-              root:{
-                id:"root",
-                type:"folder",
-                name:"MY-PROJECT",
-                parent:null,
-                children:[],
-                open:true
-              }
-            }
-          };
-        }
-
-        createDefaultProject();
-        renderTree();
-        renderTabs();
-
-        if(state.active){
-          openFile(state.active);
-        }
-
-        renderPreview();
-      },
-      error => {
-        console.error(error);
-        showToast("Monaco Editorの読み込みに失敗しました");
+        };
       }
-    );
+
+      createDefaultProject();
+      renderTree();
+      renderTabs();
+
+      if(state.active){
+        openFile(state.active);
+      }
+
+      renderPreview();
+    }, error => {
+      console.error(error);
+      toast("Monaco Editorの読み込みに失敗しました");
+    });
   }
 
-  /*
-   * 左のアクティビティバー
-   */
   document.addEventListener("click", event => {
-    const viewButton =
-      event.target.closest("[data-view]");
-
+    const viewButton = event.target.closest("[data-view]");
     if(viewButton){
-      switchView(
-        viewButton.dataset.view,
-        viewButton
-      );
+      switchView(viewButton.dataset.view, viewButton);
     }
 
-    const modeButton =
-      event.target.closest("[data-mode]");
-
+    const modeButton = event.target.closest("[data-mode]");
     if(modeButton){
       setMode(modeButton.dataset.mode);
     }
   });
 
-  /*
-   * 新規ファイル
-   */
-  $("#new-file-button").addEventListener(
-    "click",
-    () => {
-      openModal(
-        "新しいファイル",
-        "untitled.html",
-        async name => {
-          try{
-            await createFile(name.trim());
-          }catch(error){
-            console.error(error);
-            showToast("ファイルを作成できませんでした");
-          }
-        }
-      );
-    }
-  );
-
-  /*
-   * 新規フォルダ
-   */
-  $("#new-folder-button").addEventListener(
-    "click",
-    () => {
-      openModal(
-        "新しいフォルダ",
-        "new-folder",
-        async name => {
-          try{
-            await createFolder(name.trim());
-          }catch(error){
-            console.error(error);
-            showToast("フォルダを作成できませんでした");
-          }
-        }
-      );
-    }
-  );
-
-  $("#empty-new-file").addEventListener(
-    "click",
-    () => {
-      $("#new-file-button").click();
-    }
-  );
-
-  $("#open-folder-button").addEventListener(
-    "click",
-    openFolder
-  );
-
-  $("#modal-cancel").addEventListener(
-    "click",
-    closeModal
-  );
-
-  $("#modal-ok").addEventListener(
-    "click",
-    () => {
-      const value =
-        $("#modal-input").value.trim();
-
-      if(!value){
-        showToast("名前を入力してください");
-        return;
+  document.getElementById("new-file-button").addEventListener("click", () => {
+    openModal("新しいファイル", "untitled.html", async name => {
+      try{
+        await createFile(name.trim());
+      }catch(error){
+        console.error(error);
+        toast("ファイルを作成できませんでした");
       }
+    });
+  });
 
-      const callback = modalCallback;
+  document.getElementById("new-folder-button").addEventListener("click", () => {
+    openModal("新しいフォルダ", "new-folder", async name => {
+      try{
+        await createFolder(name.trim());
+      }catch(error){
+        console.error(error);
+        toast("フォルダを作成できませんでした");
+      }
+    });
+  });
 
+  document.getElementById("empty-new-file").addEventListener("click", () => {
+    document.getElementById("new-file-button").click();
+  });
+
+  document.getElementById("open-folder-button").addEventListener("click", openFolder);
+
+  document.getElementById("modal-cancel").addEventListener("click", closeModal);
+
+  document.getElementById("modal-ok").addEventListener("click", () => {
+    const value = document.getElementById("modal-input").value.trim();
+
+    if(!value){
+      toast("名前を入力してください");
+      return;
+    }
+
+    const callback = modalCallback;
+    closeModal();
+
+    if(callback){
+      callback(value);
+    }
+  });
+
+  document.getElementById("modal-input").addEventListener("keydown", event => {
+    if(event.key === "Enter"){
+      document.getElementById("modal-ok").click();
+    }
+
+    if(event.key === "Escape"){
       closeModal();
-
-      if(callback){
-        callback(value);
-      }
     }
-  );
+  });
 
-  $("#modal-input").addEventListener(
-    "keydown",
-    event => {
-      if(event.key === "Enter"){
-        $("#modal-ok").click();
-      }
+  document.getElementById("run-preview-button").addEventListener("click", () => {
+    const win = window.open("about:blank", "_blank", "width=1100,height=760");
 
-      if(event.key === "Escape"){
-        closeModal();
-      }
+    if(!win){
+      toast("ポップアップがブロックされています");
+      return;
     }
-  );
 
-  /*
-   * 三角ボタン:
-   * ユーザー操作中に window.open() を実行するため、
-   * ポップアップブロックされにくい構成。
-   */
-  $("#run-preview-button").addEventListener(
-    "click",
-    () => {
-      const previewWindow =
-        window.open(
-          "about:blank",
-          "_blank",
-          "width=1100,height=760"
-        );
+    win.document.open();
+    win.document.write(buildPreviewDocument());
+    win.document.close();
 
-      if(!previewWindow){
-        showToast("ポップアップがブロックされています");
-        return;
-      }
+    const active = state.nodes[state.active];
+    document.getElementById("debug-target").textContent = active ? active.name : "現在のファイル";
 
-      previewWindow.document.open();
-      previewWindow.document.write(
-        buildPreviewDocument()
-      );
-      previewWindow.document.close();
+    appendConsole("プレビューを別ウィンドウで実行しました", "log");
+    toast("別ウィンドウで実行しました");
+  });
 
-      const active =
-        state.nodes[state.active];
+  document.getElementById("open-preview-button").addEventListener("click", () => {
+    const win = window.open("about:blank", "_blank", "width=1100,height=760");
 
-      $("#debug-target").textContent =
-        active ? active.name : "現在のファイル";
-
-      appendConsole(
-        "プレビューを別ウィンドウで実行しました",
-        "log"
-      );
-
-      showToast("別ウィンドウで実行しました");
+    if(!win){
+      toast("ポップアップがブロックされています");
+      return;
     }
-  );
 
-  $("#open-preview-button").addEventListener(
-    "click",
-    () => {
-      const previewWindow =
-        window.open(
-          "about:blank",
-          "_blank",
-          "width=1100,height=760"
-        );
+    win.document.open();
+    win.document.write(buildPreviewDocument());
+    win.document.close();
+  });
 
-      if(!previewWindow){
-        showToast("ポップアップがブロックされています");
-        return;
-      }
+  document.getElementById("refresh-button").addEventListener("click", () => {
+    renderPreview();
+    appendConsole("プレビューを再読み込みしました", "log");
+  });
 
-      previewWindow.document.open();
-      previewWindow.document.write(
-        buildPreviewDocument()
-      );
-      previewWindow.document.close();
-    }
-  );
+  document.getElementById("wrap-toggle").addEventListener("click", () => {
+    wrapEnabled = !wrapEnabled;
 
-  $("#refresh-button").addEventListener(
-    "click",
-    () => {
-      renderPreview();
+    editor.updateOptions({
+      wordWrap: wrapEnabled ? "on" : "off",
+      wrappingStrategy: "advanced",
+      wordWrapColumn: 0
+    });
 
-      appendConsole(
-        "プレビューを再読み込みしました",
-        "log"
-      );
-    }
-  );
+    document.getElementById("wrap-toggle").textContent = wrapEnabled ? "折り返し: ON" : "折り返し: OFF";
+    document.getElementById("wrap-toggle").classList.toggle("off", !wrapEnabled);
+  });
 
-  $("#wrap-toggle").addEventListener(
-    "click",
-    () => {
-      wrapEnabled = !wrapEnabled;
-
+  document.getElementById("font-size").addEventListener("change", event => {
+    if(editor){
       editor.updateOptions({
-        wordWrap:wrapEnabled ? "on" : "off",
-        wrappingStrategy:"advanced",
-        wordWrapColumn:0
+        fontSize: Number(event.target.value)
       });
-
-      $("#wrap-toggle").textContent =
-        wrapEnabled
-          ? "折り返し: ON"
-          : "折り返し: OFF";
-
-      $("#wrap-toggle").classList.toggle(
-        "off",
-        !wrapEnabled
-      );
     }
-  );
+  });
 
-  $("#font-size").addEventListener(
-    "change",
-    event => {
-      if(editor){
-        editor.updateOptions({
-          fontSize:Number(event.target.value)
-        });
-      }
+  document.getElementById("font-family").addEventListener("change", event => {
+    if(editor){
+      editor.updateOptions({
+        fontFamily: event.target.value
+      });
     }
-  );
-
-  $("#font-family").addEventListener(
-    "change",
-    event => {
-      if(editor){
-        editor.updateOptions({
-          fontFamily:event.target.value
-        });
-      }
-    }
-  );
+  });
 
   window.addEventListener("message", event => {
     const data = event.data;
-
     if(!data || data.source !== "webcode-preview"){
       return;
     }
@@ -2620,25 +2156,19 @@ button {
     }
 
     if(data.type === "dom-event"){
-      $("#event-output").textContent =
+      document.getElementById("event-output").textContent =
         data.text + ": " + data.tag;
 
-      $("#dom-output").textContent =
+      document.getElementById("dom-output").textContent =
         data.html || "DOM情報がありません";
 
-      appendConsole(
-        data.tag + " イベント: " + data.text,
-        "event"
-      );
+      appendConsole(data.tag + " イベント: " + data.text, "event");
 
       if(currentMode === "inspect"){
-        $("#preview-frame").contentWindow.postMessage(
-          {
-            type:"inspect",
-            selector:selectorForEvent(data)
-          },
-          "*"
-        );
+        document.getElementById("preview-frame").contentWindow.postMessage({
+          type: "inspect",
+          selector: selectorForEvent(data)
+        }, "*");
       }
     }
   });
