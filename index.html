@@ -1,620 +1,622 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>WebCode Studio</title>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
 <style>
-:root{
-  --title:#3c3c3c;
-  --sidebar:#252526;
-  --editor:#1e1e1e;
-  --tabs:#2d2d2d;
-  --status:#007acc;
-  --text:#cccccc;
-  --muted:#858585;
-  --line:#181818;
-  --hover:#2a2d2e;
-  --accent:#0a84ff;
-  --green:#4ec9b0;
-  --red:#f14c4c;
-  --yellow:#c09553;
-}
-
-*{ box-sizing:border-box; }
-
-html,body{
-  width:100%;
-  height:100%;
-  margin:0;
-  overflow:hidden;
-  color:var(--text);
-  background:var(--editor);
-  font-family:"Segoe UI","Yu Gothic UI",sans-serif;
-  font-size:13px;
-}
-
-button,input,select{ font:inherit; }
-button{ cursor:pointer; }
-
-#app{
-  width:100%;
-  height:100vh;
-  display:flex;
-  flex-direction:column;
-}
-
-#titlebar{
-  height:32px;
-  flex-shrink:0;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  color:#eee;
-  background:var(--title);
-  border-bottom:1px solid var(--line);
-  font-size:12px;
-  user-select:none;
-}
-
-#main{
-  min-height:0;
-  flex:1;
-  display:flex;
-}
-
-#activitybar{
-  width:52px;
-  flex-shrink:0;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:8px;
-  padding-top:8px;
-  background:#181818;
-  border-right:1px solid var(--line);
-}
-
-.activity-button{
-  position:relative;
-  width:38px;
-  height:38px;
-  color:#858585;
-  background:transparent;
-  border:0;
-  border-radius:4px;
-  font-size:18px;
-}
-
-.activity-button:hover,
-.activity-button.active{
-  color:#fff;
-  background:#303030;
-}
-
-.activity-button.active::before{
-  content:"";
-  position:absolute;
-  left:-7px;
-  top:4px;
-  height:30px;
-  border-left:2px solid var(--accent);
-}
-
-#sidebar{
-  width:240px;
-  min-width:160px;
-  flex-shrink:0;
-  display:flex;
-  flex-direction:column;
-  overflow:hidden;
-  background:var(--sidebar);
-  border-right:1px solid var(--line);
-  transition:width .2s ease, opacity .2s ease, transform .2s ease;
-}
-
-#sidebar.closed{
-  width:0 !important;
-  min-width:0 !important;
-  opacity:0;
-  transform:translateX(-20px);
-  pointer-events:none;
-}
-
-#sidebar-header{
-  height:42px;
-  flex-shrink:0;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:0 9px 0 14px;
-  color:#bbb;
-  border-bottom:1px solid var(--line);
-  font-size:11px;
-  text-transform:uppercase;
-  user-select:none;
-}
-
-.sidebar-actions{
-  display:flex;
-  gap:2px;
-}
-
-.icon-button{
-  width:28px;
-  height:28px;
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  padding:0;
-  color:#bbb;
-  background:transparent;
-  border:0;
-  border-radius:4px;
-}
-
-.icon-button:hover{
-  color:#fff;
-  background:var(--hover);
-}
-
-#tree{
-  min-height:0;
-  flex:1;
-  overflow:auto;
-  padding:4px;
-}
-
-.tree-row{
-  min-height:28px;
-  display:flex;
-  align-items:center;
-  gap:6px;
-  padding:4px 6px;
-  border-radius:3px;
-  color:#ccc;
-  cursor:pointer;
-  white-space:nowrap;
-  user-select:none;
-}
-
-.tree-row:hover{
-  background:var(--hover);
-}
-
-.tree-row.active{
-  background:#37373d;
-  color:#fff;
-}
-
-.tree-row > i{
-  width:15px;
-  text-align:center;
-  color:#75beff;
-}
-
-.tree-row.folder > .folder-icon{
-  color:var(--yellow);
-}
-
-.tree-row .arrow{
-  width:10px;
-  color:#999;
-  font-size:9px;
-  transition:transform .15s ease;
-}
-
-.tree-row .arrow.open{
-  transform:rotate(90deg);
-}
-
-.tree-name{
-  min-width:0;
-  flex:1;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
-
-.delete-button{
-  display:none;
-  width:21px;
-  height:21px;
-  align-items:center;
-  justify-content:center;
-  padding:0;
-  color:#aaa;
-  background:transparent;
-  border:0;
-  border-radius:3px;
-}
-
-.tree-row:hover .delete-button{
-  display:inline-flex;
-}
-
-.delete-button:hover{
-  color:#fff;
-  background:var(--red);
-}
-
-.resizer{
-  width:4px;
-  flex-shrink:0;
-  cursor:col-resize;
-  background:transparent;
-}
-
-.resizer:hover,
-.resizer.dragging{
-  background:var(--accent);
-}
-
-#editor-area{
-  position:relative;
-  min-width:0;
-  min-height:0;
-  flex:1;
-  display:flex;
-  flex-direction:column;
-  overflow:hidden;
-  background:var(--editor);
-}
-
-#tabs{
-  height:36px;
-  min-height:36px;
-  display:flex;
-  overflow:auto;
-  background:var(--tabs);
-  border-bottom:1px solid var(--line);
-  user-select:none;
-}
-
-.tab{
-  min-width:130px;
-  max-width:220px;
-  height:100%;
-  display:flex;
-  align-items:center;
-  gap:7px;
-  padding:0 8px 0 13px;
-  color:#999;
-  border-right:1px solid var(--line);
-  cursor:pointer;
-  white-space:nowrap;
-}
-
-.tab.active{
-  color:#fff;
-  background:var(--editor);
-  border-top:1px solid var(--accent);
-}
-
-.tab-name{
-  min-width:0;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
-
-.tab-close{
-  margin-left:auto;
-  width:20px;
-  height:22px;
-  padding:0;
-  color:#999;
-  background:transparent;
-  border:0;
-  border-radius:3px;
-}
-
-.tab-close:hover{
-  color:#fff;
-  background:#484848;
-}
-
-#editor-container{
-  position:relative;
-  min-width:0;
-  min-height:0;
-  flex:1;
-  width:100%;
-  height:100%;
-  overflow:hidden;
-}
-
-#monaco{
-  position:absolute;
-  inset:0;
-  width:100%;
-  height:100%;
-}
-
-#empty-state{
-  position:absolute;
-  inset:0;
-  z-index:2;
-  display:none;
-  align-items:center;
-  justify-content:center;
-  flex-direction:column;
-  gap:12px;
-  color:var(--muted);
-  background:var(--editor);
-}
-
-.panel{
-  position:absolute;
-  inset:36px 0 0;
-  z-index:5;
-  display:none;
-  overflow:auto;
-  padding:18px;
-  background:var(--editor);
-}
-
-.panel.active{
-  display:block;
-}
-
-.panel-card{
-  margin-bottom:12px;
-  padding:14px;
-  color:#ccc;
-  background:#252526;
-  border:1px solid #3a3a3a;
-  border-radius:5px;
-}
-
-.panel-card strong{
-  display:block;
-  margin-bottom:8px;
-  color:#fff;
-}
-
-.panel-card pre{
-  margin:0;
-  color:var(--green);
-  white-space:pre-wrap;
-  overflow-wrap:anywhere;
-}
-
-.setting-row{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:12px 0;
-  border-bottom:1px solid #3a3a3a;
-}
-
-.setting-row input,
-.setting-row select{
-  padding:5px 7px;
-  color:#fff;
-  background:#333;
-  border:1px solid #555;
-  border-radius:3px;
-}
-
-#preview-panel{
-  width:40%;
-  min-width:280px;
-  min-height:0;
-  display:flex;
-  flex-direction:column;
-  flex-shrink:0;
-  background:#fff;
-  border-left:1px solid var(--line);
-}
-
-#preview-header{
-  height:38px;
-  min-height:38px;
-  display:flex;
-  align-items:center;
-  gap:4px;
-  padding:0 8px;
-  color:#ccc;
-  background:var(--tabs);
-  border-bottom:1px solid var(--line);
-  user-select:none;
-}
-
-.preview-title{
-  margin-right:auto;
-  font-size:12px;
-}
-
-.preview-button{
-  height:28px;
-  padding:0 8px;
-  color:#999;
-  background:transparent;
-  border:0;
-  border-bottom:2px solid transparent;
-}
-
-.preview-button:hover,
-.preview-button.active{
-  color:var(--green);
-  border-bottom-color:var(--green);
-}
-
-#preview-frame{
-  width:100%;
-  min-height:0;
-  flex:1;
-  border:0;
-  background:#fff;
-}
-
-#console{
-  display:none;
-  min-height:0;
-  flex:1;
-  overflow:auto;
-  padding:12px;
-  color:#ddd;
-  background:#101318;
-  font:12px Consolas,monospace;
-  white-space:pre-wrap;
-  overflow-wrap:anywhere;
-}
-
-#preview-panel.console-mode #preview-frame{
-  display:none;
-}
-
-#preview-panel.console-mode #console{
-  display:block;
-}
-
-.console-line{
-  margin-bottom:7px;
-  white-space:pre-wrap;
-  overflow-wrap:anywhere;
-}
-
-.console-line.log{
-  color:var(--green);
-}
-
-.console-line.error{
-  color:#ff6b81;
-}
-
-.console-line.event{
-  color:#4fc1e9;
-}
-
-#statusbar{
-  height:23px;
-  min-height:23px;
-  display:flex;
-  align-items:center;
-  gap:18px;
-  padding:0 10px;
-  color:#fff;
-  background:var(--status);
-  font-size:11px;
-  user-select:none;
-}
-
-#status-right{
-  display:flex;
-  align-items:center;
-  gap:15px;
-  margin-left:auto;
-}
-
-#wrap-toggle{
-  padding:2px 7px;
-  border-radius:3px;
-  cursor:pointer;
-  background:rgba(255,255,255,.15);
-}
-
-#wrap-toggle.off{
-  background:rgba(0,0,0,.25);
-}
-
-#modal{
-  position:fixed;
-  inset:0;
-  z-index:20;
-  display:none;
-  place-items:center;
-  background:rgba(0,0,0,.55);
-}
-
-#modal.show{
-  display:grid;
-}
-
-.modal-box{
-  width:340px;
-  padding:20px;
-  color:#ddd;
-  background:#252526;
-  border:1px solid #444;
-  border-radius:6px;
-  box-shadow:0 18px 50px rgba(0,0,0,.5);
-}
-
-.modal-box h3{
-  margin:0 0 12px;
-  font-size:15px;
-}
-
-#modal-input{
-  width:100%;
-  padding:9px;
-  color:#fff;
-  background:#1e1e1e;
-  border:1px solid #555;
-  border-radius:4px;
-  outline:none;
-}
-
-#modal-input:focus{
-  border-color:var(--accent);
-}
-
-.modal-buttons{
-  display:flex;
-  justify-content:flex-end;
-  gap:8px;
-  margin-top:15px;
-}
-
-.modal-button{
-  padding:7px 14px;
-  color:#ddd;
-  background:#3a3d41;
-  border:1px solid #555;
-  border-radius:4px;
-}
-
-.modal-button.primary{
-  color:#fff;
-  background:var(--accent);
-  border-color:var(--accent);
-}
-
-#toast{
-  position:fixed;
-  right:20px;
-  bottom:35px;
-  z-index:30;
-  padding:10px 15px;
-  color:#fff;
-  background:#303b4e;
-  border-radius:5px;
-  opacity:0;
-  transform:translateY(8px);
-  transition:.2s ease;
-  pointer-events:none;
-}
-
-#toast.show{
-  opacity:1;
-  transform:translateY(0);
-}
+  :root{
+    --title:#3c3c3c;
+    --sidebar:#252526;
+    --editor:#1e1e1e;
+    --tabs:#2d2d2d;
+    --status:#007acc;
+    --text:#cccccc;
+    --muted:#858585;
+    --line:#181818;
+    --hover:#2a2d2e;
+    --accent:#0a84ff;
+    --green:#4ec9b0;
+    --yellow:#c09553;
+    --red:#f14c4c;
+  }
+
+  *{ box-sizing:border-box; }
+
+  html,body{
+    width:100%;
+    height:100%;
+    margin:0;
+    overflow:hidden;
+    color:var(--text);
+    background:var(--editor);
+    font-family:"Segoe UI","Yu Gothic UI",sans-serif;
+    font-size:13px;
+  }
+
+  button,input,select{
+    font:inherit;
+  }
+
+  button{
+    cursor:pointer;
+  }
+
+  #app{
+    width:100%;
+    height:100vh;
+    display:flex;
+    flex-direction:column;
+  }
+
+  #titlebar{
+    height:32px;
+    flex-shrink:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#eee;
+    background:var(--title);
+    border-bottom:1px solid var(--line);
+    font-size:12px;
+    user-select:none;
+  }
+
+  #main{
+    min-height:0;
+    flex:1;
+    display:flex;
+  }
+
+  #activitybar{
+    width:52px;
+    flex-shrink:0;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:8px;
+    padding-top:8px;
+    background:#181818;
+    border-right:1px solid var(--line);
+  }
+
+  .activity-button{
+    position:relative;
+    width:38px;
+    height:38px;
+    color:#858585;
+    background:transparent;
+    border:0;
+    border-radius:4px;
+    font-size:18px;
+  }
+
+  .activity-button:hover,
+  .activity-button.active{
+    color:#fff;
+    background:#303030;
+  }
+
+  .activity-button.active::before{
+    content:"";
+    position:absolute;
+    left:-7px;
+    top:4px;
+    height:30px;
+    border-left:2px solid var(--accent);
+  }
+
+  #sidebar{
+    width:240px;
+    min-width:160px;
+    flex-shrink:0;
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+    background:var(--sidebar);
+    border-right:1px solid var(--line);
+    transition:width .2s ease, opacity .2s ease, transform .2s ease;
+  }
+
+  #sidebar.closed{
+    width:0 !important;
+    min-width:0 !important;
+    opacity:0;
+    transform:translateX(-20px);
+    pointer-events:none;
+  }
+
+  #sidebar-header{
+    height:42px;
+    flex-shrink:0;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 9px 0 14px;
+    color:#bbb;
+    border-bottom:1px solid var(--line);
+    font-size:11px;
+    text-transform:uppercase;
+    user-select:none;
+  }
+
+  .sidebar-actions{
+    display:flex;
+    gap:2px;
+  }
+
+  .icon-button{
+    width:28px;
+    height:28px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    padding:0;
+    color:#bbb;
+    background:transparent;
+    border:0;
+    border-radius:4px;
+  }
+
+  .icon-button:hover{
+    color:#fff;
+    background:var(--hover);
+  }
+
+  #tree{
+    min-height:0;
+    flex:1;
+    overflow:auto;
+    padding:4px;
+  }
+
+  .tree-row{
+    min-height:28px;
+    display:flex;
+    align-items:center;
+    gap:6px;
+    padding:4px 6px;
+    border-radius:3px;
+    color:#ccc;
+    cursor:pointer;
+    white-space:nowrap;
+    user-select:none;
+  }
+
+  .tree-row:hover{
+    background:var(--hover);
+  }
+
+  .tree-row.active{
+    background:#37373d;
+    color:#fff;
+  }
+
+  .tree-row > i{
+    width:15px;
+    text-align:center;
+    color:#75beff;
+  }
+
+  .tree-row.folder > .folder-icon{
+    color:var(--yellow);
+  }
+
+  .tree-row .arrow{
+    width:10px;
+    color:#999;
+    font-size:9px;
+    transition:transform .15s ease;
+  }
+
+  .tree-row .arrow.open{
+    transform:rotate(90deg);
+  }
+
+  .tree-name{
+    min-width:0;
+    flex:1;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+
+  .delete-button{
+    display:none;
+    width:21px;
+    height:21px;
+    align-items:center;
+    justify-content:center;
+    padding:0;
+    color:#aaa;
+    background:transparent;
+    border:0;
+    border-radius:3px;
+  }
+
+  .tree-row:hover .delete-button{
+    display:inline-flex;
+  }
+
+  .delete-button:hover{
+    color:#fff;
+    background:var(--red);
+  }
+
+  .resizer{
+    width:4px;
+    flex-shrink:0;
+    cursor:col-resize;
+    background:transparent;
+  }
+
+  .resizer:hover,
+  .resizer.dragging{
+    background:var(--accent);
+  }
+
+  #editor-area{
+    position:relative;
+    min-width:0;
+    min-height:0;
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+    background:var(--editor);
+  }
+
+  #tabs{
+    height:36px;
+    min-height:36px;
+    display:flex;
+    overflow:auto;
+    background:var(--tabs);
+    border-bottom:1px solid var(--line);
+    user-select:none;
+  }
+
+  .tab{
+    min-width:130px;
+    max-width:220px;
+    height:100%;
+    display:flex;
+    align-items:center;
+    gap:7px;
+    padding:0 8px 0 13px;
+    color:#999;
+    border-right:1px solid var(--line);
+    cursor:pointer;
+    white-space:nowrap;
+  }
+
+  .tab.active{
+    color:#fff;
+    background:var(--editor);
+    border-top:1px solid var(--accent);
+  }
+
+  .tab-name{
+    min-width:0;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+
+  .tab-close{
+    margin-left:auto;
+    width:20px;
+    height:22px;
+    padding:0;
+    color:#999;
+    background:transparent;
+    border:0;
+    border-radius:3px;
+  }
+
+  .tab-close:hover{
+    color:#fff;
+    background:#484848;
+  }
+
+  #editor-container{
+    position:relative;
+    min-width:0;
+    min-height:0;
+    flex:1;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+  }
+
+  #monaco{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+  }
+
+  #empty-state{
+    position:absolute;
+    inset:0;
+    z-index:2;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    flex-direction:column;
+    gap:10px;
+    color:var(--muted);
+    background:var(--editor);
+  }
+
+  .panel{
+    position:absolute;
+    inset:36px 0 0;
+    z-index:5;
+    display:none;
+    overflow:auto;
+    padding:18px;
+    background:var(--editor);
+  }
+
+  .panel.active{
+    display:block;
+  }
+
+  .panel-card{
+    margin-bottom:12px;
+    padding:14px;
+    color:#ccc;
+    background:#252526;
+    border:1px solid #3a3a3a;
+    border-radius:5px;
+  }
+
+  .panel-card strong{
+    display:block;
+    margin-bottom:8px;
+    color:#fff;
+  }
+
+  .panel-card pre{
+    margin:0;
+    color:var(--green);
+    white-space:pre-wrap;
+    overflow-wrap:anywhere;
+  }
+
+  .setting-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:12px 0;
+    border-bottom:1px solid #3a3a3a;
+  }
+
+  .setting-row input,
+  .setting-row select{
+    padding:5px 7px;
+    color:#fff;
+    background:#333;
+    border:1px solid #555;
+    border-radius:3px;
+  }
+
+  #preview-panel{
+    width:40%;
+    min-width:280px;
+    min-height:0;
+    display:flex;
+    flex-direction:column;
+    flex-shrink:0;
+    background:#fff;
+    border-left:1px solid var(--line);
+  }
+
+  #preview-header{
+    height:38px;
+    min-height:38px;
+    display:flex;
+    align-items:center;
+    gap:4px;
+    padding:0 8px;
+    color:#ccc;
+    background:var(--tabs);
+    border-bottom:1px solid var(--line);
+    user-select:none;
+  }
+
+  .preview-title{
+    margin-right:auto;
+    font-size:12px;
+  }
+
+  .preview-button{
+    height:28px;
+    padding:0 8px;
+    color:#999;
+    background:transparent;
+    border:0;
+    border-bottom:2px solid transparent;
+  }
+
+  .preview-button:hover,
+  .preview-button.active{
+    color:var(--green);
+    border-bottom-color:var(--green);
+  }
+
+  #preview-frame{
+    width:100%;
+    min-height:0;
+    flex:1;
+    border:0;
+    background:#fff;
+  }
+
+  #console{
+    display:none;
+    min-height:0;
+    flex:1;
+    overflow:auto;
+    padding:12px;
+    color:#ddd;
+    background:#101318;
+    font:12px Consolas,monospace;
+    white-space:pre-wrap;
+    overflow-wrap:anywhere;
+  }
+
+  #preview-panel.console-mode #preview-frame{
+    display:none;
+  }
+
+  #preview-panel.console-mode #console{
+    display:block;
+  }
+
+  .console-line{
+    margin-bottom:7px;
+    white-space:pre-wrap;
+    overflow-wrap:anywhere;
+  }
+
+  .console-line.log{
+    color:var(--green);
+  }
+
+  .console-line.error{
+    color:#ff6b81;
+  }
+
+  .console-line.event{
+    color:#4fc1e9;
+  }
+
+  #statusbar{
+    height:23px;
+    min-height:23px;
+    display:flex;
+    align-items:center;
+    gap:18px;
+    padding:0 10px;
+    color:#fff;
+    background:var(--status);
+    font-size:11px;
+    user-select:none;
+  }
+
+  #status-right{
+    display:flex;
+    align-items:center;
+    gap:15px;
+    margin-left:auto;
+  }
+
+  #wrap-toggle{
+    padding:2px 7px;
+    border-radius:3px;
+    cursor:pointer;
+    background:rgba(255,255,255,.15);
+  }
+
+  #wrap-toggle.off{
+    background:rgba(0,0,0,.25);
+  }
+
+  #modal{
+    position:fixed;
+    inset:0;
+    z-index:20;
+    display:none;
+    place-items:center;
+    background:rgba(0,0,0,.55);
+  }
+
+  #modal.show{
+    display:grid;
+  }
+
+  .modal-box{
+    width:340px;
+    padding:20px;
+    color:#ddd;
+    background:#252526;
+    border:1px solid #444;
+    border-radius:6px;
+    box-shadow:0 18px 50px rgba(0,0,0,.5);
+  }
+
+  .modal-box h3{
+    margin:0 0 12px;
+    font-size:15px;
+  }
+
+  #modal-input{
+    width:100%;
+    padding:9px;
+    color:#fff;
+    background:#1e1e1e;
+    border:1px solid #555;
+    border-radius:4px;
+    outline:none;
+  }
+
+  #modal-input:focus{
+    border-color:var(--accent);
+  }
+
+  .modal-buttons{
+    display:flex;
+    justify-content:flex-end;
+    gap:8px;
+    margin-top:15px;
+  }
+
+  .modal-button{
+    padding:7px 14px;
+    color:#ddd;
+    background:#3a3d41;
+    border:1px solid #555;
+    border-radius:4px;
+  }
+
+  .modal-button.primary{
+    color:#fff;
+    background:var(--accent);
+    border-color:var(--accent);
+  }
+
+  #toast{
+    position:fixed;
+    right:20px;
+    bottom:35px;
+    z-index:30;
+    padding:10px 15px;
+    color:#fff;
+    background:#303b4e;
+    border-radius:5px;
+    opacity:0;
+    transform:translateY(8px);
+    transition:.2s ease;
+    pointer-events:none;
+  }
+
+  #toast.show{
+    opacity:1;
+    transform:translateY(0);
+  }
 </style>
 </head>
-
 <body>
 <div id="app">
-
   <div id="titlebar">
     <i class="fa-solid fa-code"></i>
-    <span style="margin-left:7px">WebCode Studio</span>
+    <span style="margin-left:7px;">WebCode Studio</span>
   </div>
 
   <div id="main">
-
     <nav id="activitybar">
       <button class="activity-button active" data-view="explorer" title="エクスプローラー">
         <i class="fa-regular fa-copy"></i>
@@ -661,7 +663,6 @@ button{ cursor:pointer; }
 
         <div id="empty-state">
           <span>ファイルが開かれていません</span>
-
           <button class="modal-button" id="empty-new-file">
             <i class="fa-solid fa-file-circle-plus"></i>
             新しいファイル
@@ -803,8 +804,8 @@ button{ cursor:pointer; }
 (() => {
   "use strict";
 
-  const STORAGE_KEY = "webcode-studio-full-v1";
-  const models = {};
+  const STORAGE_KEY = "webcode-studio-final-working-v1";
+
   let editor = null;
   let modalCallback = null;
   let previewTimer = null;
@@ -812,58 +813,39 @@ button{ cursor:pointer; }
   let currentMode = "live";
   let consoleLines = [];
 
+  const models = {};
   const runtime = {
-    rootHandle:null,
-    handles:{}
+    rootHandle: null,
+    handles: {}
   };
 
   let state = {
-    root:"root",
-    active:null,
-    tabs:[],
-    nodes:{
-      root:{
-        id:"root",
-        type:"folder",
-        name:"MY-PROJECT",
-        parent:null,
-        children:[],
-        open:true
+    root: "root",
+    active: null,
+    tabs: [],
+    nodes: {
+      root: {
+        id: "root",
+        type: "folder",
+        name: "MY-PROJECT",
+        parent: null,
+        children: [],
+        open: true
       }
     }
   };
 
-  const fileIcons = {
-    html:"fa-brands fa-html5",
-    htm:"fa-brands fa-html5",
-    css:"fa-brands fa-css3-alt",
-    js:"fa-brands fa-js",
-    mjs:"fa-brands fa-js",
-    jsx:"fa-brands fa-react",
-    ts:"fa-solid fa-code",
-    tsx:"fa-brands fa-react",
-    vue:"fa-brands fa-vuejs",
-    json:"fa-solid fa-file-code",
-    md:"fa-brands fa-markdown",
-    default:"fa-regular fa-file-code"
-  };
-
-  const VOID_TAGS = [
+  const voidTags = [
     "area","base","br","col","embed","hr","img","input","link",
     "meta","param","source","track","wbr"
   ];
 
   function uid(){
-    return "n" +
-      Date.now().toString(36) +
-      Math.random().toString(36).slice(2,8);
+    return "n" + Date.now().toString(36) + Math.random().toString(36).slice(2,8);
   }
 
   function extOf(name){
-    return String(name)
-      .split(".")
-      .pop()
-      .toLowerCase();
+    return String(name).split(".").pop().toLowerCase();
   }
 
   function langOf(name){
@@ -883,7 +865,22 @@ button{ cursor:pointer; }
   }
 
   function fileIcon(name){
-    return fileIcons[extOf(name)] || fileIcons.default;
+    const ext = extOf(name);
+    const icons = {
+      html:"fa-brands fa-html5",
+      htm:"fa-brands fa-html5",
+      css:"fa-brands fa-css3-alt",
+      js:"fa-brands fa-js",
+      mjs:"fa-brands fa-js",
+      jsx:"fa-brands fa-react",
+      ts:"fa-solid fa-code",
+      tsx:"fa-brands fa-react",
+      json:"fa-solid fa-file-code",
+      md:"fa-brands fa-markdown",
+      default:"fa-regular fa-file-code"
+    };
+
+    return icons[ext] || icons.default;
   }
 
   function toast(message){
@@ -896,14 +893,14 @@ button{ cursor:pointer; }
     }, 1800);
   }
 
-  function getChildren(id){
-    const node = state.nodes[id];
-    if(!node || !Array.isArray(node.children)){
+  function getChildren(parentId){
+    const parent = state.nodes[parentId];
+    if(!parent || !Array.isArray(parent.children)){
       return [];
     }
 
-    return node.children
-      .map(childId => state.nodes[childId])
+    return parent.children
+      .map(id => state.nodes[id])
       .filter(Boolean);
   }
 
@@ -911,31 +908,33 @@ button{ cursor:pointer; }
     if(id === state.root){
       return runtime.rootHandle;
     }
-
     return runtime.handles[id] || null;
   }
 
   function saveState(){
     try{
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-    }catch(error){
-      console.warn(error);
+    }catch(e){
+      console.warn(e);
     }
   }
 
   function restoreState(){
     try{
-      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
-      if(saved && saved.nodes){
-        state = saved;
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if(!raw) return;
+
+      const stored = JSON.parse(raw);
+      if(stored && stored.nodes){
+        state = stored;
         state.tabs = Array.isArray(state.tabs) ? state.tabs : [];
       }
-    }catch(error){
-      console.warn("保存データが読めませんでした", error);
+    }catch(e){
+      console.warn("保存データを読めませんでした", e);
     }
   }
 
-  function addNode(parentId, name, content="", type="file", handle=null){
+  function addNode(parentId, name, content = "", type = "file", handle = null){
     const node = {
       id: uid(),
       type,
@@ -966,33 +965,27 @@ button{ cursor:pointer; }
   }
 
   function renderTree(){
-    const tree = document.getElementById("tree");
-    tree.innerHTML = "";
+    const rootEl = document.getElementById("tree");
+    rootEl.innerHTML = "";
 
     function walk(parentId, depth){
       getChildren(parentId).forEach(node => {
         const row = document.createElement("div");
 
-        row.className =
-          "tree-row " +
-          node.type +
-          (node.id === state.active ? " active" : "");
-
+        row.className = "tree-row " + node.type + (node.id === state.active ? " active" : "");
         row.style.paddingLeft = (7 + depth * 16) + "px";
 
         if(node.type === "folder"){
           row.innerHTML = `
             <i class="arrow fa-solid fa-chevron-right ${node.open ? "open" : ""}"></i>
             <i class="folder-icon fa-solid fa-folder"></i>
-            <span class="tree-name"></span>
+            <span class="tree-name">${escapeHtml(node.name)}</span>
             <button class="delete-button" title="削除">
               <i class="fa-solid fa-trash"></i>
             </button>
           `;
 
-          row.querySelector(".tree-name").textContent = node.name;
-
-          row.addEventListener("click", event => {
+          row.addEventListener("click", function(event){
             if(event.target.closest(".delete-button")) return;
 
             state.active = node.id;
@@ -1000,12 +993,12 @@ button{ cursor:pointer; }
             renderTree();
           });
 
-          row.querySelector(".delete-button").addEventListener("click", event => {
+          row.querySelector(".delete-button").addEventListener("click", function(event){
             event.stopPropagation();
             deleteNode(node.id);
           });
 
-          tree.appendChild(row);
+          rootEl.appendChild(row);
 
           if(node.open){
             walk(node.id, depth + 1);
@@ -1016,15 +1009,13 @@ button{ cursor:pointer; }
 
         row.innerHTML = `
           <i class="${fileIcon(node.name)}"></i>
-          <span class="tree-name"></span>
+          <span class="tree-name">${escapeHtml(node.name)}</span>
           <button class="delete-button" title="削除">
             <i class="fa-solid fa-trash"></i>
           </button>
         `;
 
-        row.querySelector(".tree-name").textContent = node.name;
-
-        row.addEventListener("click", event => {
+        row.addEventListener("click", function(event){
           if(event.target.closest(".delete-button")) return;
 
           event.preventDefault();
@@ -1032,54 +1023,58 @@ button{ cursor:pointer; }
           openFile(node.id);
         });
 
-        row.querySelector(".delete-button").addEventListener("click", event => {
+        row.querySelector(".delete-button").addEventListener("click", function(event){
           event.stopPropagation();
           deleteNode(node.id);
         });
 
-        tree.appendChild(row);
+        rootEl.appendChild(row);
       });
     }
 
     walk(state.root, 0);
   }
 
+  function escapeHtml(str){
+    return String(str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+  }
+
   function renderTabs(){
-    const tabs = document.getElementById("tabs");
-    tabs.innerHTML = "";
+    const tabsEl = document.getElementById("tabs");
+    tabsEl.innerHTML = "";
 
     state.tabs.forEach(id => {
       const node = state.nodes[id];
-      if(!node || node.type !== "file"){
-        return;
-      }
+      if(!node || node.type !== "file") return;
 
       const tab = document.createElement("div");
-
       tab.className = "tab " + (id === state.active ? "active" : "");
 
       tab.innerHTML = `
         <i class="${fileIcon(node.name)}"></i>
-        <span class="tab-name"></span>
+        <span class="tab-name">${escapeHtml(node.name)}</span>
         <button class="tab-close" title="閉じる">
           <i class="fa-solid fa-xmark"></i>
         </button>
       `;
 
-      tab.querySelector(".tab-name").textContent = node.name;
-
-      tab.addEventListener("click", event => {
+      tab.addEventListener("click", function(event){
         if(event.target.closest(".tab-close")) return;
         openFile(id);
       });
 
-      tab.querySelector(".tab-close").addEventListener("click", event => {
+      tab.querySelector(".tab-close").addEventListener("click", function(event){
         event.preventDefault();
         event.stopPropagation();
         closeTab(id);
       });
 
-      tabs.appendChild(tab);
+      tabsEl.appendChild(tab);
     });
   }
 
@@ -1089,7 +1084,6 @@ button{ cursor:pointer; }
     }
 
     const node = state.nodes[id];
-
     if(!node || !window.monaco){
       return null;
     }
@@ -1099,12 +1093,10 @@ button{ cursor:pointer; }
 
     model.onDidChangeContent(async () => {
       node.content = model.getValue();
-
       renderPreview();
       saveState();
 
       const handle = runtime.handles[id];
-
       if(handle){
         try{
           const writable = await handle.createWritable();
@@ -1114,8 +1106,8 @@ button{ cursor:pointer; }
             await writable.close();
           }
           document.getElementById("status-text").textContent = "フォルダへ保存済み";
-        }catch(error){
-          console.error(error);
+        }catch(e){
+          console.error(e);
           document.getElementById("status-text").textContent = "保存エラー";
         }
       }else{
@@ -1128,17 +1120,15 @@ button{ cursor:pointer; }
 
   function openFile(id){
     const node = state.nodes[id];
-    if(!node || node.type !== "file"){
-      return;
-    }
+    if(!node || node.type !== "file") return;
 
     if(!state.tabs.includes(id)){
       state.tabs.push(id);
     }
 
     state.active = id;
-
     const model = createModel(id);
+
     if(!model || !editor){
       toast("エディターを読み込めませんでした");
       return;
@@ -1176,11 +1166,9 @@ button{ cursor:pointer; }
     saveState();
   }
 
-  function collectDescendants(id, result = []){
+  function collectDescendants(id, result=[]){
     const node = state.nodes[id];
-    if(!node){
-      return result;
-    }
+    if(!node) return result;
 
     result.push(id);
 
@@ -1193,22 +1181,21 @@ button{ cursor:pointer; }
 
   async function deleteNode(id){
     const node = state.nodes[id];
-    if(!node || id === state.root){
-      return;
-    }
+    if(!node || id === state.root) return;
 
     if(!confirm(node.name + " を削除しますか？")){
       return;
     }
 
     const parent = state.nodes[node.parent];
+
     try{
       const directory = getDirectoryHandle(node.parent);
       if(directory){
         await directory.removeEntry(node.name, { recursive: node.type === "folder" });
       }
-    }catch(error){
-      console.error(error);
+    }catch(e){
+      console.error(e);
       toast("削除できませんでした");
       return;
     }
@@ -1254,6 +1241,7 @@ button{ cursor:pointer; }
     document.getElementById("modal-title").textContent = title;
     document.getElementById("modal-input").value = defaultValue;
     document.getElementById("modal").classList.add("show");
+
     modalCallback = callback;
 
     setTimeout(() => {
@@ -1270,7 +1258,6 @@ button{ cursor:pointer; }
 
   function selectedParent(){
     const active = state.nodes[state.active];
-
     if(!active){
       return state.root;
     }
@@ -1300,7 +1287,7 @@ button{ cursor:pointer; }
     const directory = getDirectoryHandle(parentId);
 
     if(directory){
-      handle = await directory.getFileHandle(name, { create:true });
+      handle = await directory.getFileHandle(name, { create: true });
     }
 
     const id = addNode(parentId, name, "", "file", handle);
@@ -1334,7 +1321,7 @@ button{ cursor:pointer; }
     const directory = getDirectoryHandle(parentId);
 
     if(directory){
-      handle = await directory.getDirectoryHandle(name, { create:true });
+      handle = await directory.getDirectoryHandle(name, { create: true });
     }
 
     const id = addNode(parentId, name, "", "folder", handle);
@@ -1346,34 +1333,28 @@ button{ cursor:pointer; }
     toast("フォルダを作成しました");
   }
 
-  function getProjectFile(name){
+  function getProjectFile(fileName){
     return Object.values(state.nodes).find(node => {
-      return node.type === "file" &&
-             node.name.toLowerCase() === name.toLowerCase();
+      return node.type === "file" && node.name.toLowerCase() === fileName.toLowerCase();
     });
   }
 
   function contentOf(node){
-    if(!node){
-      return "";
-    }
-
-    return models[node.id]
-      ? models[node.id].getValue()
-      : node.content || "";
+    if(!node) return "";
+    return models[node.id] ? models[node.id].getValue() : (node.content || "");
   }
 
   function previewSource(){
     const active = state.nodes[state.active];
-    const index = getProjectFile("index.html");
-    const css = getProjectFile("style.css");
-    const js = getProjectFile("script.js");
+    const indexFile = getProjectFile("index.html");
+    const cssFile = getProjectFile("style.css");
+    const jsFile = getProjectFile("script.js");
 
     if(!active){
       return {
-        html: contentOf(index),
-        css: contentOf(css),
-        js: contentOf(js)
+        html: contentOf(indexFile),
+        css: contentOf(cssFile),
+        js: contentOf(jsFile)
       };
     }
 
@@ -1382,42 +1363,42 @@ button{ cursor:pointer; }
     if(ext === "html" || ext === "htm"){
       return {
         html: contentOf(active),
-        css: contentOf(css),
-        js: contentOf(js)
+        css: contentOf(cssFile),
+        js: contentOf(jsFile)
       };
     }
 
     if(ext === "css"){
       return {
-        html: contentOf(index),
+        html: contentOf(indexFile),
         css: contentOf(active),
-        js: contentOf(js)
+        js: contentOf(jsFile)
       };
     }
 
     if(["js","mjs","jsx","ts","tsx"].includes(ext)){
       return {
-        html: contentOf(index),
-        css: contentOf(css),
+        html: contentOf(indexFile),
+        css: contentOf(cssFile),
         js: contentOf(active)
       };
     }
 
     return {
-      html: contentOf(index),
-      css: contentOf(css),
-      js: contentOf(js)
+      html: contentOf(indexFile),
+      css: contentOf(cssFile),
+      js: contentOf(jsFile)
     };
   }
 
   function escapeScript(value){
-    return String(value).replace(/<\/script/gi, "<\\/script");
+    return String(value).replace(/<\\/script/gi, "<\\\\/script");
   }
 
   function buildPreviewDocument(){
-    const source = previewSource();
+    const src = previewSource();
 
-    let html = source.html || `
+    let html = src.html || `
 <!doctype html>
 <html lang="ja">
 <head>
@@ -1432,27 +1413,22 @@ button{ cursor:pointer; }
 
     const bridge = `
 <style>
-.webcode-selected{
-  outline:3px solid #ff637d !important;
-  outline-offset:3px !important;
-}
+  .webcode-selected{
+    outline:3px solid #ff637d !important;
+    outline-offset:3px !important;
+  }
 </style>
 
 <script>
 (() => {
   const send = (type, text, extra = {}) => {
-    parent.postMessage({
-      source: "webcode-preview",
-      type,
-      text,
-      ...extra
-    }, "*");
+    parent.postMessage({ source:"webcode-preview", type, text, ...extra }, "*");
   };
 
   const stringify = value => {
     try{
       return typeof value === "string" ? value : JSON.stringify(value);
-    }catch(error){
+    }catch(e){
       return String(value);
     }
   };
@@ -1501,17 +1477,11 @@ button{ cursor:pointer; }
   }, true);
 
   window.addEventListener("message", event => {
-    if(!event.data || event.data.type !== "inspect"){
-      return;
-    }
+    if(!event.data || event.data.type !== "inspect") return;
 
-    document.querySelectorAll(".webcode-selected")
-      .forEach(el => el.classList.remove("webcode-selected"));
+    document.querySelectorAll(".webcode-selected").forEach(el => el.classList.remove("webcode-selected"));
 
-    const target = event.data.selector
-      ? document.querySelector(event.data.selector)
-      : null;
-
+    const target = event.data.selector ? document.querySelector(event.data.selector) : null;
     if(target){
       target.classList.add("webcode-selected");
     }
@@ -1521,21 +1491,17 @@ button{ cursor:pointer; }
 
 <script>
 try{
-  ${escapeScript(source.js)}
+  ${escapeScript(src.js)}
 }catch(error){
-  parent.postMessage({
-    source: "webcode-preview",
-    type: "error",
-    text: error.message
-  }, "*");
+  parent.postMessage({ source:"webcode-preview", type:"error", text:error.message }, "*");
 }
 <\\/script>
 `;
 
     if(html.includes("</head>")){
-      html = html.replace("</head>", "<style>" + source.css + "</style></head>");
+      html = html.replace("</head>", "<style>" + src.css + "</style></head>");
     }else{
-      html = "<style>" + source.css + "</style>" + html;
+      html = "<style>" + src.css + "</style>" + html;
     }
 
     if(html.includes("</body>")){
@@ -1556,7 +1522,7 @@ try{
     }, 0);
   }
 
-  function appendConsole(message, type="log"){
+  function appendConsole(message, type = "log"){
     consoleLines.push({ message, type });
 
     const consoleEl = document.getElementById("console");
@@ -1569,9 +1535,7 @@ try{
       consoleEl.appendChild(row);
     });
 
-    document.getElementById("debug-output").textContent =
-      consoleLines.map(line => line.message).join("\n");
-
+    document.getElementById("debug-output").textContent = consoleLines.map(line => line.message).join("\n");
     consoleEl.scrollTop = consoleEl.scrollHeight;
   }
 
@@ -1641,25 +1605,21 @@ try{
   }
 
   function setupHtmlCompletion(){
-    if(!window.monaco){
-      return;
-    }
+    if(!window.monaco) return;
 
     monaco.languages.registerCompletionItemProvider("html", {
-      triggerCharacters:[" "],
+      triggerCharacters: [" "],
 
       provideCompletionItems(model, position){
         const line = model.getLineContent(position.lineNumber);
         const before = line.slice(0, position.column - 1);
 
         const match = before.match(/<a\\s+([a-zA-Z-]*)$/i);
-
         if(!match){
           return { suggestions: [] };
         }
 
         const prefix = match[1].toLowerCase();
-
         if(!"href".startsWith(prefix)){
           return { suggestions: [] };
         }
@@ -1691,19 +1651,13 @@ try{
   }
 
   function setupAutoCloseTag(){
-    if(!editor){
-      return;
-    }
+    if(!editor) return;
 
     editor.onDidType(text => {
-      if(text !== ">"){
-        return;
-      }
+      if(text !== ">") return;
 
       const model = editor.getModel();
-      if(!model || model.getLanguageId() !== "html"){
-        return;
-      }
+      if(!model || model.getLanguageId() !== "html") return;
 
       const position = editor.getPosition();
       const line = model.getLineContent(position.lineNumber);
@@ -1711,14 +1665,12 @@ try{
       const after = line.slice(position.column - 1);
 
       const match = before.match(/<([a-zA-Z][a-zA-Z0-9-]*)((?:\\s[^<>]*)?)>$/);
-      if(!match){
-        return;
-      }
+      if(!match) return;
 
       const tag = match[1];
       const attrs = match[2] || "";
 
-      if(VOID_TAGS.includes(tag.toLowerCase()) || /\\/\\s*$/.test(attrs)){
+      if(voidTags.includes(tag.toLowerCase()) || /\\/\\s*$/.test(attrs)){
         return;
       }
 
@@ -1758,9 +1710,7 @@ try{
     });
 
     window.addEventListener("mousemove", event => {
-      if(!leftDragging && !rightDragging){
-        return;
-      }
+      if(!leftDragging && !rightDragging) return;
 
       const rect = main.getBoundingClientRect();
 
@@ -1770,7 +1720,7 @@ try{
       }
 
       if(rightDragging){
-        const width = Math.max(280, Math.min(rect.width * .65, rect.right - event.clientX));
+        const width = Math.max(280, Math.min(rect.width * 0.65, rect.right - event.clientX));
         preview.style.width = width + "px";
       }
 
@@ -1782,6 +1732,7 @@ try{
     window.addEventListener("mouseup", () => {
       leftDragging = false;
       rightDragging = false;
+
       left.classList.remove("dragging");
       right.classList.remove("dragging");
 
@@ -1831,29 +1782,25 @@ try{
       });
 
       async function readDirectory(handle, parentId){
-        for await(const entry of handle.values()){
-          if(entry.name.startsWith(".")){
-            continue;
-          }
+        for await (const entry of handle.values()){
+          if(entry.name.startsWith(".")) continue;
 
           if(entry.kind === "directory"){
-            const folderId = addNode(parentId, entry.name, "", "folder", entry);
-            state.nodes[folderId].open = true;
-
-            await readDirectory(entry, folderId);
+            const id = addNode(parentId, entry.name, "", "folder", entry);
+            state.nodes[id].open = true;
+            await readDirectory(entry, id);
           }else{
             const file = await entry.getFile();
-            const fileId = addNode(parentId, entry.name, await file.text(), "file", entry);
+            const id = addNode(parentId, entry.name, await file.text(), "file", entry);
 
             if(!state.active){
-              state.active = fileId;
+              state.active = id;
             }
           }
         }
       }
 
       await readDirectory(directory, state.root);
-
       renderTree();
       renderTabs();
 
@@ -1925,12 +1872,10 @@ button {
       editor = monaco.editor.create(document.getElementById("monaco"), {
         theme: "vs-dark",
         automaticLayout: true,
-
         wordWrap: "on",
         wrappingStrategy: "advanced",
         wrappingIndent: "same",
         wordWrapColumn: 0,
-
         scrollBeyondLastLine: false,
         minimap: { enabled: false },
         fontSize: 14,
@@ -1991,11 +1936,6 @@ button {
       createDefaultProject();
       renderTree();
       renderTabs();
-
-      if(state.active){
-        openFile(state.active);
-      }
-
       renderPreview();
     }, error => {
       console.error(error);
@@ -2003,7 +1943,7 @@ button {
     });
   }
 
-  document.addEventListener("click", event => {
+  document.addEventListener("click", function(event){
     const viewButton = event.target.closest("[data-view]");
     if(viewButton){
       switchView(viewButton.dataset.view, viewButton);
@@ -2019,8 +1959,8 @@ button {
     openModal("新しいファイル", "untitled.html", async name => {
       try{
         await createFile(name.trim());
-      }catch(error){
-        console.error(error);
+      }catch(e){
+        console.error(e);
         toast("ファイルを作成できませんでした");
       }
     });
@@ -2030,8 +1970,8 @@ button {
     openModal("新しいフォルダ", "new-folder", async name => {
       try{
         await createFolder(name.trim());
-      }catch(error){
-        console.error(error);
+      }catch(e){
+        console.error(e);
         toast("フォルダを作成できませんでした");
       }
     });
@@ -2111,11 +2051,13 @@ button {
   document.getElementById("wrap-toggle").addEventListener("click", () => {
     wrapEnabled = !wrapEnabled;
 
-    editor.updateOptions({
-      wordWrap: wrapEnabled ? "on" : "off",
-      wrappingStrategy: "advanced",
-      wordWrapColumn: 0
-    });
+    if(editor){
+      editor.updateOptions({
+        wordWrap: wrapEnabled ? "on" : "off",
+        wrappingStrategy: "advanced",
+        wordWrapColumn: 0
+      });
+    }
 
     document.getElementById("wrap-toggle").textContent = wrapEnabled ? "折り返し: ON" : "折り返し: OFF";
     document.getElementById("wrap-toggle").classList.toggle("off", !wrapEnabled);
@@ -2139,28 +2081,17 @@ button {
 
   window.addEventListener("message", event => {
     const data = event.data;
-    if(!data || data.source !== "webcode-preview"){
-      return;
-    }
+    if(!data || data.source !== "webcode-preview") return;
 
     if(data.type === "console"){
       appendConsole(data.text, "log");
-    }
-
-    if(data.type === "warn"){
+    }else if(data.type === "warn"){
       appendConsole(data.text, "event");
-    }
-
-    if(data.type === "error"){
+    }else if(data.type === "error"){
       appendConsole(data.text, "error");
-    }
-
-    if(data.type === "dom-event"){
-      document.getElementById("event-output").textContent =
-        data.text + ": " + data.tag;
-
-      document.getElementById("dom-output").textContent =
-        data.html || "DOM情報がありません";
+    }else if(data.type === "dom-event"){
+      document.getElementById("event-output").textContent = data.text + ": " + data.tag;
+      document.getElementById("dom-output").textContent = data.html || "DOM情報がありません";
 
       appendConsole(data.tag + " イベント: " + data.text, "event");
 
