@@ -2,18 +2,20 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>WebCode Studio</title>
 
-<link rel="stylesheet"
- href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
- <script src="https://code.jquery.com/jquery-4.0.0.js" integrity="sha256-9fsHeVnKBvqh3FB2HYu7g2xseAZ5MlN6Kz/qnkASV8U=" crossorigin="anonymous"></script>
+<link rel="preconnect" href="https://cdnjs.cloudflare.com">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+<!-- jQuery CDN -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
 <style>
 :root{
   --bg:#0b0d12;
   --panel:#151922;
-  --panel2:#1c222e;
+  --panel2:#1d2330;
   --editor:#10131a;
   --line:#293140;
   --text:#d8dee9;
@@ -97,10 +99,14 @@ button{
 .icon{
   width:30px;
   height:30px;
-  border:0;
-  border-radius:5px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:0;
   color:var(--muted);
   background:transparent;
+  border:0;
+  border-radius:5px;
 }
 
 .icon:hover,
@@ -110,13 +116,14 @@ button{
 }
 
 .workspace{
-  min-width:750px;
+  min-width:760px;
   min-height:0;
   display:grid;
   grid-template-columns:52px 260px minmax(280px,1fr) minmax(300px,42%);
 }
 
 .activity{
+  z-index:4;
   display:flex;
   flex-direction:column;
   align-items:center;
@@ -126,19 +133,99 @@ button{
   border-right:1px solid var(--line);
 }
 
-.activity button{
+.activity-button{
   position:relative;
+  width:38px;
   height:42px;
   font-size:18px;
 }
 
-.activity button.active::before{
+.activity-button.active::before{
   content:"";
   position:absolute;
-  left:-11px;
+  left:-8px;
   top:5px;
   height:32px;
   border-left:2px solid var(--blue);
+}
+
+.external-tools{
+  width:100%;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:6px;
+  margin-top:8px;
+  padding-top:10px;
+  border-top:1px solid var(--line);
+}
+
+.external-tool{
+  position:relative;
+  width:34px;
+  height:34px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:var(--cyan);
+  background:transparent;
+  border:0;
+  border-radius:5px;
+}
+
+.external-tool:hover{
+  color:#fff;
+  background:#252c3b;
+}
+
+.external-tool::after{
+  content:attr(data-tooltip);
+  position:absolute;
+  left:43px;
+  z-index:20;
+  display:none;
+  min-width:150px;
+  padding:6px 9px;
+  color:var(--text);
+  background:#252c3b;
+  border:1px solid var(--line);
+  border-radius:4px;
+  text-align:left;
+  white-space:nowrap;
+  pointer-events:none;
+}
+
+.external-tool:hover::after{
+  display:block;
+}
+
+.external-tool.window-tool{
+  color:var(--green);
+}
+
+.external-tool .remove-link{
+  position:absolute;
+  top:-4px;
+  right:-4px;
+  width:14px;
+  height:14px;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  color:#fff;
+  background:var(--red);
+  border:0;
+  border-radius:50%;
+  font-size:8px;
+}
+
+.external-tool:hover .remove-link{
+  display:flex;
+}
+
+.external-empty{
+  color:var(--muted);
+  font-size:11px;
 }
 
 .sidebar{
@@ -202,19 +289,28 @@ button{
   background:#28406d;
 }
 
-.node i{
+.node > i{
   width:16px;
   color:var(--blue);
   text-align:center;
 }
 
-.node.folder i{
+.node.folder > i:not(.folder-arrow){
   color:var(--yellow);
 }
 
 .node-label{
   overflow:hidden;
   text-overflow:ellipsis;
+}
+
+.folder-arrow{
+  transition:transform .18s ease;
+  color:var(--muted)!important;
+}
+
+.folder-arrow.open{
+  transform:rotate(90deg);
 }
 
 .node-delete{
@@ -224,17 +320,7 @@ button{
 }
 
 .node:hover .node-delete{
-  display:block;
-}
-
-.folder-arrow{
-  width:14px;
-  color:var(--muted)!important;
-  transition:transform .18s ease;
-}
-
-.folder-arrow.open{
-  transform:rotate(90deg);
+  display:inline-flex;
 }
 
 .editorarea{
@@ -271,7 +357,6 @@ button{
 
 .tab-close{
   margin-left:auto;
-  color:var(--muted);
 }
 
 .tab-close:hover{
@@ -286,7 +371,7 @@ button{
 .panel{
   position:absolute;
   inset:0;
-  z-index:2;
+  z-index:5;
   display:none;
   padding:18px;
   overflow:auto;
@@ -348,7 +433,7 @@ input[type="number"]{
   height:38px;
   display:flex;
   align-items:center;
-  gap:4px;
+  gap:3px;
   padding:0 9px;
   color:var(--muted);
   background:var(--panel);
@@ -402,16 +487,16 @@ input[type="number"]{
   white-space:pre-wrap;
 }
 
-.console-line.error{
-  color:var(--red);
+.console-line.log{
+  color:var(--green);
 }
 
 .console-line.event{
   color:var(--cyan);
 }
 
-.console-line.log{
-  color:var(--green);
+.console-line.error{
+  color:var(--red);
 }
 
 .status{
@@ -431,7 +516,7 @@ input[type="number"]{
 .modal-bg{
   position:fixed;
   inset:0;
-  z-index:20;
+  z-index:30;
   display:none;
   place-items:center;
   background:#0009;
@@ -487,7 +572,7 @@ input[type="number"]{
   position:fixed;
   right:20px;
   bottom:35px;
-  z-index:30;
+  z-index:40;
   padding:10px 16px;
   border-radius:5px;
   color:var(--text);
@@ -508,6 +593,7 @@ input[type="number"]{
     opacity:0;
     transform:translateX(-5px);
   }
+
   to{
     opacity:1;
     transform:translateX(0);
@@ -542,23 +628,35 @@ input[type="number"]{
     <button class="icon" id="runProject" title="実行">
       <i class="fa-solid fa-play"></i>
     </button>
+
+    <button class="icon" id="openPreviewWindow" title="別ウィンドウで表示">
+      <i class="fa-solid fa-window-restore"></i>
+    </button>
   </div>
 </header>
 
 <main class="workspace">
 
-<nav class="activity">
-  <button class="icon active" data-view="explorer" title="エクスプローラー">
+<nav class="activity" id="activityBar">
+  <button class="icon activity-button active" data-view="explorer" title="エクスプローラー">
     <i class="fa-regular fa-copy"></i>
   </button>
 
-  <button class="icon" data-view="debug" title="デバッグ">
+  <button class="icon activity-button" data-view="debug" title="デバッグ">
     <i class="fa-solid fa-bug"></i>
   </button>
 
-  <button class="icon" data-view="settings" title="設定">
+  <button class="icon activity-button" data-view="settings" title="設定">
     <i class="fa-solid fa-gear"></i>
   </button>
+
+  <div class="external-tools">
+    <div id="externalTools">
+      <div class="external-empty">
+        <i class="fa-solid fa-link-slash"></i>
+      </div>
+    </div>
+  </div>
 </nav>
 
 <aside class="sidebar" id="sidebar">
@@ -685,11 +783,7 @@ input[type="number"]{
     </button>
   </div>
 
-  <iframe
-    id="preview"
-    sandbox="allow-scripts allow-modals">
-  </iframe>
-
+  <iframe id="preview" sandbox="allow-scripts allow-modals"></iframe>
   <div id="console" class="console"></div>
 </section>
 
@@ -726,59 +820,61 @@ input[type="number"]{
 <div id="toast" class="toast"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.53.0/min/vs/loader.min.js"></script>
-<script src="https://code.jquery.com/jquery-4.0.0.js" integrity="sha256-9fsHeVnKBvqh3FB2HYu7g2xseAZ5MlN6Kz/qnkASV8U=" crossorigin="anonymous"></script>
+
 <script>
 (() => {
   "use strict";
 
   const $ = selector => document.querySelector(selector);
-
   const models = {};
-  const STORAGE_KEY = "webcode-studio-v4";
+  const STORAGE_KEY = "webcode-studio-v6";
 
   let editor = null;
   let modalCallback = null;
   let currentMode = "live";
   let consoleLines = [];
+  let openedWindows = [];
 
   let state = {
-    root: "root",
-    active: null,
-    tabs: [],
-    nodes: {
-      root: {
-        id: "root",
-        type: "folder",
-        name: "プロジェクト",
-        children: [],
-        open: true
+    root:"root",
+    active:null,
+    tabs:[],
+    externalLinks:[],
+    nodes:{
+      root:{
+        id:"root",
+        type:"folder",
+        name:"プロジェクト",
+        children:[],
+        open:true
       }
     }
   };
 
   const icons = {
-    html: "fa-brands fa-html5",
-    htm: "fa-brands fa-html5",
-    css: "fa-brands fa-css3-alt",
-    js: "fa-brands fa-js",
-    mjs: "fa-brands fa-js",
-    jsx: "fa-brands fa-react",
-    ts: "fa-solid fa-code",
-    vue: "fa-brands fa-vuejs",
-    json: "fa-solid fa-file-code",
-    md: "fa-brands fa-markdown",
-    default: "fa-regular fa-file-code"
+    html:"fa-brands fa-html5",
+    htm:"fa-brands fa-html5",
+    css:"fa-brands fa-css3-alt",
+    js:"fa-brands fa-js",
+    mjs:"fa-brands fa-js",
+    jsx:"fa-brands fa-react",
+    ts:"fa-solid fa-code",
+    tsx:"fa-brands fa-react",
+    vue:"fa-brands fa-vuejs",
+    json:"fa-solid fa-file-code",
+    md:"fa-brands fa-markdown",
+    default:"fa-regular fa-file-code"
   };
 
   function uid(){
-    return "n" + Date.now().toString(36) + Math.random().toString(36).slice(2,7);
+    return "n" + Date.now().toString(36) + Math.random().toString(36).slice(2,8);
   }
 
   function extension(name){
-    return name.split(".").pop().toLowerCase();
+    return String(name).split(".").pop().toLowerCase();
   }
 
-  function language(name){
+  function getLanguage(name){
     return {
       html:"html",
       htm:"html",
@@ -787,33 +883,35 @@ input[type="number"]{
       mjs:"javascript",
       jsx:"javascript",
       ts:"typescript",
+      tsx:"typescript",
       vue:"html",
       json:"json",
       md:"markdown"
     }[extension(name)] || "plaintext";
   }
 
-  function fileIcon(name){
+  function getFileIcon(name){
     return icons[extension(name)] || icons.default;
   }
 
   function getChildren(id){
     const node = state.nodes[id];
-    if(!node || !Array.isArray(node.children)) return [];
+
+    if(!node || !Array.isArray(node.children)){
+      return [];
+    }
 
     return node.children
       .map(childId => state.nodes[childId])
       .filter(Boolean);
   }
 
-  function showToast(message){
-    const toast = $("#toast");
-
-    toast.textContent = message;
-    toast.classList.add("show");
+  function toast(message){
+    $("#toast").textContent = message;
+    $("#toast").classList.add("show");
 
     setTimeout(() => {
-      toast.classList.remove("show");
+      $("#toast").classList.remove("show");
     }, 1800);
   }
 
@@ -822,7 +920,7 @@ input[type="number"]{
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
       $("#status").textContent = "保存済み";
     }catch(error){
-      showToast("保存に失敗しました");
+      toast("保存に失敗しました");
     }
   }
 
@@ -832,20 +930,24 @@ input[type="number"]{
 
       if(saved && saved.nodes){
         state = saved;
+        state.tabs = Array.isArray(state.tabs) ? state.tabs : [];
+        state.externalLinks = Array.isArray(state.externalLinks)
+          ? state.externalLinks
+          : [];
       }
     }catch(error){
-      console.warn("保存データを読み込めませんでした", error);
+      console.warn("保存データの読み込みに失敗しました", error);
     }
   }
 
   function addNode(parent, name, content = "", type = "file"){
     const node = {
-      id: uid(),
+      id:uid(),
       type,
       name,
       parent,
       content,
-      lang: language(name)
+      lang:getLanguage(name)
     };
 
     if(type === "folder"){
@@ -855,7 +957,7 @@ input[type="number"]{
 
     state.nodes[node.id] = node;
 
-    if(!state.nodes[parent].children){
+    if(!Array.isArray(state.nodes[parent].children)){
       state.nodes[parent].children = [];
     }
 
@@ -895,11 +997,10 @@ input[type="number"]{
           (state.active === node.id ? " selected" : "");
 
         row.style.paddingLeft = (7 + depth * 15) + "px";
-        row.dataset.id = node.id;
 
         if(node.type === "folder"){
           row.innerHTML = `
-            <i class="folder-arrow ${node.open ? "open" : ""} fa-solid fa-chevron-right"></i>
+            <i class="folder-arrow fa-solid fa-chevron-right ${node.open ? "open" : ""}"></i>
             <i class="fa-solid fa-folder"></i>
             <span class="node-label"></span>
           `;
@@ -917,61 +1018,70 @@ input[type="number"]{
           if(node.open){
             draw(node.id, depth + 1);
           }
-        }else{
-          row.innerHTML = `
-            <i class="${fileIcon(node.name)}"></i>
-            <span class="node-label"></span>
-            <button class="icon node-delete" title="削除">
-              <i class="fa-solid fa-trash"></i>
-            </button>
-          `;
 
-          row.querySelector(".node-label").textContent = node.name;
-
-          row.addEventListener("click", event => {
-            if(event.target.closest(".node-delete")) return;
-
-            event.stopPropagation();
-            openFile(node.id);
-          });
-
-          row.querySelector(".node-delete").addEventListener("click", event => {
-            event.stopPropagation();
-            deleteNode(node.id);
-          });
-
-          tree.appendChild(row);
+          return;
         }
+
+        row.innerHTML = `
+          <i class="${getFileIcon(node.name)}"></i>
+          <span class="node-label"></span>
+          <button class="icon node-delete" title="削除">
+            <i class="fa-solid fa-trash"></i>
+          </button>
+        `;
+
+        row.querySelector(".node-label").textContent = node.name;
+
+        row.addEventListener("click", event => {
+          if(event.target.closest(".node-delete")){
+            return;
+          }
+
+          event.stopPropagation();
+          openFile(node.id);
+        });
+
+        row.querySelector(".node-delete").addEventListener("click", event => {
+          event.stopPropagation();
+          deleteNode(node.id);
+        });
+
+        tree.appendChild(row);
       });
     }
 
     draw(state.root, 0);
   }
 
-  function createEditorModel(node){
-    if(models[node.id]) return models[node.id];
-
-    if(window.monaco){
-      models[node.id] = monaco.editor.createModel(
-        node.content || "",
-        node.lang
-      );
-
-      models[node.id].onDidChangeContent(() => {
-        node.content = models[node.id].getValue();
-        saveState();
-        renderPreview();
-      });
-
+  function createModel(node){
+    if(models[node.id]){
       return models[node.id];
     }
 
-    return null;
+    if(!window.monaco){
+      return null;
+    }
+
+    models[node.id] = monaco.editor.createModel(
+      node.content || "",
+      node.lang
+    );
+
+    models[node.id].onDidChangeContent(() => {
+      node.content = models[node.id].getValue();
+      saveState();
+      renderPreview();
+    });
+
+    return models[node.id];
   }
 
   function openFile(id){
     const node = state.nodes[id];
-    if(!node || node.type !== "file") return;
+
+    if(!node || node.type !== "file"){
+      return;
+    }
 
     state.active = id;
 
@@ -979,7 +1089,7 @@ input[type="number"]{
       state.tabs.push(id);
     }
 
-    const model = createEditorModel(node);
+    const model = createModel(node);
 
     if(editor && model){
       editor.setModel(model);
@@ -988,8 +1098,8 @@ input[type="number"]{
 
     $("#current").textContent = node.name;
 
-    renderTabs();
     renderTree();
+    renderTabs();
     saveState();
   }
 
@@ -999,16 +1109,19 @@ input[type="number"]{
 
     state.tabs.forEach(id => {
       const node = state.nodes[id];
-      if(!node) return;
+
+      if(!node){
+        return;
+      }
 
       const tab = document.createElement("div");
 
       tab.className =
         "tab " +
-        (id === state.active ? "active" : "");
+        (state.active === id ? "active" : "");
 
       tab.innerHTML = `
-        <i class="${fileIcon(node.name)}"></i>
+        <i class="${getFileIcon(node.name)}"></i>
         <span class="node-label"></span>
         <button class="icon tab-close" title="閉じる">
           <i class="fa-solid fa-xmark"></i>
@@ -1050,18 +1163,29 @@ input[type="number"]{
 
   function deleteNode(id){
     const node = state.nodes[id];
-    if(!node) return;
+
+    if(!node){
+      return;
+    }
 
     if(!confirm(node.name + " を削除しますか？")){
       return;
     }
 
+    const parent = state.nodes[node.parent];
+
+    if(parent && Array.isArray(parent.children)){
+      parent.children = parent.children.filter(childId => childId !== id);
+    }
+
     function removeRecursively(nodeId){
       const target = state.nodes[nodeId];
 
-      if(!target) return;
+      if(!target){
+        return;
+      }
 
-      if(target.children){
+      if(Array.isArray(target.children)){
         [...target.children].forEach(removeRecursively);
       }
 
@@ -1071,12 +1195,6 @@ input[type="number"]{
       }
 
       delete state.nodes[nodeId];
-    }
-
-    const parent = state.nodes[node.parent];
-
-    if(parent){
-      parent.children = parent.children.filter(childId => childId !== id);
     }
 
     removeRecursively(id);
@@ -1097,7 +1215,7 @@ input[type="number"]{
     renderTree();
     renderTabs();
     saveState();
-    showToast("削除しました");
+    toast("削除しました");
   }
 
   function getProjectFile(name){
@@ -1106,8 +1224,10 @@ input[type="number"]{
     });
   }
 
-  function getEditorContent(node){
-    if(!node) return "";
+  function getContent(node){
+    if(!node){
+      return "";
+    }
 
     if(models[node.id]){
       return models[node.id].getValue();
@@ -1116,144 +1236,169 @@ input[type="number"]{
     return node.content || "";
   }
 
-  function escapeScript(text){
-    return text.replace(/<\/script/gi, "<\\/script");
+  function escapeScript(value){
+    return String(value).replace(/<\/script/gi, "<\\/script");
   }
 
   function buildPreviewDocument(){
-    const htmlFile =
-      state.active &&
-      state.nodes[state.active] &&
-      extension(state.nodes[state.active].name) === "html"
-        ? state.nodes[state.active]
+    const activeNode = state.nodes[state.active];
+
+    const htmlNode =
+      activeNode &&
+      activeNode.type === "file" &&
+      ["html","htm"].includes(extension(activeNode.name))
+        ? activeNode
         : getProjectFile("index.html");
 
-    const html = getEditorContent(htmlFile);
-    const css = getEditorContent(getProjectFile("style.css"));
-    const js = getEditorContent(getProjectFile("script.js"));
+    const html = getContent(htmlNode);
+    const css = getContent(getProjectFile("style.css"));
+    const js = getContent(getProjectFile("script.js"));
 
     const bridge = `
-      <style>
-        .webcode-hover{
-          outline:2px solid #4f8cff !important;
-          outline-offset:2px !important;
-        }
+<style>
+.webcode-selected{
+  outline:3px solid #ff637d !important;
+  outline-offset:3px !important;
+}
+</style>
 
-        .webcode-selected{
-          outline:3px solid #ff637d !important;
-          outline-offset:3px !important;
-        }
-      </style>
+<script>
+(() => {
+  const send = (type, text, extra = {}) => {
+    parent.postMessage({
+      source:"webcode-preview",
+      type,
+      text,
+      ...extra
+    }, "*");
+  };
 
-      <script>
-        (() => {
-          const originalLog = console.log;
-          const originalWarn = console.warn;
-          const originalError = console.error;
+  const stringify = value => {
+    try{
+      return typeof value === "string"
+        ? value
+        : JSON.stringify(value);
+    }catch(error){
+      return String(value);
+    }
+  };
 
-          function send(type, text, extra = {}){
-            parent.postMessage({
-              source:"webcode-preview",
-              type,
-              text,
-              ...extra
-            }, "*");
-          }
+  const originalLog = console.log;
+  const originalWarn = console.warn;
+  const originalError = console.error;
 
-          function stringify(value){
-            try{
-              return typeof value === "string"
-                ? value
-                : JSON.stringify(value);
-            }catch(error){
-              return String(value);
-            }
-          }
+  console.log = (...args) => {
+    originalLog(...args);
+    send("console", args.map(stringify).join(" "));
+  };
 
-          console.log = (...args) => {
-            originalLog(...args);
-            send("console", args.map(stringify).join(" "));
-          };
+  console.warn = (...args) => {
+    originalWarn(...args);
+    send("warn", args.map(stringify).join(" "));
+  };
 
-          console.warn = (...args) => {
-            originalWarn(...args);
-            send("warn", args.map(stringify).join(" "));
-          };
+  console.error = (...args) => {
+    originalError(...args);
+    send("error", args.map(stringify).join(" "));
+  };
 
-          console.error = (...args) => {
-            originalError(...args);
-            send("error", args.map(stringify).join(" "));
-          };
+  window.addEventListener("error", event => {
+    send("error", event.message || "JavaScript error");
+  });
 
-          window.addEventListener("error", event => {
-            send("error", event.message || "JavaScript error");
-          });
+  document.addEventListener("click", event => {
+    const target = event.target;
 
-          document.addEventListener("click", event => {
-            const target = event.target;
+    send("dom-event", "click", {
+      tag:target.tagName,
+      id:target.id || "",
+      className:typeof target.className === "string"
+        ? target.className
+        : "",
+      html:target.outerHTML || ""
+    });
+  }, true);
 
-            send("dom-event", "click", {
-              tag: target.tagName,
-              id: target.id || "",
-              className: target.className || "",
-              html: target.outerHTML || ""
-            });
-          }, true);
+  document.addEventListener("input", event => {
+    const target = event.target;
 
-          document.addEventListener("input", event => {
-            const target = event.target;
+    send("dom-event", "input", {
+      tag:target.tagName,
+      id:target.id || "",
+      className:typeof target.className === "string"
+        ? target.className
+        : "",
+      html:target.outerHTML || ""
+    });
+  }, true);
 
-            send("dom-event", "input", {
-              tag: target.tagName,
-              id: target.id || "",
-              className: target.className || "",
-              html: target.outerHTML || ""
-            });
-          }, true);
+  document.addEventListener("click", event => {
+    const anchor = event.target.closest("a");
 
-          window.addEventListener("message", event => {
-            if(!event.data) return;
+    if(!anchor){
+      return;
+    }
 
-            if(event.data.type === "inspect"){
-              document.querySelectorAll(".webcode-selected")
-                .forEach(element => {
-                  element.classList.remove("webcode-selected");
-                });
+    const href = anchor.href;
 
-              const selector = event.data.selector;
-              const element = selector
-                ? document.querySelector(selector)
-                : null;
+    if(!href || href.startsWith("javascript:")){
+      return;
+    }
 
-              if(element){
-                element.classList.add("webcode-selected");
-              }
-            }
-          });
-        })();
-      <\/script>
+    event.preventDefault();
 
-      <script>
-        try{
-          ${escapeScript(js)}
-        }catch(error){
-          parent.postMessage({
-            source:"webcode-preview",
-            type:"error",
-            text:error.message
-          }, "*");
-        }
-      <\/script>
-    `;
+    parent.postMessage({
+      source:"webcode-preview",
+      type:"anchor-link",
+      url:href,
+      label:anchor.textContent.trim() || href
+    }, "*");
+  }, true);
+
+  window.addEventListener("message", event => {
+    if(!event.data){
+      return;
+    }
+
+    if(event.data.type === "inspect"){
+      document.querySelectorAll(".webcode-selected")
+        .forEach(element => {
+          element.classList.remove("webcode-selected");
+        });
+
+      const target = event.data.selector
+        ? document.querySelector(event.data.selector)
+        : null;
+
+      if(target){
+        target.classList.add("webcode-selected");
+      }
+    }
+  });
+})();
+<\/script>
+
+<script>
+try{
+  ${escapeScript(js)}
+}catch(error){
+  parent.postMessage({
+    source:"webcode-preview",
+    type:"error",
+    text:error.message
+  }, "*");
+}
+<\/script>
+`;
 
     let documentText = html || `
-      <!doctype html>
-      <html>
-      <body>
-        <h1>WebCode Studio</h1>
-      </body>
-      </html>
-    `;
+<!doctype html>
+<html>
+<body>
+  <h1>WebCode Studio</h1>
+</body>
+</html>
+`;
 
     if(documentText.includes("</head>")){
       documentText = documentText.replace(
@@ -1274,9 +1419,7 @@ input[type="number"]{
   }
 
   function renderPreview(){
-    const iframe = $("#preview");
-
-    iframe.srcdoc = buildPreviewDocument();
+    $("#preview").srcdoc = buildPreviewDocument();
     $("#status").textContent = "プレビューを更新しました";
   }
 
@@ -1284,31 +1427,164 @@ input[type="number"]{
     consoleLines.push({text, type});
 
     const consoleElement = $("#console");
-
     consoleElement.innerHTML = "";
 
     consoleLines.forEach(line => {
-      const element = document.createElement("div");
+      const row = document.createElement("div");
 
-      element.className = "console-line " + line.type;
-      element.textContent = line.text;
+      row.className = "console-line " + line.type;
+      row.textContent = line.text;
 
-      consoleElement.appendChild(element);
+      consoleElement.appendChild(row);
     });
 
     consoleElement.scrollTop = consoleElement.scrollHeight;
     $("#debugLog").textContent = consoleLines.map(line => line.text).join("\n");
   }
 
-  function selectorForData(data){
-    if(!data || !data.tag) return "";
+  function createLinkId(url){
+    return "link-" + btoa(
+      unescape(encodeURIComponent(url))
+    ).replace(/[^a-zA-Z0-9]/g, "").slice(0, 32);
+  }
+
+  function addExternalLink(url, label = ""){
+    if(!url){
+      return;
+    }
+
+    const normalizedUrl = url.trim();
+
+    if(
+      normalizedUrl.startsWith("javascript:") ||
+      normalizedUrl.startsWith("#") ||
+      normalizedUrl === "about:blank"
+    ){
+      return;
+    }
+
+    const exists = state.externalLinks.some(link => {
+      return link.url === normalizedUrl;
+    });
+
+    if(!exists){
+      state.externalLinks.push({
+        id:createLinkId(normalizedUrl),
+        url:normalizedUrl,
+        label:label || normalizedUrl
+      });
+
+      saveState();
+      renderExternalTools();
+      toast("リンクアイコンを追加しました");
+    }
+  }
+
+  function removeExternalLink(id){
+    state.externalLinks = state.externalLinks.filter(link => {
+      return link.id !== id;
+    });
+
+    saveState();
+    renderExternalTools();
+  }
+
+  function openExternalWindow(url){
+    const popup = window.open(
+      url,
+      "_blank",
+      "width=1100,height=760"
+    );
+
+    if(!popup){
+      toast("ポップアップがブロックされています");
+      return null;
+    }
+
+    popup.focus();
+    return popup;
+  }
+
+  function addWindowTool(popup, label){
+    const container = $("#externalTools");
+
+    const button = document.createElement("button");
+
+    button.className = "external-tool window-tool";
+    button.dataset.tooltip = label;
+    button.title = label;
+
+    button.innerHTML = `
+      <i class="fa-solid fa-window-restore"></i>
+    `;
+
+    button.addEventListener("click", () => {
+      if(popup && !popup.closed){
+        popup.focus();
+      }else{
+        showToast("ウィンドウはすでに閉じられています");
+      }
+    });
+
+    container.appendChild(button);
+    openedWindows.push(popup);
+  }
+
+  function renderExternalTools(){
+    const container = $("#externalTools");
+    container.innerHTML = "";
+
+    if(!state.externalLinks.length){
+      container.innerHTML = `
+        <div class="external-empty" title="リンクはありません">
+          <i class="fa-solid fa-link-slash"></i>
+        </div>
+      `;
+      return;
+    }
+
+    state.externalLinks.forEach(link => {
+      const button = document.createElement("button");
+
+      button.className = "external-tool";
+      button.dataset.tooltip = link.label;
+      button.title = link.url;
+
+      button.innerHTML = `
+        <i class="fa-solid fa-link"></i>
+        <span class="remove-link" title="リンクを削除">
+          <i class="fa-solid fa-xmark"></i>
+        </span>
+      `;
+
+      button.addEventListener("click", event => {
+        if(event.target.closest(".remove-link")){
+          event.stopPropagation();
+          removeExternalLink(link.id);
+          return;
+        }
+
+        openExternalWindow(link.url);
+      });
+
+      container.appendChild(button);
+    });
+  }
+
+  function selectorForEvent(data){
+    if(!data || !data.tag){
+      return "";
+    }
 
     if(data.id){
       return "#" + CSS.escape(data.id);
     }
 
-    if(data.className && typeof data.className === "string"){
-      const firstClass = data.className.trim().split(/\s+/)[0];
+    if(data.className){
+      const firstClass = data.className
+        .trim()
+        .split(/\s+/)
+        .filter(Boolean)[0];
 
       if(firstClass){
         return data.tag.toLowerCase() + "." + CSS.escape(firstClass);
@@ -1321,13 +1597,18 @@ input[type="number"]{
   function setMode(mode){
     currentMode = mode;
 
+    $(".mode").forEach;
     document.querySelectorAll(".mode").forEach(button => {
-      button.classList.toggle("active", button.dataset.mode === mode);
+      button.classList.toggle(
+        "active",
+        button.dataset.mode === mode
+      );
     });
 
-    const previewPane = $("#previewPane");
-
-    previewPane.classList.toggle("console-mode", mode === "console");
+    $("#previewPane").classList.toggle(
+      "console-mode",
+      mode === "console"
+    );
 
     if(mode === "debug"){
       $("#debugPanel").classList.add("active");
@@ -1335,13 +1616,15 @@ input[type="number"]{
       $("#debugPanel").classList.remove("active");
     }
 
-    if(mode === "live"){
-      $("#debugPanel").classList.remove("active");
-      renderPreview();
+    if(mode === "inspect"){
+      appendConsole(
+        "DOMインスペクターモードを有効にしました",
+        "event"
+      );
     }
 
-    if(mode === "inspect"){
-      appendConsole("DOMインスペクターモードを有効にしました", "event");
+    if(mode === "live"){
+      renderPreview();
     }
   }
 
@@ -1356,16 +1639,12 @@ input[type="number"]{
     const debugPanel = $("#debugPanel");
     const settingsPanel = $("#settingsPanel");
 
+    debugPanel.classList.remove("active");
+    settingsPanel.classList.remove("active");
+
     if(view === "explorer"){
-      const willClose = !sidebar.classList.contains("closed");
-      sidebar.classList.toggle("closed", willClose);
-
-      if(willClose){
-        $("#sideTitle").textContent = "エクスプローラー";
-      }
-
-      debugPanel.classList.remove("active");
-      settingsPanel.classList.remove("active");
+      sidebar.classList.toggle("closed");
+      $("#sideTitle").textContent = "エクスプローラー";
       return;
     }
 
@@ -1373,20 +1652,18 @@ input[type="number"]{
 
     if(view === "debug"){
       debugPanel.classList.add("active");
-      settingsPanel.classList.remove("active");
       $("#sideTitle").textContent = "デバッグ";
     }
 
     if(view === "settings"){
       settingsPanel.classList.add("active");
-      debugPanel.classList.remove("active");
       $("#sideTitle").textContent = "設定";
     }
   }
 
   async function openFolder(){
     if(!window.showDirectoryPicker){
-      showToast("このブラウザはフォルダ選択に対応していません");
+      toast("このブラウザはフォルダ選択に対応していません");
       return;
     }
 
@@ -1397,6 +1674,7 @@ input[type="number"]{
         root:"root",
         active:null,
         tabs:[],
+        externalLinks:[],
         nodes:{
           root:{
             id:"root",
@@ -1410,15 +1688,27 @@ input[type="number"]{
 
       async function readDirectory(dir, parent){
         for await(const entry of dir.values()){
-          if(entry.name.startsWith(".")) continue;
+          if(entry.name.startsWith(".")){
+            continue;
+          }
 
           if(entry.kind === "directory"){
-            const folderId = addNode(parent, entry.name, "", "folder");
+            const folderId = addNode(
+              parent,
+              entry.name,
+              "",
+              "folder"
+            );
+
             state.nodes[folderId].open = true;
             await readDirectory(entry, folderId);
           }else{
             const file = await entry.getFile();
-            const fileId = addNode(parent, entry.name, await file.text());
+            const fileId = addNode(
+              parent,
+              entry.name,
+              await file.text()
+            );
 
             if(!state.active){
               state.active = fileId;
@@ -1433,22 +1723,25 @@ input[type="number"]{
 
       renderTree();
       renderTabs();
+      renderExternalTools();
 
       if(state.active){
         openFile(state.active);
       }
 
       saveState();
-      showToast("フォルダを開きました");
+      toast("フォルダを開きました");
     }catch(error){
       if(error.name !== "AbortError"){
-        showToast("フォルダを開けませんでした");
+        toast("フォルダを開けませんでした");
       }
     }
   }
 
   function createDefaultProject(){
-    if(getChildren(state.root).length > 0) return;
+    if(getChildren(state.root).length > 0){
+      return;
+    }
 
     const htmlId = addNode(
       "root",
@@ -1461,8 +1754,18 @@ input[type="number"]{
 </head>
 <body>
   <h1 id="title">WebCode Studio</h1>
-  <button id="hello">クリックしてください</button>
+
+  <button id="hello">
+    クリックしてください
+  </button>
+
   <input id="name" placeholder="入力してください">
+
+  <p>
+    <a href="https://fontawesome.com/icons">
+      Font Awesomeを開く
+    </a>
+  </p>
 </body>
 </html>`
     );
@@ -1477,6 +1780,12 @@ input[type="number"]{
 
 button {
   padding: .7rem 1rem;
+}
+
+input {
+  display:block;
+  margin-top:1rem;
+  padding:.6rem;
 }`
     );
 
@@ -1494,7 +1803,11 @@ button {
 
   function setupMonaco(){
     if(!window.require){
-      showToast("エディターを読み込めませんでした");
+      toast("Monaco Editorを読み込めませんでした");
+      createDefaultProject();
+      renderTree();
+      renderTabs();
+      renderPreview();
       return;
     }
 
@@ -1525,6 +1838,7 @@ button {
       createDefaultProject();
       renderTree();
       renderTabs();
+      renderExternalTools();
       renderPreview();
     });
   }
@@ -1546,21 +1860,23 @@ button {
   $("#newFile").addEventListener("click", () => {
     openModal("新しいファイル", "untitled.js", name => {
       const id = addNode("root", name);
+
       state.nodes.root.open = true;
       renderTree();
       openFile(id);
       saveState();
-      showToast("ファイルを作成しました");
+      toast("ファイルを作成しました");
     });
   });
 
   $("#newFolder").addEventListener("click", () => {
     openModal("新しいフォルダ", "folder", name => {
       addNode("root", name, "", "folder");
+
       state.nodes.root.open = true;
       renderTree();
       saveState();
-      showToast("フォルダを作成しました");
+      toast("フォルダを作成しました");
     });
   });
 
@@ -1570,12 +1886,11 @@ button {
     const value = $("#modalInput").value.trim();
 
     if(!value){
-      showToast("名前を入力してください");
+      toast("名前を入力してください");
       return;
     }
 
     const callback = modalCallback;
-
     closeModal();
 
     if(callback){
@@ -1613,10 +1928,31 @@ button {
 
   $("#saveProject").addEventListener("click", () => {
     saveState();
-    showToast("保存しました");
+    toast("保存しました");
   });
 
   $("#openFolder").addEventListener("click", openFolder);
+
+  $("#openPreviewWindow").addEventListener("click", () => {
+    const popup = openExternalWindow(
+      "about:blank"
+    );
+
+    if(!popup){
+      return;
+    }
+
+    popup.document.open();
+    popup.document.write(buildPreviewDocument());
+    popup.document.close();
+
+    addWindowTool(
+      popup,
+      "プレビューウィンドウ"
+    );
+
+    toast("別ウィンドウで表示しました");
+  });
 
   $("#fontSize").addEventListener("change", event => {
     if(editor){
@@ -1641,16 +1977,30 @@ button {
       return;
     }
 
+    if(data.type === "anchor-link"){
+      addExternalLink(data.url, data.label);
+
+      appendConsole(
+        "リンクを追加しました: " + data.url,
+        "event"
+      );
+
+      return;
+    }
+
     if(data.type === "console"){
       appendConsole(data.text, "log");
+      return;
     }
 
     if(data.type === "warn"){
       appendConsole(data.text, "event");
+      return;
     }
 
     if(data.type === "error"){
       appendConsole(data.text, "error");
+      return;
     }
 
     if(data.type === "dom-event"){
@@ -1661,19 +2011,15 @@ button {
         (data.id ? "#" + data.id : "");
 
       $("#eventLog").textContent = description;
-
-      $("#domLog").textContent =
-        data.html || "DOM情報がありません";
+      $("#domLog").textContent = data.html || "DOM情報がありません";
 
       appendConsole(
-        data.tag +
-        " イベント: " +
-        data.type,
+        data.tag + " イベント: " + data.text,
         "event"
       );
 
       if(currentMode === "inspect"){
-        const selector = selectorForData(data);
+        const selector = selectorForEvent(data);
 
         $("#preview").contentWindow.postMessage({
           type:"inspect",
@@ -1695,8 +2041,11 @@ button {
     };
   }
 
-  setupMonaco();
+  if(!Array.isArray(state.externalLinks)){
+    state.externalLinks = [];
+  }
 
+  setupMonaco();
 })();
 </script>
 </body>
