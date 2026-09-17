@@ -1,36 +1,524 @@
 <!doctype html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>WebCode Studio</title>
-<link rel="preconnect" href="https://cdnjs.cloudflare.com">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 <style>
-:root{--bg:#0f1117;--panel:#171a22;--panel2:#1d212c;--editor:#11141b;--line:#2a3040;--text:#d8dee9;--muted:#8490a6;--blue:#4f8cff;--cyan:#38c5d9;--green:#46d68c;--danger:#ff627d;--radius:10px}*{box-sizing:border-box}html,body{height:100%;margin:0;background:var(--bg);color:var(--text);font:13px Inter,"Noto Sans JP",system-ui,sans-serif;overflow:hidden}button,input{font:inherit}button{border:0;color:inherit;cursor:pointer}#app{height:100dvh;display:grid;grid-template-rows:54px 1fr 28px}.topbar{background:#151822;border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 14px;gap:14px}.brand{display:flex;align-items:center;gap:10px;font-weight:700;white-space:nowrap}.brand i{color:var(--blue);font-size:20px}.workspace{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:12px}.top-actions{margin-left:auto;display:flex;gap:7px}.btn,.icon-btn{background:var(--panel2);border:1px solid var(--line);border-radius:7px;padding:7px 10px}.btn:hover,.icon-btn:hover,.nav-item:hover{background:#273044;border-color:#455270}.btn.primary{background:var(--blue);border-color:var(--blue);color:white}.icon-btn{width:32px;height:32px;padding:0}.main{min-height:0;display:grid;grid-template-columns:260px 4px minmax(260px,1fr) 4px minmax(280px,38%)}.sidebar,.preview{background:var(--panel);min-width:0;display:flex;flex-direction:column}.sidebar{border-right:1px solid var(--line)}.side-head,.preview-head{height:48px;display:flex;align-items:center;padding:0 12px;border-bottom:1px solid var(--line);gap:8px}.side-title{font-weight:700;letter-spacing:.03em}.side-actions{margin-left:auto;display:flex;gap:3px}.tree{flex:1;overflow:auto;padding:8px 4px}.tree-row{min-height:31px;display:flex;align-items:center;gap:7px;padding:4px 8px;border-radius:6px;cursor:pointer;white-space:nowrap}.tree-row:hover{background:#232a38}.tree-row.active{background:#263b61;color:white}.tree-row .name{overflow:hidden;text-overflow:ellipsis}.tree-row .actions{margin-left:auto;display:none}.tree-row:hover .actions{display:flex}.tree-row i{width:16px;text-align:center;color:var(--muted)}.tree-row.folder i{color:#e9b35b}.mini{background:transparent;padding:3px;color:var(--muted);border-radius:4px}.mini:hover{background:#35405a;color:white}.side-bottom{border-top:1px solid var(--line);padding:10px;display:grid;gap:7px}.side-bottom .btn{text-align:left}.drop{margin:0 10px 10px;border:1px dashed #40506e;border-radius:8px;padding:10px;text-align:center;color:var(--muted);font-size:11px}.editor{min-width:0;display:flex;flex-direction:column;background:var(--editor)}.tabs{height:42px;display:flex;overflow:auto;background:var(--panel);border-bottom:1px solid var(--line)}.tab{display:flex;align-items:center;gap:8px;min-width:120px;max-width:210px;padding:0 10px;border-right:1px solid var(--line);color:var(--muted);cursor:pointer}.tab.active{background:var(--editor);color:white;border-top:2px solid var(--blue)}.tab span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.tab .close{margin-left:auto;color:var(--muted)}.tab .close:hover{color:var(--danger)}.code{position:relative;flex:1;min-height:0}.monaco{position:absolute;inset:0}.welcome{position:absolute;inset:0;display:none;place-content:center;text-align:center;color:var(--muted)}.welcome i{font-size:42px;color:var(--blue);margin-bottom:14px}.welcome h2{color:var(--text);margin:0 0 8px}.resizer{background:transparent;cursor:col-resize}.resizer:hover{background:var(--blue)}.preview{background:#fff}.preview-head{background:var(--panel);color:var(--text)}.preview-head .live{margin-left:auto;color:var(--green);font-size:11px}.preview-head .live i{font-size:8px}.preview-frame{border:0;flex:1;width:100%;background:#fff}.status{display:flex;align-items:center;gap:18px;padding:0 12px;background:#326ac2;color:white;font-size:11px}.status .right{margin-left:auto;display:flex;gap:16px}.status i{margin-right:5px}.modal-backdrop{position:fixed;inset:0;background:#0008;display:none;place-items:center;z-index:5}.modal{width:min(520px,calc(100% - 28px));background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px;box-shadow:0 20px 70px #0008}.modal h3{margin:0 0 14px}.modal input{width:100%;background:var(--editor);border:1px solid var(--line);border-radius:7px;padding:10px;color:white}.modal .actions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}.notice{position:fixed;right:16px;bottom:42px;background:#263044;border:1px solid #40506e;border-radius:8px;padding:10px 14px;display:none;z-index:8}.search{margin:10px;background:var(--editor);border:1px solid var(--line);border-radius:7px;padding:7px 9px;color:white;width:calc(100% - 20px)}@media(max-width:850px){#app{grid-template-rows:50px 1fr 27px}.topbar{padding:0 10px}.workspace{display:none}.top-actions .label{display:none}.main{grid-template-columns:52px 0 minmax(200px,1fr) 0 0}.sidebar{border:0}.sidebar .side-head{height:48px;padding:0;justify-content:center}.side-title,.side-actions,.search,.drop,.side-bottom,.tree .name{display:none}.tree{padding:8px 5px}.tree-row{justify-content:center;padding:8px 0}.tree-row .actions{display:none}.preview{display:none}.resizer{display:none}.status .right{gap:7px}.brand span{display:none}}
+:root{--bg:#0b0d12;--panel:#151922;--panel2:#1b202b;--editor:#10131a;--line:#293140;--text:#d8dee9;--muted:#8490a6;--blue:#4f8cff;--cyan:#3fc8db;--green:#48d597;--red:#ff637d;--yellow:#e5c07b}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:13px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;overflow:hidden}.app{height:100vh;display:grid;grid-template-rows:42px 1fr 24px}.topbar{background:#12151d;border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 14px;gap:18px}.brand{font-weight:700;display:flex;gap:9px;align-items:center}.brand i{color:var(--blue)}.project{color:var(--muted);border-left:1px solid var(--line);padding-left:18px}.toolbar{margin-left:auto;display:flex;gap:5px}.icon{border:0;background:transparent;color:var(--muted);font-size:14px;width:30px;height:30px;border-radius:5px;cursor:pointer}.icon:hover,.icon.active{background:#252c3b;color:var(--text)}.workspace{display:grid;grid-template-columns:52px 260px 1fr 42%;min-width:800px;height:100%;transition:grid-template-columns .25s ease}.activity{background:#11141b;border-right:1px solid var(--line);display:flex;flex-direction:column;align-items:center;padding-top:9px;gap:8px}.activity button{position:relative;font-size:19px;height:42px}.activity button.active:before{content:"";position:absolute;left:-12px;top:5px;height:32px;border-left:2px solid var(--blue)}.activity button.active{color:#fff}.sidebar{background:var(--panel);border-right:1px solid var(--line);min-width:0;overflow:hidden}.sidehead{height:42px;padding:0 12px;display:flex;align-items:center;justify-content:space-between;text-transform:uppercase;font-size:11px;color:var(--muted)}.actions{display:flex;gap:2px}.tree{padding:2px 7px;overflow:auto;height:calc(100% - 42px)}.node{height:27px;display:flex;align-items:center;gap:7px;padding:0 7px;border-radius:4px;cursor:pointer;white-space:nowrap;animation:appear .18s ease}.node:hover{background:#252c3b}.node.selected{background:#28406d;color:#fff}.node .arrow{width:12px;color:var(--muted);font-size:10px}.node i{width:15px;color:var(--blue)}.node.folder i{color:#d9a441}.node .del{margin-left:auto;display:none;color:var(--red)}.node:hover .del{display:block}.editorarea{min-width:0;display:grid;grid-template-rows:38px 1fr 0px;background:var(--editor);transition:grid-template-rows .2s}.tabs{background:var(--panel);display:flex;overflow:auto;border-bottom:1px solid var(--line)}.tab{display:flex;align-items:center;gap:8px;padding:0 13px;border-right:1px solid var(--line);color:var(--muted);cursor:pointer;min-width:125px}.tab.active{background:var(--editor);color:var(--text);border-top:2px solid var(--blue)}.tab .close{margin-left:auto}.editor{min-height:0;position:relative}.preview{border-left:1px solid var(--line);background:#fff;position:relative;display:flex;flex-direction:column;min-width:0}.previewhead{height:38px;background:var(--panel);color:var(--muted);display:flex;align-items:center;padding:0 12px;gap:6px;border-bottom:1px solid var(--line)}.mode{border:0;background:transparent;color:var(--muted);padding:6px 10px;cursor:pointer}.mode.active{color:var(--cyan);border-bottom:2px solid var(--cyan)}#preview{border:0;flex:1;width:100%;background:white}.console{display:none;flex:1;background:#0c0f14;color:#c9d1d9;padding:10px;font:12px ui-monospace,monospace;overflow:auto;white-space:pre-wrap}.preview.console-on #preview{display:none}.preview.console-on .console{display:block}.console .log{margin-bottom:5px}.console .error{color:var(--red)}.debug-panel{display:none;height:100%;padding:18px;color:var(--muted);overflow:auto}.debug-panel.show{display:block}.debug-card{background:var(--panel);border:1px solid var(--line);border-radius:7px;padding:13px;margin-bottom:10px}.debug-card b{color:var(--text)}.setting-panel{display:none;padding:17px;overflow:auto;height:100%}.setting-panel.show{display:block}.setting{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}select,input[type=number]{background:#242a36;border:1px solid var(--line);color:var(--text);border-radius:4px;padding:6px}.status{background:#182c49;color:#c7d9ff;display:flex;align-items:center;gap:20px;padding:0 12px;font-size:11px}.status .right{margin-left:auto}.modal-bg{display:none;position:fixed;inset:0;background:#0009;z-index:5;place-items:center}.modal{background:var(--panel2);padding:20px;border:1px solid var(--line);border-radius:8px;min-width:320px;box-shadow:0 15px 50px #0008}.modal h3{margin:0 0 13px}.modal input{width:100%;background:#11151d;color:var(--text);border:1px solid var(--line);padding:9px}.modal .buttons{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}.btn{background:#303949;color:var(--text);border:0;border-radius:4px;padding:7px 14px;cursor:pointer}.btn.primary{background:var(--blue);color:white}.toast{position:fixed;bottom:35px;right:20px;background:#263144;padding:10px 16px;border-radius:5px;opacity:0;transform:translateY(10px);transition:.2s;z-index:9}.toast.show{opacity:1;transform:none}@keyframes appear{from{opacity:0;transform:translateX(-5px)}to{opacity:1;transform:none}}
 </style>
 </head>
 <body>
-<div id="app">
-<header class="topbar"><div class="brand"><i class="fa-solid fa-code"></i><span>WebCode Studio</span></div><div class="workspace"><i class="fa-regular fa-folder-open"></i><span id="project-name">MY-PROJECT</span></div><div class="top-actions"><button class="btn" id="open-folder"><i class="fa-solid fa-folder-open"></i> <span class="label">フォルダを開く</span></button><button class="btn primary" id="save-folder"><i class="fa-solid fa-floppy-disk"></i> <span class="label">保存</span></button><button class="icon-btn" id="command-btn" title="コマンド"><i class="fa-solid fa-terminal"></i></button></div></header>
-<main class="main"><aside class="sidebar"><div class="side-head"><span class="side-title">エクスプローラー</span><div class="side-actions"><button class="icon-btn" id="new-file" title="新しいファイル"><i class="fa-solid fa-file-circle-plus"></i></button><button class="icon-btn" id="new-folder" title="新しいフォルダ"><i class="fa-solid fa-folder-plus"></i></button></div></div><input class="search" id="filter" placeholder="ファイルを検索"><div class="tree" id="tree"></div><div class="drop" id="drop-zone"><i class="fa-solid fa-cloud-arrow-up"></i><br>フォルダをここへドロップ</div><div class="side-bottom"><button class="btn" id="zip"><i class="fa-solid fa-file-zipper"></i> ZIPを書き出す</button><button class="btn" id="json"><i class="fa-solid fa-file-export"></i> プロジェクトを保存</button><button class="btn" id="import"><i class="fa-solid fa-file-import"></i> 読み込む</button><input id="json-input" type="file" accept="application/json" hidden></div></aside><div class="resizer" id="left-resizer"></div><section class="editor"><div class="tabs" id="tabs"></div><div class="code"><div class="monaco" id="monaco"></div><div class="welcome" id="welcome"><div><i class="fa-solid fa-laptop-code"></i><h2>WebCode Studio</h2><p>ファイルを選択するか、フォルダを開いて開始してください。</p></div></div></div></section><div class="resizer" id="right-resizer"></div><aside class="preview"><div class="preview-head"><i class="fa-solid fa-display"></i><span>ライブプレビュー</span><span class="live"><i class="fa-solid fa-circle"></i> LIVE</span><button class="icon-btn" id="refresh" title="再読み込み"><i class="fa-solid fa-rotate"></i></button><button class="icon-btn" id="new-tab" title="新しいタブ"><i class="fa-solid fa-arrow-up-right-from-square"></i></button></div><iframe class="preview-frame" id="preview" title="preview"></iframe></aside></main>
-<footer class="status"><span><i class="fa-solid fa-circle-check"></i><span id="status-text">準備完了</span></span><span id="current">ファイル未選択</span><span class="right"><span id="cursor">行 1, 列 1</span><span id="language">Plain Text</span><span>UTF-8</span></span></footer></div>
-<div class="modal-backdrop" id="modal"><div class="modal"><h3 id="modal-title">新規作成</h3><input id="modal-input" autocomplete="off"><div class="actions"><button class="btn" id="modal-cancel">キャンセル</button><button class="btn primary" id="modal-ok">作成</button></div></div></div><div class="notice" id="notice"></div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.53.0/min/vs/loader.min.js"></script>
+<div class="app">
+  <header class="topbar">
+    <div class="brand"><i class="fa-solid fa-code"></i> WebCode Studio</div>
+    <div class="project"><i class="fa-regular fa-folder-open"></i> <span id="projectName">無題のプロジェクト</span></div>
+    <div class="toolbar">
+      <button class="icon" id="openFolder" title="フォルダを開く"><i class="fa-solid fa-folder-open"></i></button>
+      <button class="icon" id="saveFolder" title="保存"><i class="fa-solid fa-floppy-disk"></i></button>
+      <button class="icon" id="run" title="実行"><i class="fa-solid fa-play"></i></button>
+    </div>
+  </header>
+
+  <main class="workspace">
+    <nav class="activity">
+      <button class="icon active" data-view="explorer" title="エクスプローラー"><i class="fa-regular fa-copy"></i></button>
+      <button class="icon" data-view="debug" title="デバッグ"><i class="fa-solid fa-bug"></i></button>
+      <button class="icon" data-view="settings" title="設定"><i class="fa-solid fa-gear"></i></button>
+    </nav>
+
+    <aside class="sidebar" id="sidebar">
+      <div class="sidehead">
+        <span id="sideTitle">エクスプローラー</span>
+        <span class="actions">
+          <button class="icon" id="newFile" title="新しいファイル"><i class="fa-solid fa-file-circle-plus"></i></button>
+          <button class="icon" id="newFolder" title="新しいフォルダ"><i class="fa-solid fa-folder-plus"></i></button>
+        </span>
+      </div>
+      <div id="tree" class="tree"></div>
+    </aside>
+
+    <section class="editorarea">
+      <div id="tabs" class="tabs"></div>
+      <div id="editor" class="editor"></div>
+
+      <div id="debugPanel" class="debug-panel">
+        <h3><i class="fa-solid fa-bug"></i> デバッグ可視化</h3>
+        <div class="debug-card"><b>実行対象</b><div id="debugTarget">ファイルを実行すると表示されます</div></div>
+        <div class="debug-card"><b>実行ログ</b><div id="debugLog">まだ実行されていません</div></div>
+        <div class="debug-card"><b>HTMLイベント</b><div id="eventLog">プレビュー内のクリックや入力イベントを監視します</div></div>
+      </div>
+
+      <div id="settingsPanel" class="setting-panel">
+        <h3>設定</h3>
+        <label class="setting">フォントサイズ <input id="fontSize" type="number" min="10" max="32" value="14"></label>
+        <label class="setting">フォント<select id="fontFamily"><option>Consolas</option><option>Monaco</option><option>monospace</option><option>Source Code Pro</option></select></label>
+        <label class="setting">文字コード<select id="encoding"><option>UTF-8</option><option>Shift_JIS</option><option>ISO-8859-1</option></select></label>
+      </div>
+    </section>
+
+    <section class="preview">
+      <div class="previewhead">
+        <i class="fa-solid fa-display"></i>
+        <button class="mode active" data-mode="live">LIVE</button>
+        <button class="mode" data-mode="console">CONSOLE</button>
+        <button class="icon" id="refresh" title="更新"><i class="fa-solid fa-rotate"></i></button>
+      </div>
+      <iframe id="preview" sandbox="allow-scripts allow-modals"></iframe>
+      <div id="console" class="console"></div>
+    </section>
+  </main>
+
+  <footer class="status">
+    <span><i class="fa-solid fa-circle-check"></i> <span id="status">準備完了</span></span>
+    <span id="current">ファイル未選択</span>
+    <span class="right" id="cursor">Ln 1, Col 1</span>
+  </footer>
+</div>
+
+<div class="modal-bg" id="modal">
+  <div class="modal">
+    <h3 id="modalTitle">新規作成</h3>
+    <input id="modalInput" autocomplete="off">
+    <div class="buttons">
+      <button class="btn" id="cancel">キャンセル</button>
+      <button class="btn primary" id="accept">作成</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.53.0/min/vs/loader.min.js"></script>
 <script>
-(()=>{const $=s=>document.querySelector(s), models={}, EXT={html:'html',htm:'html',css:'css',js:'javascript',mjs:'javascript',ts:'typescript',jsx:'javascript',tsx:'typescript',vue:'html',json:'json',md:'markdown',xml:'xml',svg:'xml',txt:'plaintext',yml:'yaml',yaml:'yaml'};const ICON={folder:'fa-folder',html:'fa-file-code',css:'fa-file-code',js:'fa-square-js',ts:'fa-file-code',jsx:'fa-react',tsx:'fa-react',vue:'fa-vuejs',json:'fa-file-lines',md:'fa-file-lines',default:'fa-file'};let state={nodes:{},root:'root',tabs:[],active:null,handles:{}};let editor,saveTimer,previewTimer;const key='webcode-studio-project-v2';
-function ext(n){return (n.split('.').pop()||'').toLowerCase()}function lang(n){return EXT[ext(n)]||'plaintext'}function icon(n,folder=false){return folder?'fa-folder':(ICON[ext(n)]||ICON.default)}function id(){return 'n'+Date.now().toString(36)+Math.random().toString(36).slice(2,7)}function toast(t){let n=$('#notice');n.textContent=t;n.style.display='block';setTimeout(()=>n.style.display='none',2200)}function setup(){state.nodes.root={id:'root',type:'folder',name:'MY-PROJECT',parent:null,children:[],collapsed:false};add('root','index.html','<!doctype html>\n<html lang="ja"><head><meta charset="UTF-8"><title>WebCode</title><link rel="stylesheet" href="style.css"></head><body><h1>WebCode Studio</h1><p>index.html を編集してプレビューを確認できます。</p><script src="script.js"><\\/script></body></html>');add('root','style.css','body{font-family:system-ui;padding:2rem;color:#202638}h1{color:#326ac2}');add('root','script.js','console.log("WebCode Studio ready");');state.tabs=[...state.nodes.root.children];state.active=state.tabs[0]}
-function add(parent,name,content=''){let x={id:id(),type:'file',name,parent,content,lang:lang(name)};state.nodes[x.id]=x;state.nodes[parent].children.push(x.id);return x.id}function addFolder(parent,name){let x={id:id(),type:'folder',name,parent,children:[],collapsed:false};state.nodes[x.id]=x;state.nodes[parent].children.push(x.id);return x.id}function children(fid){return (state.nodes[fid]?.children||[]).map(x=>state.nodes[x]).filter(Boolean).sort((a,b)=>a.type!==b.type?(a.type==='folder'?-1:1):a.name.localeCompare(b.name))}
-function renderTree(){let q=($('#filter').value||'').toLowerCase();let root=$('#tree');root.innerHTML='';function draw(fid,depth){children(fid).forEach(n=>{if(q&&n.type==='file'&&!n.name.toLowerCase().includes(q))return;let r=document.createElement('div');r.className='tree-row '+n.type+(n.id===state.active?' active':'');r.style.paddingLeft=(8+depth*14)+'px';r.innerHTML=`<i class="fa-solid ${icon(n.name,n.type==='folder')}"></i><span class="name">${esc(n.name)}</span><span class="actions">${n.type==='folder'?'<button class="mini add-child" title="ファイル追加"><i class="fa-solid fa-file-circle-plus"></i></button>':''}<button class="mini remove" title="削除"><i class="fa-solid fa-trash"></i></button></span>`;r.onclick=e=>{if(e.target.closest('.actions'))return;n.type==='folder'?(n.collapsed=!n.collapsed,renderTree()):open(n.id)};r.querySelector('.remove').onclick=e=>{e.stopPropagation();remove(n.id)};let a=r.querySelector('.add-child');if(a)a.onclick=e=>{e.stopPropagation();ask('新しいファイル','component.jsx',name=>{add(n.id,name);n.collapsed=false;renderTree();renderTabs();save()})};root.append(r);if(n.type==='folder'&&!n.collapsed)draw(n.id,depth+1)})}draw(state.root,0)}function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-function open(i){if(!state.tabs.includes(i))state.tabs.push(i);state.active=i;let n=state.nodes[i];if(!models[i]){models[i]=monaco.editor.createModel(n.content||'',n.lang);models[i].onDidChangeContent(()=>{n.content=models[i].getValue();schedule();renderPreview()})}editor.setModel(models[i]);$('#welcome').style.display='none';$('#current').textContent=n.name;$('#language').textContent=n.lang;renderTree();renderTabs();editor.focus()}function close(i){state.tabs=state.tabs.filter(x=>x!==i);if(state.active===i)state.active=state.tabs[state.tabs.length-1]||null;state.active?open(state.active):($('#welcome').style.display='grid',editor.setModel(null),$('#current').textContent='ファイル未選択');renderTabs()}function renderTabs(){let t=$('#tabs');t.innerHTML='';state.tabs.forEach(i=>{let n=state.nodes[i];if(!n)return;let x=document.createElement('div');x.className='tab '+(i===state.active?'active':'');x.innerHTML=`<i class="fa-solid ${icon(n.name)}"></i><span>${esc(n.name)}</span><b class="close"><i class="fa-solid fa-xmark"></i></b>`;x.onclick=()=>open(i);x.querySelector('.close').onclick=e=>{e.stopPropagation();close(i)};t.append(x)})}
-function remove(i){let n=state.nodes[i];if(!n||!confirm(n.name+' を削除しますか？'))return;function gone(x){let z=state.nodes[x];if(z.type==='folder')z.children.slice().forEach(gone);delete state.nodes[x];delete models[x]}gone(i);state.nodes[n.parent].children=state.nodes[n.parent].children.filter(x=>x!==i);state.tabs=state.tabs.filter(x=>state.nodes[x]);if(state.active===i)state.active=state.tabs[0]||null;renderTree();renderTabs();state.active?open(state.active):$('#welcome').style.display='grid';save();renderPreview()}
-function ask(title,def,cb){$('#modal-title').textContent=title;$('#modal-input').value=def;$('#modal').style.display='grid';$('#modal-input').focus();let done=()=>{let v=$('#modal-input').value.trim();$('#modal').style.display='none';if(v)cb(v)};$('#modal-ok').onclick=done;$('#modal-cancel').onclick=()=>$('#modal').style.display='none';$('#modal-input').onkeydown=e=>{if(e.key==='Enter')done();if(e.key==='Escape')$('#modal').style.display='none'}}
-function save(){try{localStorage.setItem(key,JSON.stringify({nodes:state.nodes,root:state.root,tabs:state.tabs,active:state.active}))}catch(e){}if(state.handles.root)writeFolder();$('#status-text').textContent='保存済み'}function schedule(){clearTimeout(saveTimer);saveTimer=setTimeout(save,500);$('#status-text').textContent='編集中'}
-function files(fid,prefix='',out=[]){children(fid).forEach(n=>n.type==='folder'?files(n.id,prefix+n.name+'/',out):out.push({path:prefix+n.name,node:n}));return out}function pathOf(n){let p=n.name,x=n;while(x.parent&&x.parent!==state.root){x=state.nodes[x.parent];p=x.name+'/'+p}return p}function previewHtml(){let index=files(state.root).find(x=>x.node.name.toLowerCase()==='index.html');if(!index)return '<p style="padding:20px">index.html がありません</p>';let map=Object.fromEntries(files(state.root).map(x=>[x.path,x.node]));let d=new DOMParser().parseFromString(index.node.content,'text/html');d.querySelectorAll('link[rel="stylesheet"][href]').forEach(x=>{let n=map[resolve(pathOf(index.node),x.getAttribute('href'))];let s=d.createElement('style');s.textContent=n?n.content:'';x.replaceWith(s)});d.querySelectorAll('script[src]').forEach(x=>{let n=map[resolve(pathOf(index.node),x.getAttribute('src'))];let s=d.createElement('script');s.textContent=n?n.content:'';x.replaceWith(s)});return '<!doctype html>'+d.documentElement.outerHTML}function resolve(base,ref){if(/^https?:|^data:|^\/\//.test(ref))return null;let a=base.split('/');a.pop();ref.replace(/^\.\//,'').split('/').forEach(p=>p==='..'?a.pop():p&&p!=='.'&&a.push(p));return a.join('/')}
-function renderPreview(){clearTimeout(previewTimer);previewTimer=setTimeout(()=>$('#preview').srcdoc=previewHtml(),180)}
-async function readDir(dir,parent){for await(const e of dir.values()){if(e.name.startsWith('.'))continue;if(e.kind==='directory'){let f=addFolder(parent,e.name);await readDir(e,f)}else{let f=add(parent,e.name,await(await e.getFile()).text());state.handles[f]=e}}}async function openFolder(){if(!window.showDirectoryPicker){toast('このブラウザはフォルダAPIに対応していません');return}try{let h=await showDirectoryPicker({mode:'readwrite'});state={nodes:{},root:'root',tabs:[],active:null,handles:{root:h}};state.nodes.root={id:'root',type:'folder',name:h.name,parent:null,children:[],collapsed:false};await readDir(h,'root');$('#project-name').textContent=h.name;renderTree();renderTabs();let first=files('root')[0];if(first)open(first.node.id);renderPreview();toast('フォルダを開きました')}catch(e){if(e.name!=='AbortError')toast('フォルダを開けませんでした')}}async function writeFolder(){let root=state.handles.root;async function go(fid,dir){for(const n of children(fid)){if(n.type==='folder'){let d=await dir.getDirectoryHandle(n.name,{create:true});await go(n.id,d)}else{let w=await(await dir.getFileHandle(n.name,{create:true})).createWritable();await w.write(n.content||'');await w.close()}}}try{await go(state.root,root)}catch(e){console.warn(e)}}
-async function zip(){if(!window.JSZip)return toast('ZIPライブラリを読み込めません');let z=new JSZip();files(state.root).forEach(x=>z.file(x.path,x.node.content||''));let b=await z.generateAsync({type:'blob'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=state.nodes.root.name+'.zip';a.click();toast('ZIPを書き出しました')}
-function jsonExport(){let b=new Blob([JSON.stringify({nodes:state.nodes,root:state.root,tabs:state.tabs,active:state.active},null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='webcode-project.json';a.click()}function jsonImport(f){let r=new FileReader();r.onload=()=>{try{let d=JSON.parse(r.result);state={...d,handles:{}};Object.values(models).forEach(m=>m.dispose());renderTree();renderTabs();state.active&&open(state.active);renderPreview()}catch(e){toast('JSONが不正です')}};r.readAsText(f)}
-function init(){setup();let old;try{old=JSON.parse(localStorage.getItem(key))}catch(e){}if(old&&old.nodes){state={...old,handles:{}}}require.config({paths:{vs:'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.53.0/min/vs'}});require(['vs/editor/editor.main'],()=>{editor=monaco.editor.create($('#monaco'),{theme:'vs-dark',automaticLayout:true,minimap:{enabled:false},fontSize:14,wordWrap:'on',padding:{top:12},tabSize:2});editor.onDidChangeCursorPosition(e=>$('#cursor').textContent='行 '+e.position.lineNumber+', 列 '+e.position.column);renderTree();renderTabs();state.active?open(state.active):$('#welcome').style.display='grid';renderPreview()})}
-$('#open-folder').onclick=openFolder;$('#save-folder').onclick=()=>state.handles.root?writeFolder().then(()=>toast('フォルダへ保存しました')):save();$('#refresh').onclick=renderPreview;$('#new-tab').onclick=()=>{let w=window.open();if(w){w.document.write(previewHtml());w.document.close()}};$('#zip').onclick=zip;$('#json').onclick=jsonExport;$('#import').onclick=()=>$('#json-input').click();$('#json-input').onchange=e=>e.target.files[0]&&jsonImport(e.target.files[0]);$('#filter').oninput=renderTree;$('#new-file').onclick=()=>ask('新しいファイル','component.jsx',n=>{let i=add(state.root,n);state.nodes[state.root].children.push();open(i);renderTree();save()});$('#new-folder').onclick=()=>ask('新しいフォルダ','src',n=>{addFolder(state.root,n);renderTree();save()});$('#drop-zone').ondragover=e=>e.preventDefault();$('#drop-zone').ondrop=async e=>{e.preventDefault();let f=e.dataTransfer.files[0];if(f)toast('ブラウザの「フォルダを開く」を使うと階層を読み込めます')};init()})()
-</script></body></html>
+(() => {
+  const $ = s => document.querySelector(s), models = {};
+  let editor, modalCallback, activeView = 'explorer', consoleLines = [];
+  const key = 'webcode-studio-v3';
+  let state = {
+    root: 'root',
+    active: null,
+    tabs: [],
+    nodes: {
+      root: { id: 'root', type: 'folder', name: 'プロジェクト', children: [] }
+    }
+  };
+
+  const icons = {
+    html: 'fa-brands fa-html5',
+    css: 'fa-brands fa-css3-alt',
+    js: 'fa-brands fa-js',
+    jsx: 'fa-brands fa-react',
+    vue: 'fa-brands fa-vuejs',
+    json: 'fa-solid fa-brackets-curly',
+    default: 'fa-regular fa-file-code'
+  };
+
+  function uid() {
+    return 'n' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+  }
+
+  function ext(n) {
+    return n.split('.').pop().toLowerCase();
+  }
+
+  function language(n) {
+    return { html: 'html', css: 'css', js: 'javascript', jsx: 'javascript', ts: 'typescript', vue: 'html', json: 'json' }[ext(n)] || 'plaintext';
+  }
+
+  function children(id) {
+    return state.nodes[id].children.map(x => state.nodes[x]).filter(Boolean);
+  }
+
+  function icon(n) {
+    return icons[ext(n)] || icons.default;
+  }
+
+  function toast(t) {
+    $('#toast').textContent = t;
+    $('#toast').classList.add('show');
+    setTimeout(() => $('#toast').classList.remove('show'), 1800);
+  }
+
+  function add(parent, name, content = '', type = 'file') {
+    const n = {
+      id: uid(),
+      type,
+      name,
+      parent,
+      children: type === 'folder' ? [] : undefined,
+      content,
+      lang: language(name)
+    };
+    state.nodes[n.id] = n;
+    state.nodes[parent].children.push(n.id);
+    return n.id;
+  }
+
+  function ask(title, def, cb) {
+    $('#modalTitle').textContent = title;
+    $('#modalInput').value = def || '';
+    $('#modal').style.display = 'grid';
+    modalCallback = cb;
+    setTimeout(() => $('#modalInput').focus(), 20);
+  }
+
+  function closeModal() {
+    $('#modal').style.display = 'none';
+  }
+
+  function render() {
+    const tree = $('#tree');
+    tree.innerHTML = '';
+
+    function draw(id, depth) {
+      children(id).forEach(n => {
+        const row = document.createElement('div');
+        row.className = 'node ' + n.type + (state.active === n.id ? ' selected' : '');
+        row.style.paddingLeft = (7 + depth * 15) + 'px';
+
+        row.innerHTML =
+          n.type === 'folder'
+            ? '<span class="arrow">' + (n.open ? '▾' : '▸') + '</span><i class="fa-solid fa-folder"></i><span>' + n.name + '</span>'
+            : '<span class="arrow"></span><i class="' + icon(n.name) + '"></i><span>' + n.name + '</span><span class="del"><i class="fa-solid fa-trash"></i></span>';
+
+        row.onclick = e => {
+          e.stopPropagation();
+          if (n.type === 'folder') {
+            n.open = !n.open;
+            render();
+          } else {
+            open(n.id);
+          }
+        };
+
+        if (n.type === 'file') {
+          row.querySelector('.del').onclick = e => {
+            e.stopPropagation();
+            remove(n.id);
+          };
+        }
+
+        tree.appendChild(row);
+
+        if (n.type === 'folder' && n.open) {
+          draw(n.id, depth + 1);
+        }
+      });
+    }
+
+    draw(state.root, 0);
+  }
+
+  function open(id) {
+    const n = state.nodes[id];
+    state.active = id;
+
+    if (!state.tabs.includes(id)) state.tabs.push(id);
+
+    if (!models[id]) {
+      models[id] = monaco.editor.createModel(n.content || '', n.lang);
+      models[id].onDidChangeContent(() => {
+        n.content = models[id].getValue();
+        runPreview();
+        save();
+      });
+    }
+
+    editor.setModel(models[id]);
+    renderTabs();
+    $('#current').textContent = n.name;
+    editor.focus();
+  }
+
+  function renderTabs() {
+    $('#tabs').innerHTML = '';
+    state.tabs.forEach(id => {
+      const n = state.nodes[id];
+      if (!n) return;
+
+      const t = document.createElement('div');
+      t.className = 'tab ' + (id === state.active ? 'active' : '');
+      t.innerHTML = '<i class="' + icon(n.name) + '"></i><span>' + n.name + '</span><span class="close"><i class="fa-solid fa-xmark"></i></span>';
+
+      t.onclick = () => open(id);
+      t.querySelector('.close').onclick = e => {
+        e.stopPropagation();
+        state.tabs = state.tabs.filter(x => x !== id);
+        if (state.active === id) {
+          state.active = state.tabs.at(-1) || null;
+          if (state.active) open(state.active);
+          else editor.setModel(null);
+        }
+        renderTabs();
+      };
+
+      $('#tabs').appendChild(t);
+    });
+  }
+
+  function remove(id) {
+    const n = state.nodes[id];
+    if (!confirm(n.name + ' を削除しますか？')) return;
+
+    state.nodes[n.parent].children = state.nodes[n.parent].children.filter(x => x !== id);
+
+    function gone(x) {
+      const z = state.nodes[x];
+      z.children && z.children.slice().forEach(gone);
+      if (models[x]) models[x].dispose();
+      delete state.nodes[x];
+    }
+
+    gone(id);
+
+    state.tabs = state.tabs.filter(x => x !== id);
+    if (state.active === id) {
+      state.active = state.tabs.at(-1) || null;
+      state.active ? open(state.active) : editor.setModel(null);
+    }
+
+    render();
+    save();
+    toast('削除しました');
+  }
+
+  function save() {
+    localStorage.setItem(key, JSON.stringify(state));
+    $('#status').textContent = '保存済み';
+  }
+
+  function restore() {
+    try {
+      const x = JSON.parse(localStorage.getItem(key));
+      if (x && x.nodes) state = x;
+    } catch (e) {}
+  }
+
+  function runPreview() {
+    const html = state.nodes[state.active]?.name.endsWith('.html')
+      ? models[state.active]?.getValue()
+      : children(state.root).find(n => n.name === 'index.html')?.content || '';
+
+    let css = children(state.root).find(n => n.name === 'style.css')?.content || '';
+    let js = children(state.root).find(n => n.name === 'script.js')?.content || '';
+
+    const doc = html
+      .replace('</head>', '<style>' + css + '</style></head>')
+      .replace('</body>', `
+        <script>
+          window.onerror = (m) => parent.postMessage({ type: "error", text: m }, "*");
+          document.addEventListener("click", e => {
+            parent.postMessage({ type: "event", text: "click: " + (e.target.tagName || "") }, "*");
+          }, true);
+
+          try {
+            ${js}
+          } catch (e) {
+            parent.postMessage({ type: "error", text: e.message }, "*");
+          }
+        </script>
+      </body>`);
+    $('#preview').srcdoc = doc;
+    $('#status').textContent = 'プレビューを更新しました';
+  }
+
+  function log(text, cls = '') {
+    consoleLines.push({ text, cls });
+    $('#console').innerHTML = consoleLines.map(x => '<div class="log ' + x.cls + '">' + x.text + '</div>').join('');
+    $('#debugLog').textContent = consoleLines.map(x => x.text.replace(/<[^>]*>/g, '')).join('\n');
+  }
+
+  function projectDefaults() {
+    if (!state.nodes.root.children.length) {
+      const h = add('root', 'index.html', `<!doctype html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>WebCode Studio</title>
+</head>
+<body>
+  <h1>Hello WebCode Studio</h1>
+  <button id="hello">クリックしてね</button>
+</body>
+</html>`);
+
+      add('root', 'style.css', `
+body {
+  font-family: sans-serif;
+  padding: 2rem;
+}
+button {
+  padding: .6rem 1rem;
+}
+      `);
+
+      add('root', 'script.js', `
+document.querySelector("#hello")?.addEventListener("click", () => {
+  console.log("Hello!");
+});
+      `);
+
+      state.nodes.root.open = true;
+      open(h);
+    }
+  }
+
+  function setup() {
+    restore();
+
+    require.config({
+      paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.53.0/min/vs' }
+    });
+
+    require(['vs/editor/editor.main'], () => {
+      editor = monaco.editor.create($('#editor'), {
+        theme: 'vs-dark',
+        automaticLayout: true,
+        fontSize: 14,
+        minimap: { enabled: false },
+        wordWrap: 'on'
+      });
+
+      editor.onDidChangeCursorPosition(e => {
+        $('#cursor').textContent = 'Ln ' + e.position.lineNumber + ', Col ' + e.position.column;
+      });
+
+      projectDefaults();
+      render();
+      runPreview();
+    });
+  }
+
+  $('#newFile').onclick = () => {
+    ask('新しいファイル', 'untitled.js', name => {
+      const id = add('root', name);
+      state.nodes.root.open = true;
+      render();
+      open(id);
+      save();
+    });
+  };
+
+  $('#newFolder').onclick = () => {
+    ask('新しいフォルダ', 'folder', name => {
+      add('root', name, '', 'folder');
+      state.nodes.root.open = true;
+      render();
+      save();
+    });
+  };
+
+  $('#cancel').onclick = closeModal;
+  $('#accept').onclick = () => {
+    const v = $('#modalInput').value.trim();
+    if (v) {
+      closeModal();
+      modalCallback(v);
+    }
+  };
+
+  $('#modalInput').onkeydown = e => {
+    if (e.key === 'Enter') $('#accept').click();
+    if (e.key === 'Escape') closeModal();
+  };
+
+  $('#run').onclick = () => {
+    runPreview();
+    if (state.active) {
+      $('#debugTarget').textContent = state.nodes[state.active].name;
+      log('<i class=\"fa-solid fa-play\"></i> ' + state.nodes[state.active].name + ' を実行しました');
+    }
+  };
+
+  $('#refresh').onclick = runPreview;
+
+  document.querySelectorAll('.mode').forEach(btn => {
+    btn.onclick = () => {
+      document.querySelectorAll('.mode').forEach(x => x.classList.remove('active'));
+      btn.classList.add('active');
+      $('.preview').classList.toggle('console-on', btn.dataset.mode === 'console');
+    };
+  });
+
+  document.querySelectorAll('[data-view]').forEach(btn => {
+    btn.onclick = () => {
+      document.querySelectorAll('[data-view]').forEach(x => x.classList.remove('active'));
+      btn.classList.add('active');
+      activeView = btn.dataset.view;
+
+      $('#sidebar').style.display = activeView === 'explorer' ? 'block' : 'none';
+      $('#debugPanel').classList.toggle('show', activeView === 'debug');
+      $('#settingsPanel').classList.toggle('show', activeView === 'settings');
+
+      $('#sideTitle').textContent =
+        activeView === 'explorer' ? 'エクスプローラー' :
+        activeView === 'debug' ? '実行とデバッグ' : '設定';
+    };
+  });
+
+  $('#fontSize').onchange = e => editor && editor.updateOptions({ fontSize: +e.target.value });
+  $('#fontFamily').onchange = e => editor && editor.updateOptions({ fontFamily: e.target.value });
+
+  window.addEventListener('message', e => {
+    if (e.data && e.data.type === 'error') {
+      log('<i class=\"fa-solid fa-triangle-exclamation\"></i> ' + e.data.text, 'error');
+    }
+    if (e.data && e.data.type === 'event') {
+      $('#eventLog').textContent = e.data.text;
+      log('<i class=\"fa-solid fa-bolt\"></i> ' + e.data.text);
+    }
+  });
+
+  $('#openFolder').onclick = async () => {
+    if (!window.showDirectoryPicker) return toast('このブラウザはフォルダ選択に対応していません');
+
+    try {
+      const dir = await showDirectoryPicker();
+
+      state = {
+        root: 'root',
+        active: null,
+        tabs: [],
+        nodes: {
+          root: { id: 'root', type: 'folder', name: dir.name, children: [] }
+        }
+      };
+
+      async function read(d, p) {
+        for await (const e of d.values()) {
+          if (e.name.startsWith('.')) continue;
+
+          if (e.kind === 'directory') {
+            const f = add(p, e.name, '', 'folder');
+            await read(e, f);
+          } else {
+            const f = add(p, e.name, await (await e.getFile()).text());
+            if (!state.active) state.active = f;
+          }
+        }
+      }
+
+      await read(dir, 'root');
+      state.nodes.root.open = true;
+      $('#projectName').textContent = dir.name;
+      render();
+
+      if (state.active) open(state.active);
+      save();
+      toast('フォルダを開きました');
+    } catch (e) {
+      if (e.name !== 'AbortError') toast('フォルダを開けませんでした');
+    }
+  };
+
+  $('#saveFolder').onclick = () => {
+    save();
+    toast('保存しました');
+  };
+
+  setup();
+})();
+</script>
+</body>
+</html>
