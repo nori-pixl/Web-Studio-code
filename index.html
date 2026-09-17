@@ -24,7 +24,11 @@
   --red:#ff637d;
   --yellow:#e5c07b;
 }
-
+.console-line{
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
 *{box-sizing:border-box}
 html,body{
   width:100%;
@@ -71,8 +75,10 @@ button{cursor:pointer}
 .icon:hover,.icon.active{color:var(--text);background:#252c3b}
 
 .workspace{
-  min-width:760px;min-height:0;display:grid;
-  grid-template-columns:52px 260px minmax(280px,1fr) minmax(300px,42%);
+  min-width: 0;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 52px 260px minmax(0, 1fr) minmax(300px, 42%);
 }
 
 .activity{
@@ -129,14 +135,25 @@ button{cursor:pointer}
 .node-delete{display:none;margin-left:auto;color:var(--red)!important}
 .node:hover .node-delete{display:inline-flex}
 
-.editorarea{position:relative;min-width:0;min-height:0;background:var(--editor);overflow:hidden}
+.editorarea{
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  width: 100%;
+  overflow: hidden;
+}
 .tabs{height:38px;display:flex;overflow:auto;background:var(--panel);border-bottom:1px solid var(--line)}
 .tab{min-width:130px;display:flex;align-items:center;gap:8px;padding:0 12px;color:var(--muted);border-right:1px solid var(--line);cursor:pointer}
 .tab.active{color:var(--text);background:var(--editor);border-top:2px solid var(--blue)}
 .tab-close{margin-left:auto}
 .tab-close:hover{color:var(--red)}
-.editor{position:absolute;inset:38px 0 0;overflow:hidden}
-
+.editor{
+  position: absolute;
+  inset: 38px 0 0;
+  width: 100% !important;
+  height: calc(100% - 38px) !important;
+  overflow: hidden;
+}
 .panel{
   position:absolute;inset:0;z-index:5;display:none;padding:18px;overflow:auto;background:var(--editor);
 }
@@ -352,6 +369,16 @@ select,input[type=number]{padding:6px 8px;color:var(--text);background:#242a36;b
   let consoleLines = [];
   let previewRequest = null;
 
+  const bridge = `
+<style>
+  html, body {
+    white-space: pre-wrap !important;
+    word-break: break-word !important;
+    overflow-wrap: anywhere !important;
+  }
+</style>
+`;
+  
   const runtime = {
     rootHandle: null,
     handles: {}
@@ -387,6 +414,19 @@ select,input[type=number]{padding:6px 8px;color:var(--text);background:#242a36;b
     md: "fa-brands fa-markdown",
     default: "fa-regular fa-file-code"
   };
+  
+  editor = monaco.editor.create($("#editor"), {
+  theme: "vs-dark",
+  automaticLayout: true,
+  fontSize: 14,
+  minimap: { enabled: false },
+  wordWrap: "on",
+  wrappingStrategy: "advanced",
+  wrappingIndent: "same",
+  scrollBeyondLastLine: false,
+  smoothScrolling: true,
+  padding: { top: 12 }
+});
 
   function uid(){ return "n" + Date.now().toString(36) + Math.random().toString(36).slice(2,8); }
   function extension(name){ return String(name).split(".").pop().toLowerCase(); }
@@ -1245,6 +1285,9 @@ try{
   if(!Array.isArray(state.externalLinks)){ state.externalLinks = []; }
   setupMonaco();
 })();
+  window.addEventListener("resize", () => {
+  if (editor) editor.layout();
+});
 </script>
 </body>
 </html>
