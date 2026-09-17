@@ -1,88 +1,723 @@
 <!doctype html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>WebCode Studio</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+<link rel="stylesheet"
+ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
 <style>
-:root{--bg:#0b0d12;--panel:#151922;--panel2:#1b202b;--editor:#10131a;--line:#293140;--text:#d8dee9;--muted:#8490a6;--blue:#4f8cff;--cyan:#3fc8db;--green:#48d597;--red:#ff637d;--yellow:#e5c07b}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:13px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;overflow:hidden}.app{height:100vh;display:grid;grid-template-rows:42px 1fr 24px}.topbar{background:#12151d;border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 14px;gap:18px}.brand{font-weight:700;display:flex;gap:9px;align-items:center}.brand i{color:var(--blue)}.project{color:var(--muted);border-left:1px solid var(--line);padding-left:18px}.toolbar{margin-left:auto;display:flex;gap:5px}.icon{border:0;background:transparent;color:var(--muted);font-size:14px;width:30px;height:30px;border-radius:5px;cursor:pointer}.icon:hover,.icon.active{background:#252c3b;color:var(--text)}.workspace{display:grid;grid-template-columns:52px 260px 1fr 42%;min-width:800px;height:100%;transition:grid-template-columns .25s ease}.activity{background:#11141b;border-right:1px solid var(--line);display:flex;flex-direction:column;align-items:center;padding-top:9px;gap:8px}.activity button{position:relative;font-size:19px;height:42px}.activity button.active:before{content:"";position:absolute;left:-12px;top:5px;height:32px;border-left:2px solid var(--blue)}.activity button.active{color:#fff}.sidebar{background:var(--panel);border-right:1px solid var(--line);min-width:0;overflow:hidden}.sidehead{height:42px;padding:0 12px;display:flex;align-items:center;justify-content:space-between;text-transform:uppercase;font-size:11px;color:var(--muted)}.actions{display:flex;gap:2px}.tree{padding:2px 7px;overflow:auto;height:calc(100% - 42px)}.node{height:27px;display:flex;align-items:center;gap:7px;padding:0 7px;border-radius:4px;cursor:pointer;white-space:nowrap;animation:appear .18s ease}.node:hover{background:#252c3b}.node.selected{background:#28406d;color:#fff}.node .arrow{width:12px;color:var(--muted);font-size:10px}.node i{width:15px;color:var(--blue)}.node.folder i{color:#d9a441}.node .del{margin-left:auto;display:none;color:var(--red)}.node:hover .del{display:block}.editorarea{min-width:0;display:grid;grid-template-rows:38px 1fr 0px;background:var(--editor);transition:grid-template-rows .2s}.tabs{background:var(--panel);display:flex;overflow:auto;border-bottom:1px solid var(--line)}.tab{display:flex;align-items:center;gap:8px;padding:0 13px;border-right:1px solid var(--line);color:var(--muted);cursor:pointer;min-width:125px}.tab.active{background:var(--editor);color:var(--text);border-top:2px solid var(--blue)}.tab .close{margin-left:auto}.editor{min-height:0;position:relative}.preview{border-left:1px solid var(--line);background:#fff;position:relative;display:flex;flex-direction:column;min-width:0}.previewhead{height:38px;background:var(--panel);color:var(--muted);display:flex;align-items:center;padding:0 12px;gap:6px;border-bottom:1px solid var(--line)}.mode{border:0;background:transparent;color:var(--muted);padding:6px 10px;cursor:pointer}.mode.active{color:var(--cyan);border-bottom:2px solid var(--cyan)}#preview{border:0;flex:1;width:100%;background:white}.console{display:none;flex:1;background:#0c0f14;color:#c9d1d9;padding:10px;font:12px ui-monospace,monospace;overflow:auto;white-space:pre-wrap}.preview.console-on #preview{display:none}.preview.console-on .console{display:block}.console .log{margin-bottom:5px}.console .error{color:var(--red)}.debug-panel{display:none;height:100%;padding:18px;color:var(--muted);overflow:auto}.debug-panel.show{display:block}.debug-card{background:var(--panel);border:1px solid var(--line);border-radius:7px;padding:13px;margin-bottom:10px}.debug-card b{color:var(--text)}.setting-panel{display:none;padding:17px;overflow:auto;height:100%}.setting-panel.show{display:block}.setting{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}select,input[type=number]{background:#242a36;border:1px solid var(--line);color:var(--text);border-radius:4px;padding:6px}.status{background:#182c49;color:#c7d9ff;display:flex;align-items:center;gap:20px;padding:0 12px;font-size:11px}.status .right{margin-left:auto}.modal-bg{display:none;position:fixed;inset:0;background:#0009;z-index:5;place-items:center}.modal{background:var(--panel2);padding:20px;border:1px solid var(--line);border-radius:8px;min-width:320px;box-shadow:0 15px 50px #0008}.modal h3{margin:0 0 13px}.modal input{width:100%;background:#11151d;color:var(--text);border:1px solid var(--line);padding:9px}.modal .buttons{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}.btn{background:#303949;color:var(--text);border:0;border-radius:4px;padding:7px 14px;cursor:pointer}.btn.primary{background:var(--blue);color:white}.toast{position:fixed;bottom:35px;right:20px;background:#263144;padding:10px 16px;border-radius:5px;opacity:0;transform:translateY(10px);transition:.2s;z-index:9}.toast.show{opacity:1;transform:none}@keyframes appear{from{opacity:0;transform:translateX(-5px)}to{opacity:1;transform:none}}
+:root{
+  --bg:#0b0d12;
+  --panel:#151922;
+  --panel2:#1c222e;
+  --editor:#10131a;
+  --line:#293140;
+  --text:#d8dee9;
+  --muted:#8490a6;
+  --blue:#4f8cff;
+  --cyan:#3fc8db;
+  --green:#48d597;
+  --red:#ff637d;
+  --yellow:#e5c07b;
+}
+
+*{
+  box-sizing:border-box;
+}
+
+html,
+body{
+  width:100%;
+  height:100%;
+  margin:0;
+  overflow:hidden;
+  background:var(--bg);
+  color:var(--text);
+  font:13px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+}
+
+button,
+input,
+select{
+  font:inherit;
+}
+
+button{
+  cursor:pointer;
+}
+
+.app{
+  width:100%;
+  height:100vh;
+  display:grid;
+  grid-template-rows:42px 1fr 24px;
+}
+
+.topbar{
+  display:flex;
+  align-items:center;
+  gap:18px;
+  padding:0 14px;
+  background:#12151d;
+  border-bottom:1px solid var(--line);
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  font-weight:700;
+  white-space:nowrap;
+}
+
+.brand i{
+  color:var(--blue);
+}
+
+.project{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding-left:18px;
+  color:var(--muted);
+  border-left:1px solid var(--line);
+  white-space:nowrap;
+}
+
+.toolbar{
+  display:flex;
+  gap:5px;
+  margin-left:auto;
+}
+
+.icon{
+  width:30px;
+  height:30px;
+  border:0;
+  border-radius:5px;
+  color:var(--muted);
+  background:transparent;
+}
+
+.icon:hover,
+.icon.active{
+  color:var(--text);
+  background:#252c3b;
+}
+
+.workspace{
+  min-width:750px;
+  min-height:0;
+  display:grid;
+  grid-template-columns:52px 260px minmax(280px,1fr) minmax(300px,42%);
+}
+
+.activity{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:8px;
+  padding-top:9px;
+  background:#11141b;
+  border-right:1px solid var(--line);
+}
+
+.activity button{
+  position:relative;
+  height:42px;
+  font-size:18px;
+}
+
+.activity button.active::before{
+  content:"";
+  position:absolute;
+  left:-11px;
+  top:5px;
+  height:32px;
+  border-left:2px solid var(--blue);
+}
+
+.sidebar{
+  min-width:0;
+  overflow:hidden;
+  background:var(--panel);
+  border-right:1px solid var(--line);
+  transition:
+    width .25s ease,
+    opacity .2s ease,
+    transform .25s ease;
+}
+
+.sidebar.closed{
+  width:0;
+  opacity:0;
+  transform:translateX(-20px);
+  pointer-events:none;
+}
+
+.sidehead{
+  height:42px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 12px;
+  color:var(--muted);
+  font-size:11px;
+  text-transform:uppercase;
+}
+
+.actions{
+  display:flex;
+  gap:2px;
+}
+
+.tree{
+  height:calc(100% - 42px);
+  padding:2px 7px;
+  overflow:auto;
+}
+
+.node{
+  height:28px;
+  display:flex;
+  align-items:center;
+  gap:7px;
+  padding:0 7px;
+  border-radius:4px;
+  white-space:nowrap;
+  cursor:pointer;
+  animation:nodeIn .18s ease;
+}
+
+.node:hover{
+  background:#252c3b;
+}
+
+.node.selected{
+  color:#fff;
+  background:#28406d;
+}
+
+.node i{
+  width:16px;
+  color:var(--blue);
+  text-align:center;
+}
+
+.node.folder i{
+  color:var(--yellow);
+}
+
+.node-label{
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.node-delete{
+  display:none;
+  margin-left:auto;
+  color:var(--red)!important;
+}
+
+.node:hover .node-delete{
+  display:block;
+}
+
+.folder-arrow{
+  width:14px;
+  color:var(--muted)!important;
+  transition:transform .18s ease;
+}
+
+.folder-arrow.open{
+  transform:rotate(90deg);
+}
+
+.editorarea{
+  position:relative;
+  min-width:0;
+  min-height:0;
+  background:var(--editor);
+}
+
+.tabs{
+  height:38px;
+  display:flex;
+  overflow:auto;
+  background:var(--panel);
+  border-bottom:1px solid var(--line);
+}
+
+.tab{
+  min-width:130px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:0 12px;
+  color:var(--muted);
+  border-right:1px solid var(--line);
+  cursor:pointer;
+}
+
+.tab.active{
+  color:var(--text);
+  background:var(--editor);
+  border-top:2px solid var(--blue);
+}
+
+.tab-close{
+  margin-left:auto;
+  color:var(--muted);
+}
+
+.tab-close:hover{
+  color:var(--red);
+}
+
+.editor{
+  position:absolute;
+  inset:38px 0 0;
+}
+
+.panel{
+  position:absolute;
+  inset:0;
+  z-index:2;
+  display:none;
+  padding:18px;
+  overflow:auto;
+  background:var(--editor);
+}
+
+.panel.active{
+  display:block;
+}
+
+.debug-card,
+.setting-card{
+  margin-bottom:12px;
+  padding:14px;
+  border:1px solid var(--line);
+  border-radius:7px;
+  background:var(--panel);
+}
+
+.debug-card strong{
+  display:block;
+  margin-bottom:8px;
+  color:var(--text);
+}
+
+.debug-card pre{
+  margin:0;
+  color:var(--cyan);
+  white-space:pre-wrap;
+}
+
+.setting{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:12px 0;
+  border-bottom:1px solid var(--line);
+}
+
+select,
+input[type="number"]{
+  padding:6px 8px;
+  color:var(--text);
+  background:#242a36;
+  border:1px solid var(--line);
+  border-radius:4px;
+}
+
+.preview{
+  min-width:0;
+  min-height:0;
+  display:flex;
+  flex-direction:column;
+  background:#fff;
+  border-left:1px solid var(--line);
+}
+
+.preview-head{
+  height:38px;
+  display:flex;
+  align-items:center;
+  gap:4px;
+  padding:0 9px;
+  color:var(--muted);
+  background:var(--panel);
+  border-bottom:1px solid var(--line);
+}
+
+.mode{
+  height:30px;
+  padding:0 9px;
+  color:var(--muted);
+  background:transparent;
+  border:0;
+  border-bottom:2px solid transparent;
+}
+
+.mode:hover,
+.mode.active{
+  color:var(--cyan);
+  border-bottom-color:var(--cyan);
+}
+
+#preview{
+  display:block;
+  width:100%;
+  height:100%;
+  flex:1;
+  border:0;
+  background:white;
+}
+
+.console{
+  display:none;
+  flex:1;
+  overflow:auto;
+  padding:12px;
+  color:#c9d1d9;
+  background:#0c0f14;
+  font:12px ui-monospace,SFMono-Regular,Consolas,monospace;
+}
+
+.preview.console-mode #preview{
+  display:none;
+}
+
+.preview.console-mode .console{
+  display:block;
+}
+
+.console-line{
+  margin-bottom:7px;
+  white-space:pre-wrap;
+}
+
+.console-line.error{
+  color:var(--red);
+}
+
+.console-line.event{
+  color:var(--cyan);
+}
+
+.console-line.log{
+  color:var(--green);
+}
+
+.status{
+  display:flex;
+  align-items:center;
+  gap:20px;
+  padding:0 12px;
+  color:#c7d9ff;
+  background:#182c49;
+  font-size:11px;
+}
+
+.status-right{
+  margin-left:auto;
+}
+
+.modal-bg{
+  position:fixed;
+  inset:0;
+  z-index:20;
+  display:none;
+  place-items:center;
+  background:#0009;
+}
+
+.modal-bg.show{
+  display:grid;
+}
+
+.modal{
+  width:340px;
+  padding:20px;
+  border:1px solid var(--line);
+  border-radius:8px;
+  background:var(--panel2);
+  box-shadow:0 15px 50px #0008;
+}
+
+.modal h3{
+  margin:0 0 13px;
+}
+
+.modal input{
+  width:100%;
+  padding:9px;
+  color:var(--text);
+  background:#11151d;
+  border:1px solid var(--line);
+  border-radius:4px;
+}
+
+.modal-buttons{
+  display:flex;
+  justify-content:flex-end;
+  gap:8px;
+  margin-top:16px;
+}
+
+.btn{
+  padding:7px 14px;
+  color:var(--text);
+  background:#303949;
+  border:0;
+  border-radius:4px;
+}
+
+.btn.primary{
+  color:white;
+  background:var(--blue);
+}
+
+.toast{
+  position:fixed;
+  right:20px;
+  bottom:35px;
+  z-index:30;
+  padding:10px 16px;
+  border-radius:5px;
+  color:var(--text);
+  background:#263144;
+  opacity:0;
+  transform:translateY(10px);
+  transition:.2s;
+  pointer-events:none;
+}
+
+.toast.show{
+  opacity:1;
+  transform:translateY(0);
+}
+
+@keyframes nodeIn{
+  from{
+    opacity:0;
+    transform:translateX(-5px);
+  }
+  to{
+    opacity:1;
+    transform:translateX(0);
+  }
+}
 </style>
 </head>
+
 <body>
 <div class="app">
-  <header class="topbar">
-    <div class="brand"><i class="fa-solid fa-code"></i> WebCode Studio</div>
-    <div class="project"><i class="fa-regular fa-folder-open"></i> <span id="projectName">無題のプロジェクト</span></div>
-    <div class="toolbar">
-      <button class="icon" id="openFolder" title="フォルダを開く"><i class="fa-solid fa-folder-open"></i></button>
-      <button class="icon" id="saveFolder" title="保存"><i class="fa-solid fa-floppy-disk"></i></button>
-      <button class="icon" id="run" title="実行"><i class="fa-solid fa-play"></i></button>
+
+<header class="topbar">
+  <div class="brand">
+    <i class="fa-solid fa-code"></i>
+    <span>WebCode Studio</span>
+  </div>
+
+  <div class="project">
+    <i class="fa-regular fa-folder-open"></i>
+    <span id="projectName">無題のプロジェクト</span>
+  </div>
+
+  <div class="toolbar">
+    <button class="icon" id="openFolder" title="フォルダを開く">
+      <i class="fa-solid fa-folder-open"></i>
+    </button>
+
+    <button class="icon" id="saveProject" title="保存">
+      <i class="fa-solid fa-floppy-disk"></i>
+    </button>
+
+    <button class="icon" id="runProject" title="実行">
+      <i class="fa-solid fa-play"></i>
+    </button>
+  </div>
+</header>
+
+<main class="workspace">
+
+<nav class="activity">
+  <button class="icon active" data-view="explorer" title="エクスプローラー">
+    <i class="fa-regular fa-copy"></i>
+  </button>
+
+  <button class="icon" data-view="debug" title="デバッグ">
+    <i class="fa-solid fa-bug"></i>
+  </button>
+
+  <button class="icon" data-view="settings" title="設定">
+    <i class="fa-solid fa-gear"></i>
+  </button>
+</nav>
+
+<aside class="sidebar" id="sidebar">
+  <div class="sidehead">
+    <span id="sideTitle">エクスプローラー</span>
+
+    <span class="actions">
+      <button class="icon" id="newFile" title="新しいファイル">
+        <i class="fa-solid fa-file-circle-plus"></i>
+      </button>
+
+      <button class="icon" id="newFolder" title="新しいフォルダ">
+        <i class="fa-solid fa-folder-plus"></i>
+      </button>
+    </span>
+  </div>
+
+  <div id="tree" class="tree"></div>
+</aside>
+
+<section class="editorarea">
+  <div id="tabs" class="tabs"></div>
+  <div id="editor" class="editor"></div>
+
+  <section id="debugPanel" class="panel">
+    <h3>
+      <i class="fa-solid fa-bug"></i>
+      デバッグ
+    </h3>
+
+    <div class="debug-card">
+      <strong>
+        <i class="fa-solid fa-file-code"></i>
+        実行対象
+      </strong>
+      <div id="debugTarget">まだ実行されていません</div>
     </div>
-  </header>
 
-  <main class="workspace">
-    <nav class="activity">
-      <button class="icon active" data-view="explorer" title="エクスプローラー"><i class="fa-regular fa-copy"></i></button>
-      <button class="icon" data-view="debug" title="デバッグ"><i class="fa-solid fa-bug"></i></button>
-      <button class="icon" data-view="settings" title="設定"><i class="fa-solid fa-gear"></i></button>
-    </nav>
+    <div class="debug-card">
+      <strong>
+        <i class="fa-solid fa-terminal"></i>
+        実行ログ
+      </strong>
+      <pre id="debugLog">ログはありません</pre>
+    </div>
 
-    <aside class="sidebar" id="sidebar">
-      <div class="sidehead">
-        <span id="sideTitle">エクスプローラー</span>
-        <span class="actions">
-          <button class="icon" id="newFile" title="新しいファイル"><i class="fa-solid fa-file-circle-plus"></i></button>
-          <button class="icon" id="newFolder" title="新しいフォルダ"><i class="fa-solid fa-folder-plus"></i></button>
-        </span>
-      </div>
-      <div id="tree" class="tree"></div>
-    </aside>
+    <div class="debug-card">
+      <strong>
+        <i class="fa-solid fa-crosshairs"></i>
+        HTMLイベント
+      </strong>
+      <pre id="eventLog">イベントはありません</pre>
+    </div>
 
-    <section class="editorarea">
-      <div id="tabs" class="tabs"></div>
-      <div id="editor" class="editor"></div>
+    <div class="debug-card">
+      <strong>
+        <i class="fa-solid fa-code"></i>
+        選択されたDOM
+      </strong>
+      <pre id="domLog">DOM要素をクリックしてください</pre>
+    </div>
+  </section>
 
-      <div id="debugPanel" class="debug-panel">
-        <h3><i class="fa-solid fa-bug"></i> デバッグ可視化</h3>
-        <div class="debug-card"><b>実行対象</b><div id="debugTarget">ファイルを実行すると表示されます</div></div>
-        <div class="debug-card"><b>実行ログ</b><div id="debugLog">まだ実行されていません</div></div>
-        <div class="debug-card"><b>HTMLイベント</b><div id="eventLog">プレビュー内のクリックや入力イベントを監視します</div></div>
-      </div>
+  <section id="settingsPanel" class="panel">
+    <h3>
+      <i class="fa-solid fa-gear"></i>
+      設定
+    </h3>
 
-      <div id="settingsPanel" class="setting-panel">
-        <h3>設定</h3>
-        <label class="setting">フォントサイズ <input id="fontSize" type="number" min="10" max="32" value="14"></label>
-        <label class="setting">フォント<select id="fontFamily"><option>Consolas</option><option>Monaco</option><option>monospace</option><option>Source Code Pro</option></select></label>
-        <label class="setting">文字コード<select id="encoding"><option>UTF-8</option><option>Shift_JIS</option><option>ISO-8859-1</option></select></label>
-      </div>
-    </section>
+    <div class="setting-card">
+      <label class="setting">
+        <span>フォントサイズ</span>
+        <input id="fontSize" type="number" min="10" max="32" value="14">
+      </label>
 
-    <section class="preview">
-      <div class="previewhead">
-        <i class="fa-solid fa-display"></i>
-        <button class="mode active" data-mode="live">LIVE</button>
-        <button class="mode" data-mode="console">CONSOLE</button>
-        <button class="icon" id="refresh" title="更新"><i class="fa-solid fa-rotate"></i></button>
-      </div>
-      <iframe id="preview" sandbox="allow-scripts allow-modals"></iframe>
-      <div id="console" class="console"></div>
-    </section>
-  </main>
+      <label class="setting">
+        <span>フォント</span>
+        <select id="fontFamily">
+          <option>Consolas</option>
+          <option>Monaco</option>
+          <option>monospace</option>
+          <option>Source Code Pro</option>
+        </select>
+      </label>
 
-  <footer class="status">
-    <span><i class="fa-solid fa-circle-check"></i> <span id="status">準備完了</span></span>
-    <span id="current">ファイル未選択</span>
-    <span class="right" id="cursor">Ln 1, Col 1</span>
-  </footer>
+      <label class="setting">
+        <span>文字コード</span>
+        <select id="encoding">
+          <option>UTF-8</option>
+          <option>Shift_JIS</option>
+          <option>ISO-8859-1</option>
+        </select>
+      </label>
+    </div>
+  </section>
+</section>
+
+<section class="preview" id="previewPane">
+  <div class="preview-head">
+    <i class="fa-solid fa-display"></i>
+
+    <button class="mode active" data-mode="live">
+      <i class="fa-solid fa-bolt"></i>
+      LIVE
+    </button>
+
+    <button class="mode" data-mode="console">
+      <i class="fa-solid fa-terminal"></i>
+      CONSOLE
+    </button>
+
+    <button class="mode" data-mode="debug">
+      <i class="fa-solid fa-bug"></i>
+      DEBUG
+    </button>
+
+    <button class="mode" data-mode="inspect">
+      <i class="fa-solid fa-crosshairs"></i>
+      INSPECT
+    </button>
+
+    <button class="icon" id="refreshPreview" title="更新">
+      <i class="fa-solid fa-rotate"></i>
+    </button>
+  </div>
+
+  <iframe
+    id="preview"
+    sandbox="allow-scripts allow-modals">
+  </iframe>
+
+  <div id="console" class="console"></div>
+</section>
+
+</main>
+
+<footer class="status">
+  <span>
+    <i class="fa-solid fa-circle-check"></i>
+    <span id="status">準備完了</span>
+  </span>
+
+  <span id="current">ファイル未選択</span>
+
+  <span class="status-right" id="cursor">
+    Ln 1, Col 1
+  </span>
+</footer>
+
 </div>
 
 <div class="modal-bg" id="modal">
   <div class="modal">
     <h3 id="modalTitle">新規作成</h3>
+
     <input id="modalInput" autocomplete="off">
-    <div class="buttons">
-      <button class="btn" id="cancel">キャンセル</button>
-      <button class="btn primary" id="accept">作成</button>
+
+    <div class="modal-buttons">
+      <button class="btn" id="cancelModal">キャンセル</button>
+      <button class="btn primary" id="acceptModal">作成</button>
     </div>
   </div>
 </div>
@@ -90,119 +725,221 @@
 <div id="toast" class="toast"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.53.0/min/vs/loader.min.js"></script>
+
 <script>
 (() => {
-  const $ = s => document.querySelector(s), models = {};
-  let editor, modalCallback, activeView = 'explorer', consoleLines = [];
-  const key = 'webcode-studio-v3';
+  "use strict";
+
+  const $ = selector => document.querySelector(selector);
+
+  const models = {};
+  const STORAGE_KEY = "webcode-studio-v4";
+
+  let editor = null;
+  let modalCallback = null;
+  let currentMode = "live";
+  let consoleLines = [];
+
   let state = {
-    root: 'root',
+    root: "root",
     active: null,
     tabs: [],
     nodes: {
-      root: { id: 'root', type: 'folder', name: 'プロジェクト', children: [] }
+      root: {
+        id: "root",
+        type: "folder",
+        name: "プロジェクト",
+        children: [],
+        open: true
+      }
     }
   };
 
   const icons = {
-    html: 'fa-brands fa-html5',
-    css: 'fa-brands fa-css3-alt',
-    js: 'fa-brands fa-js',
-    jsx: 'fa-brands fa-react',
-    vue: 'fa-brands fa-vuejs',
-    json: 'fa-solid fa-brackets-curly',
-    default: 'fa-regular fa-file-code'
+    html: "fa-brands fa-html5",
+    htm: "fa-brands fa-html5",
+    css: "fa-brands fa-css3-alt",
+    js: "fa-brands fa-js",
+    mjs: "fa-brands fa-js",
+    jsx: "fa-brands fa-react",
+    ts: "fa-solid fa-code",
+    vue: "fa-brands fa-vuejs",
+    json: "fa-solid fa-file-code",
+    md: "fa-brands fa-markdown",
+    default: "fa-regular fa-file-code"
   };
 
-  function uid() {
-    return 'n' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+  function uid(){
+    return "n" + Date.now().toString(36) + Math.random().toString(36).slice(2,7);
   }
 
-  function ext(n) {
-    return n.split('.').pop().toLowerCase();
+  function extension(name){
+    return name.split(".").pop().toLowerCase();
   }
 
-  function language(n) {
-    return { html: 'html', css: 'css', js: 'javascript', jsx: 'javascript', ts: 'typescript', vue: 'html', json: 'json' }[ext(n)] || 'plaintext';
+  function language(name){
+    return {
+      html:"html",
+      htm:"html",
+      css:"css",
+      js:"javascript",
+      mjs:"javascript",
+      jsx:"javascript",
+      ts:"typescript",
+      vue:"html",
+      json:"json",
+      md:"markdown"
+    }[extension(name)] || "plaintext";
   }
 
-  function children(id) {
-    return state.nodes[id].children.map(x => state.nodes[x]).filter(Boolean);
+  function fileIcon(name){
+    return icons[extension(name)] || icons.default;
   }
 
-  function icon(n) {
-    return icons[ext(n)] || icons.default;
+  function getChildren(id){
+    const node = state.nodes[id];
+    if(!node || !Array.isArray(node.children)) return [];
+
+    return node.children
+      .map(childId => state.nodes[childId])
+      .filter(Boolean);
   }
 
-  function toast(t) {
-    $('#toast').textContent = t;
-    $('#toast').classList.add('show');
-    setTimeout(() => $('#toast').classList.remove('show'), 1800);
+  function showToast(message){
+    const toast = $("#toast");
+
+    toast.textContent = message;
+    toast.classList.add("show");
+
+    setTimeout(() => {
+      toast.classList.remove("show");
+    }, 1800);
   }
 
-  function add(parent, name, content = '', type = 'file') {
-    const n = {
+  function saveState(){
+    try{
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      $("#status").textContent = "保存済み";
+    }catch(error){
+      showToast("保存に失敗しました");
+    }
+  }
+
+  function restoreState(){
+    try{
+      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+
+      if(saved && saved.nodes){
+        state = saved;
+      }
+    }catch(error){
+      console.warn("保存データを読み込めませんでした", error);
+    }
+  }
+
+  function addNode(parent, name, content = "", type = "file"){
+    const node = {
       id: uid(),
       type,
       name,
       parent,
-      children: type === 'folder' ? [] : undefined,
       content,
       lang: language(name)
     };
-    state.nodes[n.id] = n;
-    state.nodes[parent].children.push(n.id);
-    return n.id;
+
+    if(type === "folder"){
+      node.children = [];
+      node.open = false;
+    }
+
+    state.nodes[node.id] = node;
+
+    if(!state.nodes[parent].children){
+      state.nodes[parent].children = [];
+    }
+
+    state.nodes[parent].children.push(node.id);
+
+    return node.id;
   }
 
-  function ask(title, def, cb) {
-    $('#modalTitle').textContent = title;
-    $('#modalInput').value = def || '';
-    $('#modal').style.display = 'grid';
-    modalCallback = cb;
-    setTimeout(() => $('#modalInput').focus(), 20);
+  function openModal(title, defaultValue, callback){
+    $("#modalTitle").textContent = title;
+    $("#modalInput").value = defaultValue;
+    $("#modal").classList.add("show");
+    modalCallback = callback;
+
+    setTimeout(() => {
+      $("#modalInput").focus();
+      $("#modalInput").select();
+    }, 30);
   }
 
-  function closeModal() {
-    $('#modal').style.display = 'none';
+  function closeModal(){
+    $("#modal").classList.remove("show");
+    modalCallback = null;
   }
 
-  function render() {
-    const tree = $('#tree');
-    tree.innerHTML = '';
+  function renderTree(){
+    const tree = $("#tree");
+    tree.innerHTML = "";
 
-    function draw(id, depth) {
-      children(id).forEach(n => {
-        const row = document.createElement('div');
-        row.className = 'node ' + n.type + (state.active === n.id ? ' selected' : '');
-        row.style.paddingLeft = (7 + depth * 15) + 'px';
+    function draw(parentId, depth){
+      getChildren(parentId).forEach(node => {
+        const row = document.createElement("div");
 
-        row.innerHTML =
-          n.type === 'folder'
-            ? '<span class="arrow">' + (n.open ? '▾' : '▸') + '</span><i class="fa-solid fa-folder"></i><span>' + n.name + '</span>'
-            : '<span class="arrow"></span><i class="' + icon(n.name) + '"></i><span>' + n.name + '</span><span class="del"><i class="fa-solid fa-trash"></i></span>';
+        row.className =
+          "node " +
+          node.type +
+          (state.active === node.id ? " selected" : "");
 
-        row.onclick = e => {
-          e.stopPropagation();
-          if (n.type === 'folder') {
-            n.open = !n.open;
-            render();
-          } else {
-            open(n.id);
+        row.style.paddingLeft = (7 + depth * 15) + "px";
+        row.dataset.id = node.id;
+
+        if(node.type === "folder"){
+          row.innerHTML = `
+            <i class="folder-arrow ${node.open ? "open" : ""} fa-solid fa-chevron-right"></i>
+            <i class="fa-solid fa-folder"></i>
+            <span class="node-label"></span>
+          `;
+
+          row.querySelector(".node-label").textContent = node.name;
+
+          row.addEventListener("click", event => {
+            event.stopPropagation();
+            node.open = !node.open;
+            renderTree();
+          });
+
+          tree.appendChild(row);
+
+          if(node.open){
+            draw(node.id, depth + 1);
           }
-        };
+        }else{
+          row.innerHTML = `
+            <i class="${fileIcon(node.name)}"></i>
+            <span class="node-label"></span>
+            <button class="icon node-delete" title="削除">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          `;
 
-        if (n.type === 'file') {
-          row.querySelector('.del').onclick = e => {
-            e.stopPropagation();
-            remove(n.id);
-          };
-        }
+          row.querySelector(".node-label").textContent = node.name;
 
-        tree.appendChild(row);
+          row.addEventListener("click", event => {
+            if(event.target.closest(".node-delete")) return;
 
-        if (n.type === 'folder' && n.open) {
-          draw(n.id, depth + 1);
+            event.stopPropagation();
+            openFile(node.id);
+          });
+
+          row.querySelector(".node-delete").addEventListener("click", event => {
+            event.stopPropagation();
+            deleteNode(node.id);
+          });
+
+          tree.appendChild(row);
         }
       });
     }
@@ -210,314 +947,755 @@
     draw(state.root, 0);
   }
 
-  function open(id) {
-    const n = state.nodes[id];
-    state.active = id;
+  function createEditorModel(node){
+    if(models[node.id]) return models[node.id];
 
-    if (!state.tabs.includes(id)) state.tabs.push(id);
+    if(window.monaco){
+      models[node.id] = monaco.editor.createModel(
+        node.content || "",
+        node.lang
+      );
 
-    if (!models[id]) {
-      models[id] = monaco.editor.createModel(n.content || '', n.lang);
-      models[id].onDidChangeContent(() => {
-        n.content = models[id].getValue();
-        runPreview();
-        save();
+      models[node.id].onDidChangeContent(() => {
+        node.content = models[node.id].getValue();
+        saveState();
+        renderPreview();
       });
+
+      return models[node.id];
     }
 
-    editor.setModel(models[id]);
-    renderTabs();
-    $('#current').textContent = n.name;
-    editor.focus();
+    return null;
   }
 
-  function renderTabs() {
-    $('#tabs').innerHTML = '';
+  function openFile(id){
+    const node = state.nodes[id];
+    if(!node || node.type !== "file") return;
+
+    state.active = id;
+
+    if(!state.tabs.includes(id)){
+      state.tabs.push(id);
+    }
+
+    const model = createEditorModel(node);
+
+    if(editor && model){
+      editor.setModel(model);
+      editor.focus();
+    }
+
+    $("#current").textContent = node.name;
+
+    renderTabs();
+    renderTree();
+    saveState();
+  }
+
+  function renderTabs(){
+    const tabs = $("#tabs");
+    tabs.innerHTML = "";
+
     state.tabs.forEach(id => {
-      const n = state.nodes[id];
-      if (!n) return;
+      const node = state.nodes[id];
+      if(!node) return;
 
-      const t = document.createElement('div');
-      t.className = 'tab ' + (id === state.active ? 'active' : '');
-      t.innerHTML = '<i class="' + icon(n.name) + '"></i><span>' + n.name + '</span><span class="close"><i class="fa-solid fa-xmark"></i></span>';
+      const tab = document.createElement("div");
 
-      t.onclick = () => open(id);
-      t.querySelector('.close').onclick = e => {
-        e.stopPropagation();
-        state.tabs = state.tabs.filter(x => x !== id);
-        if (state.active === id) {
-          state.active = state.tabs.at(-1) || null;
-          if (state.active) open(state.active);
-          else editor.setModel(null);
-        }
-        renderTabs();
-      };
+      tab.className =
+        "tab " +
+        (id === state.active ? "active" : "");
 
-      $('#tabs').appendChild(t);
+      tab.innerHTML = `
+        <i class="${fileIcon(node.name)}"></i>
+        <span class="node-label"></span>
+        <button class="icon tab-close" title="閉じる">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      `;
+
+      tab.querySelector(".node-label").textContent = node.name;
+
+      tab.addEventListener("click", () => {
+        openFile(id);
+      });
+
+      tab.querySelector(".tab-close").addEventListener("click", event => {
+        event.stopPropagation();
+        closeTab(id);
+      });
+
+      tabs.appendChild(tab);
     });
   }
 
-  function remove(id) {
-    const n = state.nodes[id];
-    if (!confirm(n.name + ' を削除しますか？')) return;
+  function closeTab(id){
+    state.tabs = state.tabs.filter(tabId => tabId !== id);
 
-    state.nodes[n.parent].children = state.nodes[n.parent].children.filter(x => x !== id);
+    if(state.active === id){
+      state.active = state.tabs[state.tabs.length - 1] || null;
 
-    function gone(x) {
-      const z = state.nodes[x];
-      z.children && z.children.slice().forEach(gone);
-      if (models[x]) models[x].dispose();
-      delete state.nodes[x];
+      if(state.active){
+        openFile(state.active);
+      }else if(editor){
+        editor.setModel(null);
+        $("#current").textContent = "ファイル未選択";
+      }
     }
 
-    gone(id);
+    renderTabs();
+    renderTree();
+  }
 
-    state.tabs = state.tabs.filter(x => x !== id);
-    if (state.active === id) {
-      state.active = state.tabs.at(-1) || null;
-      state.active ? open(state.active) : editor.setModel(null);
+  function deleteNode(id){
+    const node = state.nodes[id];
+    if(!node) return;
+
+    if(!confirm(node.name + " を削除しますか？")){
+      return;
     }
 
-    render();
-    save();
-    toast('削除しました');
+    function removeRecursively(nodeId){
+      const target = state.nodes[nodeId];
+
+      if(!target) return;
+
+      if(target.children){
+        [...target.children].forEach(removeRecursively);
+      }
+
+      if(models[nodeId]){
+        models[nodeId].dispose();
+        delete models[nodeId];
+      }
+
+      delete state.nodes[nodeId];
+    }
+
+    const parent = state.nodes[node.parent];
+
+    if(parent){
+      parent.children = parent.children.filter(childId => childId !== id);
+    }
+
+    removeRecursively(id);
+
+    state.tabs = state.tabs.filter(tabId => tabId !== id);
+
+    if(state.active === id){
+      state.active = null;
+
+      if(state.tabs.length){
+        openFile(state.tabs[state.tabs.length - 1]);
+      }else if(editor){
+        editor.setModel(null);
+        $("#current").textContent = "ファイル未選択";
+      }
+    }
+
+    renderTree();
+    renderTabs();
+    saveState();
+    showToast("削除しました");
   }
 
-  function save() {
-    localStorage.setItem(key, JSON.stringify(state));
-    $('#status').textContent = '保存済み';
+  function getProjectFile(name){
+    return Object.values(state.nodes).find(node => {
+      return node.type === "file" && node.name === name;
+    });
   }
 
-  function restore() {
-    try {
-      const x = JSON.parse(localStorage.getItem(key));
-      if (x && x.nodes) state = x;
-    } catch (e) {}
+  function getEditorContent(node){
+    if(!node) return "";
+
+    if(models[node.id]){
+      return models[node.id].getValue();
+    }
+
+    return node.content || "";
   }
 
-  function runPreview() {
-    const html = state.nodes[state.active]?.name.endsWith('.html')
-      ? models[state.active]?.getValue()
-      : children(state.root).find(n => n.name === 'index.html')?.content || '';
+  function escapeScript(text){
+    return text.replace(/<\/script/gi, "<\\/script");
+  }
 
-    let css = children(state.root).find(n => n.name === 'style.css')?.content || '';
-    let js = children(state.root).find(n => n.name === 'script.js')?.content || '';
+  function buildPreviewDocument(){
+    const htmlFile =
+      state.active &&
+      state.nodes[state.active] &&
+      extension(state.nodes[state.active].name) === "html"
+        ? state.nodes[state.active]
+        : getProjectFile("index.html");
 
-    const doc = html
-      .replace('</head>', '<style>' + css + '</style></head>')
-      .replace('</body>', `
-        <script>
-          window.onerror = (m) => parent.postMessage({ type: "error", text: m }, "*");
-          document.addEventListener("click", e => {
-            parent.postMessage({ type: "event", text: "click: " + (e.target.tagName || "") }, "*");
+    const html = getEditorContent(htmlFile);
+    const css = getEditorContent(getProjectFile("style.css"));
+    const js = getEditorContent(getProjectFile("script.js"));
+
+    const bridge = `
+      <style>
+        .webcode-hover{
+          outline:2px solid #4f8cff !important;
+          outline-offset:2px !important;
+        }
+
+        .webcode-selected{
+          outline:3px solid #ff637d !important;
+          outline-offset:3px !important;
+        }
+      </style>
+
+      <script>
+        (() => {
+          const originalLog = console.log;
+          const originalWarn = console.warn;
+          const originalError = console.error;
+
+          function send(type, text, extra = {}){
+            parent.postMessage({
+              source:"webcode-preview",
+              type,
+              text,
+              ...extra
+            }, "*");
+          }
+
+          function stringify(value){
+            try{
+              return typeof value === "string"
+                ? value
+                : JSON.stringify(value);
+            }catch(error){
+              return String(value);
+            }
+          }
+
+          console.log = (...args) => {
+            originalLog(...args);
+            send("console", args.map(stringify).join(" "));
+          };
+
+          console.warn = (...args) => {
+            originalWarn(...args);
+            send("warn", args.map(stringify).join(" "));
+          };
+
+          console.error = (...args) => {
+            originalError(...args);
+            send("error", args.map(stringify).join(" "));
+          };
+
+          window.addEventListener("error", event => {
+            send("error", event.message || "JavaScript error");
+          });
+
+          document.addEventListener("click", event => {
+            const target = event.target;
+
+            send("dom-event", "click", {
+              tag: target.tagName,
+              id: target.id || "",
+              className: target.className || "",
+              html: target.outerHTML || ""
+            });
           }, true);
 
-          try {
-            ${js}
-          } catch (e) {
-            parent.postMessage({ type: "error", text: e.message }, "*");
+          document.addEventListener("input", event => {
+            const target = event.target;
+
+            send("dom-event", "input", {
+              tag: target.tagName,
+              id: target.id || "",
+              className: target.className || "",
+              html: target.outerHTML || ""
+            });
+          }, true);
+
+          window.addEventListener("message", event => {
+            if(!event.data) return;
+
+            if(event.data.type === "inspect"){
+              document.querySelectorAll(".webcode-selected")
+                .forEach(element => {
+                  element.classList.remove("webcode-selected");
+                });
+
+              const selector = event.data.selector;
+              const element = selector
+                ? document.querySelector(selector)
+                : null;
+
+              if(element){
+                element.classList.add("webcode-selected");
+              }
+            }
+          });
+        })();
+      <\/script>
+
+      <script>
+        try{
+          ${escapeScript(js)}
+        }catch(error){
+          parent.postMessage({
+            source:"webcode-preview",
+            type:"error",
+            text:error.message
+          }, "*");
+        }
+      <\/script>
+    `;
+
+    let documentText = html || `
+      <!doctype html>
+      <html>
+      <body>
+        <h1>WebCode Studio</h1>
+      </body>
+      </html>
+    `;
+
+    if(documentText.includes("</head>")){
+      documentText = documentText.replace(
+        "</head>",
+        "<style>" + css + "</style></head>"
+      );
+    }else{
+      documentText = "<style>" + css + "</style>" + documentText;
+    }
+
+    if(documentText.includes("</body>")){
+      documentText = documentText.replace("</body>", bridge + "</body>");
+    }else{
+      documentText += bridge;
+    }
+
+    return documentText;
+  }
+
+  function renderPreview(){
+    const iframe = $("#preview");
+
+    iframe.srcdoc = buildPreviewDocument();
+    $("#status").textContent = "プレビューを更新しました";
+  }
+
+  function appendConsole(text, type = "log"){
+    consoleLines.push({text, type});
+
+    const consoleElement = $("#console");
+
+    consoleElement.innerHTML = "";
+
+    consoleLines.forEach(line => {
+      const element = document.createElement("div");
+
+      element.className = "console-line " + line.type;
+      element.textContent = line.text;
+
+      consoleElement.appendChild(element);
+    });
+
+    consoleElement.scrollTop = consoleElement.scrollHeight;
+    $("#debugLog").textContent = consoleLines.map(line => line.text).join("\n");
+  }
+
+  function selectorForData(data){
+    if(!data || !data.tag) return "";
+
+    if(data.id){
+      return "#" + CSS.escape(data.id);
+    }
+
+    if(data.className && typeof data.className === "string"){
+      const firstClass = data.className.trim().split(/\s+/)[0];
+
+      if(firstClass){
+        return data.tag.toLowerCase() + "." + CSS.escape(firstClass);
+      }
+    }
+
+    return data.tag.toLowerCase();
+  }
+
+  function setMode(mode){
+    currentMode = mode;
+
+    document.querySelectorAll(".mode").forEach(button => {
+      button.classList.toggle("active", button.dataset.mode === mode);
+    });
+
+    const previewPane = $("#previewPane");
+
+    previewPane.classList.toggle("console-mode", mode === "console");
+
+    if(mode === "debug"){
+      $("#debugPanel").classList.add("active");
+    }else{
+      $("#debugPanel").classList.remove("active");
+    }
+
+    if(mode === "live"){
+      $("#debugPanel").classList.remove("active");
+      renderPreview();
+    }
+
+    if(mode === "inspect"){
+      appendConsole("DOMインスペクターモードを有効にしました", "event");
+    }
+  }
+
+  function switchView(view, button){
+    document.querySelectorAll("[data-view]").forEach(item => {
+      item.classList.remove("active");
+    });
+
+    button.classList.add("active");
+
+    const sidebar = $("#sidebar");
+    const debugPanel = $("#debugPanel");
+    const settingsPanel = $("#settingsPanel");
+
+    if(view === "explorer"){
+      const willClose = !sidebar.classList.contains("closed");
+      sidebar.classList.toggle("closed", willClose);
+
+      if(willClose){
+        $("#sideTitle").textContent = "エクスプローラー";
+      }
+
+      debugPanel.classList.remove("active");
+      settingsPanel.classList.remove("active");
+      return;
+    }
+
+    sidebar.classList.add("closed");
+
+    if(view === "debug"){
+      debugPanel.classList.add("active");
+      settingsPanel.classList.remove("active");
+      $("#sideTitle").textContent = "デバッグ";
+    }
+
+    if(view === "settings"){
+      settingsPanel.classList.add("active");
+      debugPanel.classList.remove("active");
+      $("#sideTitle").textContent = "設定";
+    }
+  }
+
+  async function openFolder(){
+    if(!window.showDirectoryPicker){
+      showToast("このブラウザはフォルダ選択に対応していません");
+      return;
+    }
+
+    try{
+      const directory = await window.showDirectoryPicker();
+
+      state = {
+        root:"root",
+        active:null,
+        tabs:[],
+        nodes:{
+          root:{
+            id:"root",
+            type:"folder",
+            name:directory.name,
+            children:[],
+            open:true
           }
-        </script>
-      </body>`);
-    $('#preview').srcdoc = doc;
-    $('#status').textContent = 'プレビューを更新しました';
+        }
+      };
+
+      async function readDirectory(dir, parent){
+        for await(const entry of dir.values()){
+          if(entry.name.startsWith(".")) continue;
+
+          if(entry.kind === "directory"){
+            const folderId = addNode(parent, entry.name, "", "folder");
+            state.nodes[folderId].open = true;
+            await readDirectory(entry, folderId);
+          }else{
+            const file = await entry.getFile();
+            const fileId = addNode(parent, entry.name, await file.text());
+
+            if(!state.active){
+              state.active = fileId;
+            }
+          }
+        }
+      }
+
+      await readDirectory(directory, "root");
+
+      $("#projectName").textContent = directory.name;
+
+      renderTree();
+      renderTabs();
+
+      if(state.active){
+        openFile(state.active);
+      }
+
+      saveState();
+      showToast("フォルダを開きました");
+    }catch(error){
+      if(error.name !== "AbortError"){
+        showToast("フォルダを開けませんでした");
+      }
+    }
   }
 
-  function log(text, cls = '') {
-    consoleLines.push({ text, cls });
-    $('#console').innerHTML = consoleLines.map(x => '<div class="log ' + x.cls + '">' + x.text + '</div>').join('');
-    $('#debugLog').textContent = consoleLines.map(x => x.text.replace(/<[^>]*>/g, '')).join('\n');
-  }
+  function createDefaultProject(){
+    if(getChildren(state.root).length > 0) return;
 
-  function projectDefaults() {
-    if (!state.nodes.root.children.length) {
-      const h = add('root', 'index.html', `<!doctype html>
+    const htmlId = addNode(
+      "root",
+      "index.html",
+      `<!doctype html>
 <html>
 <head>
   <meta charset="UTF-8">
   <title>WebCode Studio</title>
 </head>
 <body>
-  <h1>Hello WebCode Studio</h1>
-  <button id="hello">クリックしてね</button>
+  <h1 id="title">WebCode Studio</h1>
+  <button id="hello">クリックしてください</button>
+  <input id="name" placeholder="入力してください">
 </body>
-</html>`);
+</html>`
+    );
 
-      add('root', 'style.css', `
-body {
+    addNode(
+      "root",
+      "style.css",
+      `body {
   font-family: sans-serif;
   padding: 2rem;
 }
+
 button {
-  padding: .6rem 1rem;
-}
-      `);
+  padding: .7rem 1rem;
+}`
+    );
 
-      add('root', 'script.js', `
-document.querySelector("#hello")?.addEventListener("click", () => {
-  console.log("Hello!");
-});
-      `);
+    addNode(
+      "root",
+      "script.js",
+      `document.querySelector("#hello")?.addEventListener("click", () => {
+  console.log("ボタンがクリックされました");
+});`
+    );
 
-      state.nodes.root.open = true;
-      open(h);
-    }
+    state.nodes.root.open = true;
+    openFile(htmlId);
   }
 
-  function setup() {
-    restore();
+  function setupMonaco(){
+    if(!window.require){
+      showToast("エディターを読み込めませんでした");
+      return;
+    }
 
     require.config({
-      paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.53.0/min/vs' }
+      paths:{
+        vs:"https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.53.0/min/vs"
+      }
     });
 
-    require(['vs/editor/editor.main'], () => {
-      editor = monaco.editor.create($('#editor'), {
-        theme: 'vs-dark',
-        automaticLayout: true,
-        fontSize: 14,
-        minimap: { enabled: false },
-        wordWrap: 'on'
+    require(["vs/editor/editor.main"], () => {
+      editor = monaco.editor.create($("#editor"), {
+        theme:"vs-dark",
+        automaticLayout:true,
+        fontSize:14,
+        minimap:{enabled:false},
+        wordWrap:"on",
+        padding:{top:12}
       });
 
-      editor.onDidChangeCursorPosition(e => {
-        $('#cursor').textContent = 'Ln ' + e.position.lineNumber + ', Col ' + e.position.column;
+      editor.onDidChangeCursorPosition(event => {
+        $("#cursor").textContent =
+          "Ln " +
+          event.position.lineNumber +
+          ", Col " +
+          event.position.column;
       });
 
-      projectDefaults();
-      render();
-      runPreview();
+      createDefaultProject();
+      renderTree();
+      renderTabs();
+      renderPreview();
     });
   }
 
-  $('#newFile').onclick = () => {
-    ask('新しいファイル', 'untitled.js', name => {
-      const id = add('root', name);
-      state.nodes.root.open = true;
-      render();
-      open(id);
-      save();
-    });
-  };
+  document.addEventListener("click", event => {
+    const viewButton = event.target.closest("[data-view]");
 
-  $('#newFolder').onclick = () => {
-    ask('新しいフォルダ', 'folder', name => {
-      add('root', name, '', 'folder');
-      state.nodes.root.open = true;
-      render();
-      save();
-    });
-  };
+    if(viewButton){
+      switchView(viewButton.dataset.view, viewButton);
+    }
 
-  $('#cancel').onclick = closeModal;
-  $('#accept').onclick = () => {
-    const v = $('#modalInput').value.trim();
-    if (v) {
+    const modeButton = event.target.closest("[data-mode]");
+
+    if(modeButton){
+      setMode(modeButton.dataset.mode);
+    }
+  });
+
+  $("#newFile").addEventListener("click", () => {
+    openModal("新しいファイル", "untitled.js", name => {
+      const id = addNode("root", name);
+      state.nodes.root.open = true;
+      renderTree();
+      openFile(id);
+      saveState();
+      showToast("ファイルを作成しました");
+    });
+  });
+
+  $("#newFolder").addEventListener("click", () => {
+    openModal("新しいフォルダ", "folder", name => {
+      addNode("root", name, "", "folder");
+      state.nodes.root.open = true;
+      renderTree();
+      saveState();
+      showToast("フォルダを作成しました");
+    });
+  });
+
+  $("#cancelModal").addEventListener("click", closeModal);
+
+  $("#acceptModal").addEventListener("click", () => {
+    const value = $("#modalInput").value.trim();
+
+    if(!value){
+      showToast("名前を入力してください");
+      return;
+    }
+
+    const callback = modalCallback;
+
+    closeModal();
+
+    if(callback){
+      callback(value);
+    }
+  });
+
+  $("#modalInput").addEventListener("keydown", event => {
+    if(event.key === "Enter"){
+      $("#acceptModal").click();
+    }
+
+    if(event.key === "Escape"){
       closeModal();
-      modalCallback(v);
-    }
-  };
-
-  $('#modalInput').onkeydown = e => {
-    if (e.key === 'Enter') $('#accept').click();
-    if (e.key === 'Escape') closeModal();
-  };
-
-  $('#run').onclick = () => {
-    runPreview();
-    if (state.active) {
-      $('#debugTarget').textContent = state.nodes[state.active].name;
-      log('<i class=\"fa-solid fa-play\"></i> ' + state.nodes[state.active].name + ' を実行しました');
-    }
-  };
-
-  $('#refresh').onclick = runPreview;
-
-  document.querySelectorAll('.mode').forEach(btn => {
-    btn.onclick = () => {
-      document.querySelectorAll('.mode').forEach(x => x.classList.remove('active'));
-      btn.classList.add('active');
-      $('.preview').classList.toggle('console-on', btn.dataset.mode === 'console');
-    };
-  });
-
-  document.querySelectorAll('[data-view]').forEach(btn => {
-    btn.onclick = () => {
-      document.querySelectorAll('[data-view]').forEach(x => x.classList.remove('active'));
-      btn.classList.add('active');
-      activeView = btn.dataset.view;
-
-      $('#sidebar').style.display = activeView === 'explorer' ? 'block' : 'none';
-      $('#debugPanel').classList.toggle('show', activeView === 'debug');
-      $('#settingsPanel').classList.toggle('show', activeView === 'settings');
-
-      $('#sideTitle').textContent =
-        activeView === 'explorer' ? 'エクスプローラー' :
-        activeView === 'debug' ? '実行とデバッグ' : '設定';
-    };
-  });
-
-  $('#fontSize').onchange = e => editor && editor.updateOptions({ fontSize: +e.target.value });
-  $('#fontFamily').onchange = e => editor && editor.updateOptions({ fontFamily: e.target.value });
-
-  window.addEventListener('message', e => {
-    if (e.data && e.data.type === 'error') {
-      log('<i class=\"fa-solid fa-triangle-exclamation\"></i> ' + e.data.text, 'error');
-    }
-    if (e.data && e.data.type === 'event') {
-      $('#eventLog').textContent = e.data.text;
-      log('<i class=\"fa-solid fa-bolt\"></i> ' + e.data.text);
     }
   });
 
-  $('#openFolder').onclick = async () => {
-    if (!window.showDirectoryPicker) return toast('このブラウザはフォルダ選択に対応していません');
+  $("#runProject").addEventListener("click", () => {
+    renderPreview();
 
-    try {
-      const dir = await showDirectoryPicker();
+    const node = state.nodes[state.active];
 
-      state = {
-        root: 'root',
-        active: null,
-        tabs: [],
-        nodes: {
-          root: { id: 'root', type: 'folder', name: dir.name, children: [] }
-        }
-      };
+    if(node){
+      $("#debugTarget").textContent = node.name;
+      appendConsole("実行: " + node.name, "log");
+    }
 
-      async function read(d, p) {
-        for await (const e of d.values()) {
-          if (e.name.startsWith('.')) continue;
+    setMode("live");
+  });
 
-          if (e.kind === 'directory') {
-            const f = add(p, e.name, '', 'folder');
-            await read(e, f);
-          } else {
-            const f = add(p, e.name, await (await e.getFile()).text());
-            if (!state.active) state.active = f;
-          }
-        }
+  $("#refreshPreview").addEventListener("click", () => {
+    renderPreview();
+    appendConsole("プレビューを更新しました", "log");
+  });
+
+  $("#saveProject").addEventListener("click", () => {
+    saveState();
+    showToast("保存しました");
+  });
+
+  $("#openFolder").addEventListener("click", openFolder);
+
+  $("#fontSize").addEventListener("change", event => {
+    if(editor){
+      editor.updateOptions({
+        fontSize:Number(event.target.value)
+      });
+    }
+  });
+
+  $("#fontFamily").addEventListener("change", event => {
+    if(editor){
+      editor.updateOptions({
+        fontFamily:event.target.value
+      });
+    }
+  });
+
+  window.addEventListener("message", event => {
+    const data = event.data;
+
+    if(!data || data.source !== "webcode-preview"){
+      return;
+    }
+
+    if(data.type === "console"){
+      appendConsole(data.text, "log");
+    }
+
+    if(data.type === "warn"){
+      appendConsole(data.text, "event");
+    }
+
+    if(data.type === "error"){
+      appendConsole(data.text, "error");
+    }
+
+    if(data.type === "dom-event"){
+      const description =
+        data.type +
+        ": " +
+        data.tag +
+        (data.id ? "#" + data.id : "");
+
+      $("#eventLog").textContent = description;
+
+      $("#domLog").textContent =
+        data.html || "DOM情報がありません";
+
+      appendConsole(
+        data.tag +
+        " イベント: " +
+        data.type,
+        "event"
+      );
+
+      if(currentMode === "inspect"){
+        const selector = selectorForData(data);
+
+        $("#preview").contentWindow.postMessage({
+          type:"inspect",
+          selector
+        }, "*");
       }
-
-      await read(dir, 'root');
-      state.nodes.root.open = true;
-      $('#projectName').textContent = dir.name;
-      render();
-
-      if (state.active) open(state.active);
-      save();
-      toast('フォルダを開きました');
-    } catch (e) {
-      if (e.name !== 'AbortError') toast('フォルダを開けませんでした');
     }
-  };
+  });
 
-  $('#saveFolder').onclick = () => {
-    save();
-    toast('保存しました');
-  };
+  restoreState();
 
-  setup();
+  if(!state.nodes.root){
+    state.nodes.root = {
+      id:"root",
+      type:"folder",
+      name:"プロジェクト",
+      children:[],
+      open:true
+    };
+  }
+
+  setupMonaco();
+
 })();
 </script>
 </body>
