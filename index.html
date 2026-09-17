@@ -24,11 +24,7 @@
   --red:#ff637d;
   --yellow:#e5c07b;
 }
-.console-line{
-  white-space: pre-wrap;
-  word-break: break-word;
-  overflow-wrap: anywhere;
-}
+
 *{box-sizing:border-box}
 html,body{
   width:100%;
@@ -39,7 +35,6 @@ html,body{
   color:var(--text);
   font:13px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
 }
-
 button,input,select{font:inherit}
 button{cursor:pointer}
 
@@ -51,22 +46,14 @@ button{cursor:pointer}
 }
 
 .topbar{
-  display:flex;
-  align-items:center;
-  gap:18px;
-  padding:0 14px;
-  background:#12151d;
-  border-bottom:1px solid var(--line);
+  display:flex;align-items:center;gap:18px;padding:0 14px;background:#12151d;border-bottom:1px solid var(--line);
 }
-
 .brand{display:flex;align-items:center;gap:9px;font-weight:700;white-space:nowrap}
 .brand i{color:var(--blue)}
-
 .project{
   display:flex;align-items:center;gap:8px;padding-left:18px;color:var(--muted);
   border-left:1px solid var(--line);white-space:nowrap;
 }
-
 .toolbar{display:flex;gap:5px;margin-left:auto}
 .icon{
   width:30px;height:30px;display:inline-flex;align-items:center;justify-content:center;padding:0;
@@ -75,10 +62,8 @@ button{cursor:pointer}
 .icon:hover,.icon.active{color:var(--text);background:#252c3b}
 
 .workspace{
-  min-width: 0;
-  min-height: 0;
-  display: grid;
-  grid-template-columns: 52px 260px minmax(0, 1fr) minmax(300px, 42%);
+  min-width:0;min-height:0;display:grid;
+  grid-template-columns:52px 260px minmax(0,1fr) minmax(300px,42%);
 }
 
 .activity{
@@ -87,8 +72,7 @@ button{cursor:pointer}
 }
 .activity-button{position:relative;width:38px;height:42px;font-size:18px}
 .activity-button.active::before{
-  content:"";
-  position:absolute;left:-8px;top:5px;height:32px;border-left:2px solid var(--blue);
+  content:"";position:absolute;left:-8px;top:5px;height:32px;border-left:2px solid var(--blue);
 }
 
 .external-tools{
@@ -117,8 +101,7 @@ button{cursor:pointer}
 .sidebar.closed{width:0;opacity:0;transform:translateX(-20px);pointer-events:none}
 
 .sidehead{
-  height:42px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;
-  color:var(--muted);font-size:11px;text-transform:uppercase;
+  height:42px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;color:var(--muted);font-size:11px;text-transform:uppercase;
 }
 .actions{display:flex;gap:2px}
 .tree{height:calc(100% - 42px);padding:2px 7px;overflow:auto}
@@ -136,11 +119,7 @@ button{cursor:pointer}
 .node:hover .node-delete{display:inline-flex}
 
 .editorarea{
-  position: relative;
-  min-width: 0;
-  min-height: 0;
-  width: 100%;
-  overflow: hidden;
+  position:relative;min-width:0;min-height:0;background:var(--editor);overflow:hidden;
 }
 .tabs{height:38px;display:flex;overflow:auto;background:var(--panel);border-bottom:1px solid var(--line)}
 .tab{min-width:130px;display:flex;align-items:center;gap:8px;padding:0 12px;color:var(--muted);border-right:1px solid var(--line);cursor:pointer}
@@ -148,12 +127,9 @@ button{cursor:pointer}
 .tab-close{margin-left:auto}
 .tab-close:hover{color:var(--red)}
 .editor{
-  position: absolute;
-  inset: 38px 0 0;
-  width: 100% !important;
-  height: calc(100% - 38px) !important;
-  overflow: hidden;
+  position:absolute;inset:38px 0 0;width:100% !important;height:calc(100% - 38px) !important;overflow:hidden;
 }
+
 .panel{
   position:absolute;inset:0;z-index:5;display:none;padding:18px;overflow:auto;background:var(--editor);
 }
@@ -175,7 +151,9 @@ select,input[type=number]{padding:6px 8px;color:var(--text);background:#242a36;b
 .preview.console-mode #preview{display:none}
 .preview.console-mode .console{display:block}
 
-.console-line{margin-bottom:7px;white-space:pre-wrap;word-break:break-word;overflow-wrap:anywhere}
+.console-line{
+  margin-bottom:7px;white-space:pre-wrap;word-break:break-word;overflow-wrap:anywhere;
+}
 .console-line.log{color:var(--green)}
 .console-line.event{color:var(--cyan)}
 .console-line.error{color:var(--red)}
@@ -195,13 +173,8 @@ select,input[type=number]{padding:6px 8px;color:var(--text);background:#242a36;b
 .toast{position:fixed;right:20px;bottom:35px;z-index:50;padding:10px 16px;border-radius:5px;color:var(--text);background:#263144;opacity:0;transform:translateY(10px);transition:.2s;pointer-events:none}
 .toast.show{opacity:1;transform:translateY(0)}
 
-.monaco-editor .view-lines,
-.monaco-editor .view-line,
-.monaco-editor .margin-view-overlays,
-.monaco-editor .editor-scrollable{
-  white-space:pre-wrap !important;
-  word-break:break-word !important;
-  overflow-wrap:anywhere !important;
+.monaco-editor .scrollable{
+  overflow:hidden !important;
 }
 
 @keyframes nodeIn{
@@ -253,7 +226,6 @@ select,input[type=number]{padding:6px 8px;color:var(--text);background:#242a36;b
           <button class="icon" id="newFolder" title="新しいフォルダ"><i class="fa-solid fa-folder-plus"></i></button>
         </span>
       </div>
-
       <div id="tree" class="tree"></div>
     </aside>
 
@@ -369,16 +341,6 @@ select,input[type=number]{padding:6px 8px;color:var(--text);background:#242a36;b
   let consoleLines = [];
   let previewRequest = null;
 
-  const bridge = `
-<style>
-  html, body {
-    white-space: pre-wrap !important;
-    word-break: break-word !important;
-    overflow-wrap: anywhere !important;
-  }
-</style>
-`;
-  
   const runtime = {
     rootHandle: null,
     handles: {}
@@ -414,19 +376,6 @@ select,input[type=number]{padding:6px 8px;color:var(--text);background:#242a36;b
     md: "fa-brands fa-markdown",
     default: "fa-regular fa-file-code"
   };
-  
-  editor = monaco.editor.create($("#editor"), {
-  theme: "vs-dark",
-  automaticLayout: true,
-  fontSize: 14,
-  minimap: { enabled: false },
-  wordWrap: "on",
-  wrappingStrategy: "advanced",
-  wrappingIndent: "same",
-  scrollBeyondLastLine: false,
-  smoothScrolling: true,
-  padding: { top: 12 }
-});
 
   function uid(){ return "n" + Date.now().toString(36) + Math.random().toString(36).slice(2,8); }
   function extension(name){ return String(name).split(".").pop().toLowerCase(); }
@@ -1115,17 +1064,73 @@ try{
           });
         }
 
+        if(/<a\s+h?$/i.test(beforeCursor) || /<a\s+ha?$/i.test(beforeCursor)){
+          return {
+            suggestions: [
+              {
+                label: "href",
+                kind: monaco.languages.CompletionItemKind.Property,
+                detail: "リンク先",
+                insertText: 'href="$1"',
+                insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                range
+              },
+              {
+                label: "target",
+                kind: monaco.languages.CompletionItemKind.Property,
+                detail: "リンクの表示先",
+                insertText: 'target="$1"',
+                insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                range
+              },
+              {
+                label: "rel",
+                kind: monaco.languages.CompletionItemKind.Property,
+                detail: "リンク関係",
+                insertText: 'rel="$1"',
+                insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                range
+              },
+              {
+                label: "class",
+                kind: monaco.languages.CompletionItemKind.Property,
+                detail: "CSS class",
+                insertText: 'class="$1"',
+                insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                range
+              },
+              {
+                label: "id",
+                kind: monaco.languages.CompletionItemKind.Property,
+                detail: "要素ID",
+                insertText: 'id="$1"',
+                insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                range
+              },
+              {
+                label: "title",
+                kind: monaco.languages.CompletionItemKind.Property,
+                detail: "ツールチップ",
+                insertText: 'title="$1"',
+                insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                range
+              }
+            ]
+          };
+        }
+
         if(/<[\w-]+\s+[\w-]*$/.test(beforeCursor)){
           const attrs = [
             "id","class","style","title","lang","data-*","href","src","alt","target","rel","type","value","name","placeholder",
             "disabled","readonly","required","checked","selected","multiple","autocomplete","role","aria-label","aria-hidden"
           ];
+
           attrs.forEach(attr => {
             suggestions.push({
               label: attr,
               kind: monaco.languages.CompletionItemKind.Property,
               detail: "HTML attribute",
-              insertText: attr + '="$1"',
+              insertText: attr === "data-*" ? 'data-$1="$2"' : attr + '="$1"',
               insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
               range
             });
@@ -1138,6 +1143,7 @@ try{
             "_blank","_self","_parent","_top","text","email","password","number","search","checkbox","radio","submit","reset","button",
             "class-name","id-name","center","left","right","block","inline","noopener","noreferrer","nofollow","stylesheet"
           ];
+
           values.forEach(v => {
             suggestions.push({
               label: v,
@@ -1165,6 +1171,7 @@ try{
         fontSize: 14,
         minimap: { enabled: false },
         wordWrap: "on",
+        wrappingStrategy: "advanced",
         wrappingIndent: "same",
         scrollBeyondLastLine: false,
         padding: { top: 12 },
@@ -1176,6 +1183,10 @@ try{
 
       editor.onDidChangeCursorPosition(event => {
         $("#cursor").textContent = "Ln " + event.position.lineNumber + ", Col " + event.position.column;
+      });
+
+      window.addEventListener("resize", () => {
+        if(editor){ editor.layout(); }
       });
 
       createDefaultProject();
@@ -1285,9 +1296,6 @@ try{
   if(!Array.isArray(state.externalLinks)){ state.externalLinks = []; }
   setupMonaco();
 })();
-  window.addEventListener("resize", () => {
-  if (editor) editor.layout();
-});
 </script>
 </body>
 </html>
