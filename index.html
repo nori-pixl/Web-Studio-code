@@ -26,37 +26,75 @@
 }
 
 *{box-sizing:border-box}
-html,body{width:100%;height:100%;margin:0;overflow:hidden;background:var(--bg);color:var(--text);font:13px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+html,body{
+  width:100%;
+  height:100%;
+  margin:0;
+  overflow:hidden;
+  background:var(--bg);
+  color:var(--text);
+  font:13px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+}
+
 button,input,select{font:inherit}
 button{cursor:pointer}
 
-.app{width:100%;height:100vh;display:grid;grid-template-rows:42px 1fr 24px}
+.app{
+  width:100%;
+  height:100vh;
+  display:grid;
+  grid-template-rows:42px 1fr 24px;
+}
 
-.topbar{display:flex;align-items:center;gap:18px;padding:0 14px;background:#12151d;border-bottom:1px solid var(--line)}
+.topbar{
+  display:flex;
+  align-items:center;
+  gap:18px;
+  padding:0 14px;
+  background:#12151d;
+  border-bottom:1px solid var(--line);
+}
+
 .brand{display:flex;align-items:center;gap:9px;font-weight:700;white-space:nowrap}
 .brand i{color:var(--blue)}
-.project{display:flex;align-items:center;gap:8px;padding-left:18px;color:var(--muted);border-left:1px solid var(--line);white-space:nowrap}
+
+.project{
+  display:flex;align-items:center;gap:8px;padding-left:18px;color:var(--muted);
+  border-left:1px solid var(--line);white-space:nowrap;
+}
+
 .toolbar{display:flex;gap:5px;margin-left:auto}
 .icon{
-  width:30px;height:30px;display:inline-flex;align-items:center;justify-content:center;padding:0;color:var(--muted);background:transparent;border:0;border-radius:5px;
+  width:30px;height:30px;display:inline-flex;align-items:center;justify-content:center;padding:0;
+  color:var(--muted);background:transparent;border:0;border-radius:5px;
 }
 .icon:hover,.icon.active{color:var(--text);background:#252c3b}
 
-.workspace{min-width:760px;min-height:0;display:grid;grid-template-columns:52px 260px minmax(280px,1fr) minmax(300px,42%)}
+.workspace{
+  min-width:760px;min-height:0;display:grid;
+  grid-template-columns:52px 260px minmax(280px,1fr) minmax(300px,42%);
+}
 
 .activity{
-  z-index:4;display:flex;flex-direction:column;align-items:center;gap:8px;padding-top:9px;background:#11141b;border-right:1px solid var(--line);
+  z-index:4;display:flex;flex-direction:column;align-items:center;gap:8px;padding-top:9px;
+  background:#11141b;border-right:1px solid var(--line);
 }
 .activity-button{position:relative;width:38px;height:42px;font-size:18px}
-.activity-button.active::before{content:"";position:absolute;left:-8px;top:5px;height:32px;border-left:2px solid var(--blue)}
+.activity-button.active::before{
+  content:"";
+  position:absolute;left:-8px;top:5px;height:32px;border-left:2px solid var(--blue);
+}
 
-.external-tools{width:100%;display:flex;flex-direction:column;align-items:center;gap:6px;margin-top:8px;padding-top:10px;border-top:1px solid var(--line)}
+.external-tools{
+  width:100%;display:flex;flex-direction:column;align-items:center;gap:6px;margin-top:8px;padding-top:10px;border-top:1px solid var(--line);
+}
 .external-tool{
   position:relative;width:34px;height:34px;display:flex;align-items:center;justify-content:center;color:var(--cyan);background:transparent;border:0;border-radius:5px;
 }
 .external-tool:hover{color:#fff;background:#252c3b}
 .external-tool::after{
-  content:attr(data-tooltip);position:absolute;left:43px;z-index:30;display:none;min-width:150px;padding:6px 9px;color:var(--text);background:#252c3b;border:1px solid var(--line);border-radius:4px;white-space:nowrap;text-align:left;pointer-events:none;
+  content:attr(data-tooltip);position:absolute;left:43px;z-index:30;display:none;min-width:150px;padding:6px 9px;color:var(--text);
+  background:#252c3b;border:1px solid var(--line);border-radius:4px;white-space:nowrap;text-align:left;pointer-events:none;
 }
 .external-tool:hover::after{display:block}
 .external-tool.window-tool{color:var(--green)}
@@ -67,14 +105,20 @@ button{cursor:pointer}
 .external-empty{color:var(--muted);font-size:11px}
 
 .sidebar{
-  min-width:0;overflow:hidden;background:var(--panel);border-right:1px solid var(--line);transition:width .25s ease,opacity .2s ease,transform .25s ease;
+  min-width:0;overflow:hidden;background:var(--panel);border-right:1px solid var(--line);
+  transition:width .25s ease,opacity .2s ease,transform .25s ease;
 }
 .sidebar.closed{width:0;opacity:0;transform:translateX(-20px);pointer-events:none}
 
-.sidehead{height:42px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;color:var(--muted);font-size:11px;text-transform:uppercase}
+.sidehead{
+  height:42px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;
+  color:var(--muted);font-size:11px;text-transform:uppercase;
+}
 .actions{display:flex;gap:2px}
 .tree{height:calc(100% - 42px);padding:2px 7px;overflow:auto}
-.node{height:28px;display:flex;align-items:center;gap:7px;padding:0 7px;border-radius:4px;white-space:nowrap;cursor:pointer;animation:nodeIn .18s ease}
+.node{
+  height:28px;display:flex;align-items:center;gap:7px;padding:0 7px;border-radius:4px;white-space:nowrap;cursor:pointer;animation:nodeIn .18s ease;
+}
 .node:hover{background:#252c3b}
 .node.selected{color:#fff;background:#28406d}
 .node > i{width:16px;color:var(--blue);text-align:center}
@@ -85,17 +129,21 @@ button{cursor:pointer}
 .node-delete{display:none;margin-left:auto;color:var(--red)!important}
 .node:hover .node-delete{display:inline-flex}
 
-.editorarea{position:relative;min-width:0;min-height:0;background:var(--editor)}
+.editorarea{position:relative;min-width:0;min-height:0;background:var(--editor);overflow:hidden}
 .tabs{height:38px;display:flex;overflow:auto;background:var(--panel);border-bottom:1px solid var(--line)}
 .tab{min-width:130px;display:flex;align-items:center;gap:8px;padding:0 12px;color:var(--muted);border-right:1px solid var(--line);cursor:pointer}
 .tab.active{color:var(--text);background:var(--editor);border-top:2px solid var(--blue)}
 .tab-close{margin-left:auto}
 .tab-close:hover{color:var(--red)}
-.editor{position:absolute;inset:38px 0 0}
+.editor{position:absolute;inset:38px 0 0;overflow:hidden}
 
-.panel{position:absolute;inset:0;z-index:5;display:none;padding:18px;overflow:auto;background:var(--editor)}
+.panel{
+  position:absolute;inset:0;z-index:5;display:none;padding:18px;overflow:auto;background:var(--editor);
+}
 .panel.active{display:block}
-.debug-card,.setting-card{margin-bottom:12px;padding:14px;border:1px solid var(--line);border-radius:7px;background:var(--panel)}
+.debug-card,.setting-card{
+  margin-bottom:12px;padding:14px;border:1px solid var(--line);border-radius:7px;background:var(--panel);
+}
 .debug-card strong{display:block;margin-bottom:8px}
 .debug-card pre{margin:0;color:var(--cyan);white-space:pre-wrap}
 .setting{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--line)}
@@ -109,7 +157,8 @@ select,input[type=number]{padding:6px 8px;color:var(--text);background:#242a36;b
 .console{display:none;flex:1;overflow:auto;padding:12px;color:#c9d1d9;background:#0c0f14;font:12px ui-monospace,SFMono-Regular,Consolas,monospace}
 .preview.console-mode #preview{display:none}
 .preview.console-mode .console{display:block}
-.console-line{margin-bottom:7px;white-space:pre-wrap}
+
+.console-line{margin-bottom:7px;white-space:pre-wrap;word-break:break-word;overflow-wrap:anywhere}
 .console-line.log{color:var(--green)}
 .console-line.event{color:var(--cyan)}
 .console-line.error{color:var(--red)}
@@ -128,6 +177,15 @@ select,input[type=number]{padding:6px 8px;color:var(--text);background:#242a36;b
 
 .toast{position:fixed;right:20px;bottom:35px;z-index:50;padding:10px 16px;border-radius:5px;color:var(--text);background:#263144;opacity:0;transform:translateY(10px);transition:.2s;pointer-events:none}
 .toast.show{opacity:1;transform:translateY(0)}
+
+.monaco-editor .view-lines,
+.monaco-editor .view-line,
+.monaco-editor .margin-view-overlays,
+.monaco-editor .editor-scrollable{
+  white-space:pre-wrap !important;
+  word-break:break-word !important;
+  overflow-wrap:anywhere !important;
+}
 
 @keyframes nodeIn{
   from{opacity:0;transform:translateX(-5px)}
@@ -150,43 +208,22 @@ select,input[type=number]{padding:6px 8px;color:var(--text);background:#242a36;b
     </div>
 
     <div class="toolbar">
-      <button class="icon" id="openFolder" title="フォルダを開く">
-        <i class="fa-solid fa-folder-open"></i>
-      </button>
-
-      <button class="icon" id="saveProject" title="保存">
-        <i class="fa-solid fa-floppy-disk"></i>
-      </button>
-
-      <button class="icon" id="runProject" title="実行">
-        <i class="fa-solid fa-play"></i>
-      </button>
-
-      <button class="icon" id="openPreviewWindow" title="別ウィンドウで表示">
-        <i class="fa-solid fa-window-restore"></i>
-      </button>
+      <button class="icon" id="openFolder" title="フォルダを開く"><i class="fa-solid fa-folder-open"></i></button>
+      <button class="icon" id="saveProject" title="保存"><i class="fa-solid fa-floppy-disk"></i></button>
+      <button class="icon" id="runProject" title="実行"><i class="fa-solid fa-play"></i></button>
+      <button class="icon" id="openPreviewWindow" title="別ウィンドウで表示"><i class="fa-solid fa-window-restore"></i></button>
     </div>
   </header>
 
   <main class="workspace">
     <nav class="activity">
-      <button class="icon activity-button active" data-view="explorer" title="エクスプローラー">
-        <i class="fa-regular fa-copy"></i>
-      </button>
-
-      <button class="icon activity-button" data-view="debug" title="デバッグ">
-        <i class="fa-solid fa-bug"></i>
-      </button>
-
-      <button class="icon activity-button" data-view="settings" title="設定">
-        <i class="fa-solid fa-gear"></i>
-      </button>
+      <button class="icon activity-button active" data-view="explorer" title="エクスプローラー"><i class="fa-regular fa-copy"></i></button>
+      <button class="icon activity-button" data-view="debug" title="デバッグ"><i class="fa-solid fa-bug"></i></button>
+      <button class="icon activity-button" data-view="settings" title="設定"><i class="fa-solid fa-gear"></i></button>
 
       <div class="external-tools">
         <div id="externalTools">
-          <div class="external-empty">
-            <i class="fa-solid fa-link-slash"></i>
-          </div>
+          <div class="external-empty"><i class="fa-solid fa-link-slash"></i></div>
         </div>
       </div>
     </nav>
@@ -194,15 +231,9 @@ select,input[type=number]{padding:6px 8px;color:var(--text);background:#242a36;b
     <aside class="sidebar" id="sidebar">
       <div class="sidehead">
         <span id="sideTitle">エクスプローラー</span>
-
         <span class="actions">
-          <button class="icon" id="newFile" title="新しいファイル">
-            <i class="fa-solid fa-file-circle-plus"></i>
-          </button>
-
-          <button class="icon" id="newFolder" title="新しいフォルダ">
-            <i class="fa-solid fa-folder-plus"></i>
-          </button>
+          <button class="icon" id="newFile" title="新しいファイル"><i class="fa-solid fa-file-circle-plus"></i></button>
+          <button class="icon" id="newFolder" title="新しいフォルダ"><i class="fa-solid fa-folder-plus"></i></button>
         </span>
       </div>
 
@@ -272,25 +303,12 @@ select,input[type=number]{padding:6px 8px;color:var(--text);background:#242a36;b
       <div class="preview-head">
         <i class="fa-solid fa-display"></i>
 
-        <button class="mode active" data-mode="live">
-          <i class="fa-solid fa-bolt"></i> LIVE
-        </button>
+        <button class="mode active" data-mode="live"><i class="fa-solid fa-bolt"></i> LIVE</button>
+        <button class="mode" data-mode="console"><i class="fa-solid fa-terminal"></i> CONSOLE</button>
+        <button class="mode" data-mode="debug"><i class="fa-solid fa-bug"></i> DEBUG</button>
+        <button class="mode" data-mode="inspect"><i class="fa-solid fa-crosshairs"></i> INSPECT</button>
 
-        <button class="mode" data-mode="console">
-          <i class="fa-solid fa-terminal"></i> CONSOLE
-        </button>
-
-        <button class="mode" data-mode="debug">
-          <i class="fa-solid fa-bug"></i> DEBUG
-        </button>
-
-        <button class="mode" data-mode="inspect">
-          <i class="fa-solid fa-crosshairs"></i> INSPECT
-        </button>
-
-        <button class="icon" id="refreshPreview" title="更新">
-          <i class="fa-solid fa-rotate"></i>
-        </button>
+        <button class="icon" id="refreshPreview" title="更新"><i class="fa-solid fa-rotate"></i></button>
       </div>
 
       <iframe id="preview" sandbox="allow-scripts allow-modals"></iframe>
@@ -480,6 +498,7 @@ select,input[type=number]{padding:6px 8px;color:var(--text);background:#242a36;b
   function createModel(node){
     if(models[node.id]){ return models[node.id]; }
     if(!window.monaco){ return null; }
+
     const model = monaco.editor.createModel(node.content || "", node.lang);
     models[node.id] = model;
 
@@ -809,7 +828,7 @@ try{
 
   function createLinkId(url){
     try{
-      return "link-" + btoa(unescape(encodeURIComponent(url))).replace(/[^a-zA-Z0-9]/g, "").slice(0, 32);
+      return "link-" + btoa(unescape(encodeURIComponent(url))).replace(/[^a-zA-Z0-9]/g, "").slice(0,32);
     }catch(e){
       return "link-" + Date.now();
     }
@@ -819,7 +838,6 @@ try{
     if(!url){ return; }
     const normalizedUrl = url.trim();
     if(normalizedUrl.startsWith("javascript:") || normalizedUrl.startsWith("#") || normalizedUrl === "about:blank"){ return; }
-
     const exists = state.externalLinks.some(link => link.url === normalizedUrl);
     if(!exists){
       state.externalLinks.push({ id: createLinkId(normalizedUrl), url: normalizedUrl, label: label || normalizedUrl });
@@ -1036,7 +1054,6 @@ try{
 
         const suggestions = [];
 
-        // タグ補完: "<" や "<h" で候補表示
         if(beforeCursor.endsWith("<") || /<[\w-]*$/.test(beforeCursor)){
           const tags = [
             "div","span","p","h1","h2","h3","h4","h5","h6",
@@ -1058,7 +1075,6 @@ try{
           });
         }
 
-        // 属性補完: "<div " の直後
         if(/<[\w-]+\s+[\w-]*$/.test(beforeCursor)){
           const attrs = [
             "id","class","style","title","lang","data-*","href","src","alt","target","rel","type","value","name","placeholder",
@@ -1076,7 +1092,6 @@ try{
           });
         }
 
-        // 値補完: href= / src= / class= / id= / target= / type=
         if(/<[\w-]+\s+[\w-]+\s*=\s*["']?$/.test(beforeCursor)){
           const values = [
             "https://example.com","http://example.com","./","../","/","#section","mailto:test@example.com","tel:0000000000",
@@ -1110,6 +1125,8 @@ try{
         fontSize: 14,
         minimap: { enabled: false },
         wordWrap: "on",
+        wrappingIndent: "same",
+        scrollBeyondLastLine: false,
         padding: { top: 12 },
         suggestOnTriggerCharacters: true,
         quickSuggestions: { other: true, comments: true, strings: true }
