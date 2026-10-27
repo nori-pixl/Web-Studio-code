@@ -6,6 +6,7 @@
   <title>WebCode Studio</title>
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
   <style>
     :root{
       --title:#3c3c3c;
@@ -631,9 +632,11 @@
         <button class="activity-button active" data-view="explorer" title="エクスプローラー">
           <i class="fa-regular fa-copy"></i>
         </button>
+
         <button class="activity-button" data-view="debug" title="デバッグ">
           <i class="fa-solid fa-bug"></i>
         </button>
+
         <button class="activity-button" data-view="settings" title="設定">
           <i class="fa-solid fa-gear"></i>
         </button>
@@ -794,7 +797,9 @@
   <div id="modal">
     <div class="modal-box">
       <h3 id="modal-title">新規作成</h3>
+
       <input id="modal-input" autocomplete="off">
+
       <div class="modal-buttons">
         <button class="modal-button" id="modal-cancel">キャンセル</button>
         <button class="modal-button primary" id="modal-ok">作成</button>
@@ -812,20 +817,18 @@
     (() => {
       "use strict";
 
-      const STORAGE_KEY = "webcode-studio-final-working-v1";
-
-      let editor = null;
-      let modalCallback = null;
-      let previewTimer = null;
-      let wrapEnabled = true;
-      let currentMode = "live";
-      let consoleLines = [];
-
+      const STORAGE_KEY = "webcode-studio-final-working-v2";
       const models = {};
       const runtime = {
         rootHandle: null,
         handles: {}
       };
+
+      let editor = null;
+      let modalCallback = null;
+      let wrapEnabled = true;
+      let currentMode = "live";
+      let consoleLines = [];
 
       let state = {
         root: "root",
@@ -842,11 +845,6 @@
           }
         }
       };
-
-      const voidTags = [
-        "area","base","br","col","embed","hr","img","input","link",
-        "meta","param","source","track","wbr"
-      ];
 
       function uid() {
         return "n" + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
@@ -899,32 +897,14 @@
         return icons[ext] || icons.default;
       }
 
-      function toast(message) {
-        const el = document.getElementById("toast");
-        el.textContent = message;
-        el.classList.add("show");
-
-        setTimeout(() => {
-          el.classList.remove("show");
-        }, 1800);
-      }
-
-      function getNodeById(id) {
+      function getNode(id) {
         return state.nodes[id] || null;
       }
 
       function getChildren(parentId) {
-        const parent = state.nodes[parentId];
+        const parent = getNode(parentId);
         if (!parent || !Array.isArray(parent.children)) return [];
-
-        return parent.children
-          .map(id => state.nodes[id])
-          .filter(Boolean);
-      }
-
-      function getDirectoryHandle(id) {
-        if (id === state.root) return runtime.rootHandle;
-        return runtime.handles[id] || null;
+        return parent.children.map(id => getNode(id)).filter(Boolean);
       }
 
       function saveState() {
@@ -940,23 +920,80 @@
           const raw = localStorage.getItem(STORAGE_KEY);
           if (!raw) return;
 
-          const stored = JSON.parse(raw);
-          if (stored && stored.nodes) {
-            state = stored;
-            state.tabs = Array.isArray(state.tabs) ? state.tabs : [];
-            state.active = state.active || null;
+          const saved = JSON.parse(raw);
+          if (saved && saved.nodes) {
+            state = {
+              ...saved,
+              tabs: Array.isArray(saved.tabs) ? saved.tabs : [],
+              nodes: saved.nodes
+            };
           }
         } catch (e) {
           console.warn("restoreState failed", e);
         }
       }
 
+      function toast(message) {
+        const el = document.getElementById("toast");
+        el.textContent = message;
+        el.classList.add("show");
+
+        setTimeout(() => {
+          el.classList.remove("show");
+        }, 1800);
+      }
+
+      function setStatusText(text) {
+        const el = document.getElementById("status-text");
+        if (el) el.textContent = text;
+      }
+
+      function updateCurrentFileLabel() {
+        const node = getNode(state.active);
+        const label = document.getElementById("current-file");
+        if (label) {
+          label.textContent = node && node.type === "file" ? node.name : "ファイル未選択";
+        }
+      }
+
+      function updateCursorPosition() {
+        if (!editor) return;
+        const pos = editor.getPosition();
+        const el = document.getElementById("cursor-position");
+        if (el && pos) {
+          el.textContent = `Ln ${pos.lineNumber}, Col ${pos.column}`;
+        }
+      }
+
+      function updateStatusBar() {
+        const node = getNode(state.active);
+        if (node && node.type === "file") {
+          setStatusText("ファイル編集中");
+          updateCurrentFileLabel();
+        } else {
+          setStatusText("準備完了");
+          updateCurrentFileLabel();
+        }
+        updateCursorPosition();
+      }
+
+      function traverse(nodeId, cb) {
+        const node = getNode(nodeId);
+        if (!node) return;
+
+        cb(node);
+
+        if (node.type === "folder") {
+          getChildren(nodeId).forEach(child => traverse(child.id, cb));
+        }
+      }
+
       function addNode(parentId, name, content = "", type = "file", handle = null) {
+        const parent = getNode(parentId);
+        if (!parent) return null;
+
         const cleanName = String(name || "").trim();
         if (!cleanName) return null;
-
-        const parent = state.nodes[parentId];
-        if (!parent) return null;
 
         const node = {
           id: uid(),
@@ -973,7 +1010,11 @@
         }
 
         state.nodes[node.id] = node;
-        if (!Array.isArray(parent.children)) parent.children = [];
+
+        if (!Array.isArray(parent.children)) {
+          parent.children = [];
+        }
+
         parent.children.push(node.id);
 
         if (handle) runtime.handles[node.id] = handle;
@@ -981,59 +1022,42 @@
         return node.id;
       }
 
-      function removeNode(nodeId) {
-        const node = getNodeById(nodeId);
+      function deleteNode(nodeId) {
+        const node = getNode(nodeId);
         if (!node) return;
 
-        const parent = getNodeById(node.parent);
+        if (node.type === "folder") {
+          const children = [...node.children];
+          children.forEach(deleteNode);
+        }
+
+        const parent = getNode(node.parent);
         if (parent && Array.isArray(parent.children)) {
           parent.children = parent.children.filter(id => id !== nodeId);
         }
 
-        if (node.type === "folder") {
-          const childIds = [...node.children];
-          childIds.forEach(removeNode);
-        }
-
-        delete state.nodes[nodeId];
         delete runtime.handles[nodeId];
+        delete state.nodes[nodeId];
+        state.tabs = state.tabs.filter(id => id !== nodeId);
 
         if (state.active === nodeId) {
           state.active = null;
-        }
-
-        state.tabs = state.tabs.filter(id => id !== nodeId);
-
-        if (editor && state.active) {
-          const activeNode = getNodeById(state.active);
-          if (activeNode && activeNode.type === "file") {
-            openFile(activeNode.id);
-          } else {
-            editor.setValue("");
-          }
-        } else if (editor) {
-          editor.setValue("");
+          if (editor) editor.setValue("");
         }
 
         renderTree();
         renderTabs();
+        updateStatusBar();
         saveState();
       }
 
-      function traverse(nodeId, cb) {
-        const node = getNodeById(nodeId);
-        if (!node) return;
-        cb(node);
-        if (node.type === "folder") {
-          getChildren(nodeId).forEach(child => traverse(child.id, cb));
-        }
-      }
+      function ensureProjectDefaults() {
+        const root = getNode(state.root);
+        if (!root) return;
 
-      function createDefaultProject() {
-        const rootId = state.root;
+        if (root.children.length > 0) return;
 
-        if (!state.nodes[rootId].children.length) {
-          const htmlId = addNode(rootId, "index.html", `<!DOCTYPE html>
+        const htmlId = addNode(state.root, "index.html", `<!DOCTYPE html>
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
@@ -1049,166 +1073,171 @@
   <script src="script.js"></script>
 </body>
 </html>`, "file");
-          const cssId = addNode(rootId, "styles.css", `body {
+
+        const cssId = addNode(state.root, "styles.css", `body {
   margin: 0;
   display: grid;
   place-items: center;
   min-height: 100vh;
-  background: linear-gradient(135deg, #0f172a, #1d4ed8);
+  background: linear-gradient(135deg, #111827, #2563eb);
   color: #e5e7eb;
   font-family: "Segoe UI", sans-serif;
 }
 
 .card {
-  background: rgba(15, 23, 42, 0.7);
-  border: 1px solid rgba(255,255,255,0.15);
+  background: rgba(17, 24, 39, 0.7);
+  border: 1px solid rgba(255,255,255,0.12);
   padding: 32px;
-  border-radius: 14px;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+  border-radius: 12px;
+  box-shadow: 0 18px 40px rgba(0,0,0,.25);
 }
 
 button {
   margin-top: 12px;
-  border: none;
+  padding: 10px 16px;
+  border: 0;
+  border-radius: 8px;
   background: #22c55e;
   color: white;
-  border-radius: 8px;
-  padding: 10px 16px;
-  cursor: pointer;
   font-weight: 700;
+  cursor: pointer;
 }
 `, "file");
-          const jsId = addNode(rootId, "script.js", `document.addEventListener("DOMContentLoaded", () => {
+
+        const jsId = addNode(state.root, "script.js", `document.addEventListener("DOMContentLoaded", () => {
   const btn = document.getElementById("demo-btn");
-  if (btn) {
-    btn.addEventListener("click", () => {
-      btn.textContent = "Clicked!";
-      btn.style.background = "#f59e0b";
-    });
-  }
+  if (!btn) return;
+
+  btn.addEventListener("click", () => {
+    btn.textContent = "Clicked!";
+    btn.style.background = "#f59e0b";
+  });
 });
 `, "file");
 
-          state.active = htmlId;
-          state.tabs = [htmlId, cssId, jsId];
-        }
-      }
-
-      function ensureRootState() {
-        if (!state.nodes.root) {
-          state.nodes.root = {
-            id: "root",
-            type: "folder",
-            name: "MY-PROJECT",
-            parent: null,
-            children: [],
-            open: true
-          };
-        }
-      }
-
-      function setActiveView(viewName) {
-        document.querySelectorAll(".activity-button").forEach(btn => {
-          btn.classList.toggle("active", btn.dataset.view === viewName);
-        });
-
-        const panes = {
-          explorer: document.getElementById("sidebar"),
-          debug: document.getElementById("debug-panel"),
-          settings: document.getElementById("settings-panel")
-        };
-
-        Object.entries(panes).forEach(([name, el]) => {
-          if (!el) return;
-          if (name === viewName) {
-            el.classList.add("active");
-            if (name === "explorer") {
-              document.getElementById("sidebar").classList.remove("closed");
-            }
-          } else {
-            el.classList.remove("active");
-          }
-        });
-      }
-
-      function openFile(id) {
-        const node = getNodeById(id);
-        if (!node || node.type !== "file") return;
-
-        state.active = id;
-
-        if (!state.tabs.includes(id)) {
-          state.tabs.push(id);
-        }
-
-        renderTree();
-        renderTabs();
-
-        if (editor) {
-          const model = ensureModelFor(node);
-          editor.setModel(model);
-          editor.focus();
-        }
-
-        updateStatusBar();
-        saveState();
+        if (htmlId) state.active = htmlId;
+        if (htmlId) state.tabs = [htmlId];
+        if (cssId) state.tabs.push(cssId);
+        if (jsId) state.tabs.push(jsId);
       }
 
       function ensureModelFor(node) {
+        if (!node || node.type !== "file") return null;
+
         if (!models[node.id]) {
           const monaco = window.monaco;
           if (!monaco) return null;
 
           const model = monaco.editor.createModel(node.content || "", langOf(node.name));
           model.onDidChangeContent(() => {
-            const currentNode = getNodeById(state.active);
-            if (currentNode && currentNode.id === node.id) {
-              currentNode.content = model.getValue();
-              saveState();
+            if (state.active === node.id) {
+              node.content = model.getValue();
               renderPreview();
-              updateStatusBar();
+              saveState();
             }
           });
+
           models[node.id] = model;
-        } else {
-          const currentValue = models[node.id].getValue();
-          if (currentValue !== (node.content || "")) {
-            models[node.id].setValue(node.content || "");
-          }
         }
 
         return models[node.id];
       }
 
-      function updateStatusBar() {
-        const currentNode = getNodeById(state.active);
-        const currentFile = currentNode && currentNode.type === "file" ? currentNode.name : "ファイル未選択";
-        const currentFileEl = document.getElementById("current-file");
-        if (currentFileEl) currentFileEl.textContent = currentFile;
+      function openFile(fileId) {
+        const node = getNode(fileId);
+        if (!node || node.type !== "file") return;
 
-        const statusText = document.getElementById("status-text");
-        if (statusText) {
-          statusText.textContent = currentNode && currentNode.type === "file"
-            ? "ファイル編集中"
-            : "準備完了";
-        }
+        state.active = fileId;
+        if (!state.tabs.includes(fileId)) state.tabs.push(fileId);
+
+        renderTree();
+        renderTabs();
+        updateStatusBar();
 
         if (editor) {
-          const pos = editor.getPosition();
-          const cursorPosition = document.getElementById("cursor-position");
-          if (cursorPosition) {
-            cursorPosition.textContent = `Ln ${pos.lineNumber}, Col ${pos.column}`;
-          }
+          const model = ensureModelFor(node);
+          if (model) editor.setModel(model);
         }
+
+        saveState();
+      }
+
+      function closeTab(tabId) {
+        const index = state.tabs.indexOf(tabId);
+        if (index === -1) return;
+
+        const current = state.active === tabId;
+        state.tabs = state.tabs.filter(id => id !== tabId);
+
+        if (current) {
+          const next = state.tabs[index] || state.tabs[index - 1];
+          if (next) {
+            openFile(next);
+          } else {
+            state.active = null;
+            if (editor) editor.setValue("");
+            renderTabs();
+            updateStatusBar();
+            saveState();
+          }
+          return;
+        }
+
+        renderTabs();
+        saveState();
+      }
+
+      function renderTabs() {
+        const tabsEl = document.getElementById("tabs");
+        const emptyState = document.getElementById("empty-state");
+        if (!tabsEl) return;
+
+        tabsEl.innerHTML = "";
+
+        if (!state.tabs.length) {
+          emptyState.style.display = "flex";
+          return;
+        }
+
+        emptyState.style.display = "none";
+
+        state.tabs.forEach((tabId) => {
+          const node = getNode(tabId);
+          if (!node || node.type !== "file") return;
+
+          const tab = document.createElement("div");
+          tab.className = "tab " + (state.active === tabId ? "active" : "");
+          tab.dataset.id = tabId;
+
+          tab.innerHTML = `
+            <span class="tab-name">${escapeHtml(node.name)}</span>
+            <button class="tab-close" title="閉じる">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          `;
+
+          tab.addEventListener("click", (event) => {
+            if (event.target.closest(".tab-close")) return;
+            openFile(tabId);
+          });
+
+          tab.querySelector(".tab-close").addEventListener("click", (event) => {
+            event.stopPropagation();
+            closeTab(tabId);
+          });
+
+          tabsEl.appendChild(tab);
+        });
       }
 
       function renderTree() {
         const rootEl = document.getElementById("tree");
+        if (!rootEl) return;
         rootEl.innerHTML = "";
 
         function walk(parentId, depth) {
           const children = getChildren(parentId);
-          children.forEach(node => {
+          children.forEach((node) => {
             const row = document.createElement("div");
             row.className = "tree-row " + node.type + (node.id === state.active ? " active" : "");
             row.style.paddingLeft = (7 + depth * 16) + "px";
@@ -1223,7 +1252,7 @@ button {
                 </button>
               `;
 
-              row.addEventListener("click", function(event) {
+              row.addEventListener("click", (event) => {
                 if (event.target.closest(".delete-button")) return;
                 state.active = node.id;
                 node.open = !node.open;
@@ -1231,13 +1260,13 @@ button {
                 saveState();
               });
 
-              const delBtn = row.querySelector(".delete-button");
-              delBtn.addEventListener("click", function(event) {
+              row.querySelector(".delete-button").addEventListener("click", (event) => {
                 event.stopPropagation();
                 if (confirm(`「${node.name}」を削除しますか？`)) {
-                  removeNode(node.id);
+                  deleteNode(node.id);
                 }
               });
+
             } else {
               row.innerHTML = `
                 <i class="fa-solid ${fileIcon(node.name)}"></i>
@@ -1247,16 +1276,15 @@ button {
                 </button>
               `;
 
-              row.addEventListener("click", function(event) {
+              row.addEventListener("click", (event) => {
                 if (event.target.closest(".delete-button")) return;
                 openFile(node.id);
               });
 
-              const delBtn = row.querySelector(".delete-button");
-              delBtn.addEventListener("click", function(event) {
+              row.querySelector(".delete-button").addEventListener("click", (event) => {
                 event.stopPropagation();
                 if (confirm(`「${node.name}」を削除しますか？`)) {
-                  removeNode(node.id);
+                  deleteNode(node.id);
                 }
               });
             }
@@ -1272,80 +1300,34 @@ button {
         walk(state.root, 0);
       }
 
-      function renderTabs() {
-        const tabsEl = document.getElementById("tabs");
-        if (!tabsEl) return;
-
-        tabsEl.innerHTML = "";
-
-        if (!state.tabs.length) {
-          document.getElementById("empty-state").style.display = "flex";
-          return;
-        }
-
-        document.getElementById("empty-state").style.display = "none";
-
-        state.tabs.forEach(id => {
-          const node = getNodeById(id);
-          if (!node || node.type !== "file") return;
-
-          const tab = document.createElement("div");
-          tab.className = "tab" + (state.active === id ? " active" : "");
-          tab.dataset.id = id;
-
-          tab.innerHTML = `
-            <span class="tab-name">${escapeHtml(node.name)}</span>
-            <button class="tab-close" title="閉じる">
-              <i class="fa-solid fa-xmark"></i>
-            </button>
-          `;
-
-          tab.addEventListener("click", (event) => {
-            if (event.target.closest(".tab-close")) return;
-            openFile(id);
-          });
-
-          tab.querySelector(".tab-close").addEventListener("click", (event) => {
-            event.stopPropagation();
-            closeTab(id);
-          });
-
-          tabsEl.appendChild(tab);
+      function applyActivityView(viewName) {
+        document.querySelectorAll(".activity-button").forEach((button) => {
+          button.classList.toggle("active", button.dataset.view === viewName);
         });
-      }
 
-      function closeTab(id) {
-        const currentNode = getNodeById(state.active);
+        const viewMap = {
+          explorer: document.getElementById("sidebar"),
+          debug: document.getElementById("debug-panel"),
+          settings: document.getElementById("settings-panel")
+        };
 
-        if (currentNode && currentNode.id === id) {
-          const index = state.tabs.indexOf(id);
-          const nextIndex = state.tabs[index + 1] ? index + 1 : index - 1;
-          const nextId = state.tabs[nextIndex];
-
-          state.tabs = state.tabs.filter(item => item !== id);
-
-          if (nextId && getNodeById(nextId)) {
-            state.active = nextId;
-            openFile(nextId);
+        Object.entries(viewMap).forEach(([name, el]) => {
+          if (!el) return;
+          if (name === viewName) {
+            el.classList.add("active");
+            if (name === "explorer") {
+              document.getElementById("sidebar").classList.remove("closed");
+            }
           } else {
-            state.active = null;
-            if (editor) editor.setValue("");
-            updateStatusBar();
-            renderTabs();
-            saveState();
+            el.classList.remove("active");
           }
-          return;
-        }
-
-        state.tabs = state.tabs.filter(item => item !== id);
-        renderTabs();
-        saveState();
+        });
       }
 
       function showModal(title, callback) {
         const modal = document.getElementById("modal");
-        const input = document.getElementById("modal-input");
         const titleEl = document.getElementById("modal-title");
+        const input = document.getElementById("modal-input");
 
         titleEl.textContent = title;
         input.value = "";
@@ -1357,12 +1339,13 @@ button {
 
       function hideModal() {
         const modal = document.getElementById("modal");
+        const input = document.getElementById("modal-input");
         modal.classList.remove("show");
         modalCallback = null;
-        document.getElementById("modal-input").value = "";
+        input.value = "";
       }
 
-      function createItemFromModal(type) {
+      function createFromModal(kind) {
         const input = document.getElementById("modal-input");
         const name = input.value.trim();
         if (!name) {
@@ -1370,86 +1353,58 @@ button {
           return;
         }
 
-        const root = getNodeById(state.root);
-        if (!root) return;
-
-        const nodeId = addNode(state.root, name, "", type);
+        const nodeId = addNode(state.root, name, "", kind);
         if (!nodeId) {
           toast("作成に失敗しました");
           return;
         }
 
-        if (type === "file") {
-          openFile(nodeId);
+        if (kind === "folder") {
+          const folder = getNode(nodeId);
+          if (folder) {
+            folder.open = true;
+            state.active = nodeId;
+          }
         } else {
-          const folder = getNodeById(nodeId);
-          folder.open = true;
-          state.active = nodeId;
-          renderTree();
-          saveState();
+          openFile(nodeId);
         }
 
+        renderTree();
+        renderTabs();
+        saveState();
         hideModal();
-        toast(type === "file" ? "ファイルを作成しました" : "フォルダを作成しました");
+        toast(kind === "file" ? "ファイルを作成しました" : "フォルダを作成しました");
       }
 
-      function updatePreviewMode(mode) {
-        currentMode = mode;
-        const panel = document.getElementById("preview-panel");
-        panel.classList.toggle("console-mode", mode === "console");
-
-        document.querySelectorAll(".preview-button[data-mode]").forEach(btn => {
-          btn.classList.toggle("active", btn.dataset.mode === mode);
+      function findFileByName(fileName) {
+        const result = [];
+        traverse(state.root, (node) => {
+          if (node.type === "file" && node.name.toLowerCase() === String(fileName).toLowerCase()) {
+            result.push(node);
+          }
         });
-
-        if (mode === "console") {
-          const consoleEl = document.getElementById("console");
-          consoleEl.innerHTML = "";
-          consoleLines.forEach(line => {
-            const row = document.createElement("div");
-            row.className = "console-line " + line.type;
-            row.textContent = line.text;
-            consoleEl.appendChild(row);
-          });
-        }
-      }
-
-      function appendConsole(type, text) {
-        consoleLines.push({ type, text });
-        if (consoleLines.length > 200) consoleLines.shift();
-
-        const consoleEl = document.getElementById("console");
-        if (!consoleEl) return;
-
-        if (currentMode === "console") {
-          const row = document.createElement("div");
-          row.className = "console-line " + type;
-          row.textContent = text;
-          consoleEl.appendChild(row);
-        }
+        return result[0] || null;
       }
 
       function getProjectFiles() {
         const files = [];
-        traverse(state.root, node => {
+        traverse(state.root, (node) => {
           if (node.type === "file") files.push(node);
         });
         return files;
       }
 
-      function findFileByName(name) {
-        return getProjectFiles().find(file => file.name.toLowerCase() === name.toLowerCase()) || null;
-      }
-
       function renderPreview() {
         const htmlFile = findFileByName("index.html");
         if (!htmlFile) {
-          const frame = document.getElementById("preview-frame");
-          frame.srcdoc = `
-            <!DOCTYPE html><html><body style="font-family:sans-serif;padding:20px;color:#333;">
-            <h2>index.html が見つかりません</h2>
-            <p>プロジェクトに index.html を追加してください。</p>
-            </body></html>
+          document.getElementById("preview-frame").srcdoc = `
+            <!DOCTYPE html>
+            <html>
+              <body style="font-family:sans-serif;padding:20px;color:#333;">
+                <h2>index.html が見つかりません</h2>
+                <p>プロジェクトに index.html を追加してください。</p>
+              </body>
+            </html>
           `;
           return;
         }
@@ -1464,101 +1419,84 @@ button {
         const styleTag = `<style>${cssBundle}</style>`;
         const scriptTag = `<script>${jsBundle}<\/script>`;
 
-        if (/<\/body>/i.test(html)) {
-          html = html.replace(/<\/body>/i, `${scriptTag}</body>`);
-        } else {
-          html += scriptTag;
-        }
-
         if (/<\/head>/i.test(html)) {
           html = html.replace(/<\/head>/i, `${styleTag}</head>`);
         } else {
           html = `${styleTag}${html}`;
         }
 
+        if (/<\/body>/i.test(html)) {
+          html = html.replace(/<\/body>/i, `${scriptTag}</body>`);
+        } else {
+          html += scriptTag;
+        }
+
         document.getElementById("preview-frame").srcdoc = html;
-        appendConsole("event", "プレビューを更新しました");
       }
 
-      function openPreviewInNewWindow() {
-        const frame = document.getElementById("preview-frame");
-        const html = frame.srcdoc || "";
-        const newWin = window.open("", "_blank", "width=1200,height=800");
-        if (!newWin) {
+      function updatePreviewMode(mode) {
+        currentMode = mode;
+
+        document.querySelectorAll(".preview-button[data-mode]").forEach((button) => {
+          button.classList.toggle("active", button.dataset.mode === mode);
+        });
+
+        const panel = document.getElementById("preview-panel");
+        panel.classList.toggle("console-mode", mode === "console");
+
+        const consoleEl = document.getElementById("console");
+        if (mode === "console") {
+          consoleEl.innerHTML = "";
+          consoleLines.forEach((line) => {
+            const row = document.createElement("div");
+            row.className = "console-line " + line.type;
+            row.textContent = line.text;
+            consoleEl.appendChild(row);
+          });
+        }
+      }
+
+      function appendConsole(type, text) {
+        consoleLines.push({ type, text });
+        if (consoleLines.length > 200) consoleLines.shift();
+
+        if (currentMode === "console") {
+          const consoleEl = document.getElementById("console");
+          const row = document.createElement("div");
+          row.className = "console-line " + type;
+          row.textContent = text;
+          consoleEl.appendChild(row);
+        }
+      }
+
+      function openPreviewNewWindow() {
+        const html = document.getElementById("preview-frame").srcdoc || "";
+        const win = window.open("", "_blank", "width=1200,height=800");
+        if (!win) {
           toast("ポップアップがブロックされました");
           return;
         }
-        newWin.document.write(html);
-        newWin.document.close();
+        win.document.write(html);
+        win.document.close();
       }
 
-      function bindButtonEvents() {
-        document.querySelectorAll(".activity-button").forEach(btn => {
-          btn.addEventListener("click", () => {
-            setActiveView(btn.dataset.view);
+      function bindEvents() {
+        document.querySelectorAll(".activity-button").forEach((button) => {
+          button.addEventListener("click", () => {
+            applyActivityView(button.dataset.view);
           });
-        });
-
-        document.getElementById("open-folder-button").addEventListener("click", () => {
-          document.getElementById("folder-input").click();
-        });
-
-        document.getElementById("folder-input").addEventListener("change", async (event) => {
-          const files = Array.from(event.target.files || []);
-          if (!files.length) return;
-
-          for (const file of files) {
-            const relativePath = file.webkitRelativePath || file.name;
-            const pathParts = relativePath.split("/").filter(Boolean);
-            const fileName = pathParts[pathParts.length - 1];
-            if (!fileName) continue;
-
-            const contents = await file.text();
-            let parentId = state.root;
-
-            if (pathParts.length > 1) {
-              for (let i = 0; i < pathParts.length - 1; i++) {
-                const part = pathParts[i];
-                let folderNode = getChildren(parentId).find(node => node.type === "folder" && node.name === part);
-                if (!folderNode) {
-                  const newId = addNode(parentId, part, "", "folder");
-                  folderNode = getNodeById(newId);
-                }
-                parentId = folderNode.id;
-              }
-            }
-
-            const existing = getChildren(parentId).find(node => node.type === "file" && node.name === fileName);
-            if (existing) {
-              existing.content = contents;
-            } else {
-              addNode(parentId, fileName, contents, "file");
-            }
-          }
-
-          renderTree();
-          saveState();
-          renderPreview();
-          toast("フォルダを読み込みました");
-          event.target.value = "";
         });
 
         document.getElementById("new-file-button").addEventListener("click", () => {
-          showModal("新しいファイル", () => {
-            createItemFromModal("file");
-          });
+          showModal("新しいファイル", () => createFromModal("file"));
         });
 
         document.getElementById("new-folder-button").addEventListener("click", () => {
-          showModal("新しいフォルダ", () => {
-            createItemFromModal("folder");
-          });
+          showModal("新しいフォルダ", () => createFromModal("folder"));
         });
 
         document.getElementById("empty-new-file").addEventListener("click", () => {
-          showModal("新しいファイル", () => {
-            createItemFromModal("file");
-          });
+          showModal("新しいファイル", () => createFromModal("file"));
         });
 
         document.getElementById("modal-ok").addEventListener("click", () => {
@@ -1570,31 +1508,96 @@ button {
         });
 
         document.getElementById("modal-input").addEventListener("keydown", (event) => {
-          if (event.key === "Enter") {
-            if (modalCallback) modalCallback();
+          if (event.key === "Enter" && modalCallback) {
+            modalCallback();
           }
         });
 
+        document.getElementById("open-folder-button").addEventListener("click", () => {
+          document.getElementById("folder-input").click();
+        });
+
+        document.getElementById("folder-input").addEventListener("change", async (event) => {
+          const files = Array.from(event.target.files || []);
+          if (!files.length) return;
+
+          for (const file of files) {
+            const relative = file.webkitRelativePath || file.name;
+            const parts = relative.split("/").filter(Boolean);
+            const filename = parts[parts.length - 1];
+            if (!filename) continue;
+
+            const content = await file.text();
+            let parentId = state.root;
+
+            if (parts.length > 1) {
+              for (let i = 0; i < parts.length - 1; i++) {
+                const segment = parts[i];
+                let folderNode = getChildren(parentId).find(node => node.type === "folder" && node.name === segment);
+                if (!folderNode) {
+                  const newFolderId = addNode(parentId, segment, "", "folder");
+                  folderNode = getNode(newFolderId);
+                }
+                parentId = folderNode.id;
+              }
+            }
+
+            const existing = getChildren(parentId).find(node => node.type === "file" && node.name === filename);
+            if (existing) {
+              existing.content = content;
+            } else {
+              addNode(parentId, filename, content, "file");
+            }
+          }
+
+          renderTree();
+          renderTabs();
+          renderPreview();
+          saveState();
+          toast("フォルダを読み込みました");
+          event.target.value = "";
+        });
+
+        document.getElementById("refresh-button").addEventListener("click", () => {
+          renderPreview();
+          appendConsole("event", "プレビューを再読み込みしました");
+          toast("プレビューを再読み込みしました");
+        });
+
+        document.getElementById("run-preview-button").addEventListener("click", () => {
+          renderPreview();
+          appendConsole("event", "実行しました");
+          toast("実行しました");
+        });
+
+        document.getElementById("open-preview-button").addEventListener("click", () => {
+          openPreviewNewWindow();
+        });
+
+        document.querySelectorAll(".preview-button[data-mode]").forEach((button) => {
+          button.addEventListener("click", () => {
+            updatePreviewMode(button.dataset.mode);
+          });
+        });
+
         document.getElementById("font-size").addEventListener("input", (event) => {
-          const value = Number(event.target.value);
-          if (editor && value >= 10 && value <= 32) {
-            editor.updateOptions({ fontSize: value });
-            toast(`フォントサイズ: ${value}`);
+          const size = Number(event.target.value);
+          if (!editor) return;
+          if (size >= 10 && size <= 32) {
+            editor.updateOptions({ fontSize: size });
           }
         });
 
         document.getElementById("font-family").addEventListener("change", (event) => {
-          const font = event.target.value;
-          if (editor) {
-            editor.updateOptions({ fontFamily: font });
-          }
+          if (!editor) return;
+          editor.updateOptions({ fontFamily: event.target.value });
         });
 
         document.getElementById("wrap-toggle").addEventListener("click", () => {
           wrapEnabled = !wrapEnabled;
-          const wrapEl = document.getElementById("wrap-toggle");
-          wrapEl.textContent = "折り返し: " + (wrapEnabled ? "ON" : "OFF");
-          wrapEl.classList.toggle("off", !wrapEnabled);
+          const toggle = document.getElementById("wrap-toggle");
+          toggle.textContent = "折り返し: " + (wrapEnabled ? "ON" : "OFF");
+          toggle.classList.toggle("off", !wrapEnabled);
 
           if (editor) {
             editor.updateOptions({
@@ -1603,33 +1606,13 @@ button {
           }
         });
 
-        document.getElementById("refresh-button").addEventListener("click", () => {
-          renderPreview();
-          toast("プレビューを再読み込みしました");
-        });
-
-        document.getElementById("open-preview-button").addEventListener("click", () => {
-          openPreviewInNewWindow();
-        });
-
-        document.getElementById("run-preview-button").addEventListener("click", () => {
-          renderPreview();
-          toast("実行しました");
-        });
-
-        document.querySelectorAll(".preview-button[data-mode]").forEach(btn => {
-          btn.addEventListener("click", () => {
-            updatePreviewMode(btn.dataset.mode);
-          });
-        });
-
         document.getElementById("left-resizer").addEventListener("mousedown", (event) => {
-          const panel = document.getElementById("sidebar");
+          const sidebar = document.getElementById("sidebar");
           const startX = event.clientX;
-          const startWidth = panel.getBoundingClientRect().width;
+          const startWidth = sidebar.getBoundingClientRect().width;
           const drag = (moveEvent) => {
             const next = startWidth + (moveEvent.clientX - startX);
-            panel.style.width = Math.max(160, Math.min(420, next)) + "px";
+            sidebar.style.width = Math.max(160, Math.min(420, next)) + "px";
           };
           const stop = () => {
             window.removeEventListener("mousemove", drag);
@@ -1643,13 +1626,13 @@ button {
         });
 
         document.getElementById("right-resizer").addEventListener("mousedown", (event) => {
-          const panel = document.getElementById("preview-panel");
+          const preview = document.getElementById("preview-panel");
           const startX = event.clientX;
-          const startWidth = panel.getBoundingClientRect().width;
+          const startWidth = preview.getBoundingClientRect().width;
           const drag = (moveEvent) => {
             const diff = moveEvent.clientX - startX;
             const next = startWidth - diff;
-            panel.style.width = Math.max(280, Math.min(700, next)) + "px";
+            preview.style.width = Math.max(280, Math.min(700, next)) + "px";
           };
           const stop = () => {
             window.removeEventListener("mousemove", drag);
@@ -1661,14 +1644,6 @@ button {
           window.addEventListener("mousemove", drag);
           window.addEventListener("mouseup", stop);
         });
-
-        const setWrapLabel = () => {
-          const wrapEl = document.getElementById("wrap-toggle");
-          wrapEl.textContent = "折り返し: " + (wrapEnabled ? "ON" : "OFF");
-          wrapEl.classList.toggle("off", !wrapEnabled);
-        };
-
-        setWrapLabel();
       }
 
       function initMonaco() {
@@ -1678,10 +1653,7 @@ button {
           }
         });
 
-        window.require(["vs/editor/editor.main"], function () {
-          const monaco = window.monaco;
-          if (!monaco) return;
-
+        window.require(["vs/editor/editor.main"], () => {
           editor = monaco.editor.create(document.getElementById("monaco"), {
             value: "",
             language: "html",
@@ -1698,26 +1670,28 @@ button {
           });
 
           editor.onDidChangeModelContent(() => {
-            const activeNode = getNodeById(state.active);
+            const activeNode = getNode(state.active);
             if (!activeNode || activeNode.type !== "file") return;
 
-            const model = editor.getModel();
-            const value = model ? model.getValue() : "";
-            activeNode.content = value;
+            if (editor && editor.getModel()) {
+              activeNode.content = editor.getModel().getValue();
+            }
+
             saveState();
-            updateStatusBar();
             renderPreview();
+            updateStatusBar();
           });
 
           editor.onDidChangeCursorPosition(() => {
             updateStatusBar();
           });
 
-          if (state.tabs.length) {
-            openFile(state.tabs[0]);
-          } else {
-            const activeNode = findFileByName("index.html");
-            if (activeNode) openFile(activeNode.id);
+          const firstTab = state.tabs[0];
+          if (firstTab) {
+            const firstNode = getNode(firstTab);
+            if (firstNode) {
+              openFile(firstNode.id);
+            }
           }
 
           renderPreview();
@@ -1725,20 +1699,19 @@ button {
         });
       }
 
-      function bootstrap() {
-        ensureRootState();
+      function boot() {
         restoreState();
-        ensureRootState();
-        createDefaultProject();
-        saveState();
-        bindButtonEvents();
+        ensureProjectDefaults();
         renderTree();
         renderTabs();
-        setActiveView("explorer");
+        bindEvents();
+        applyActivityView("explorer");
+        updateStatusBar();
         initMonaco();
+        saveState();
       }
 
-      bootstrap();
+      boot();
     })();
   </script>
 </body>
